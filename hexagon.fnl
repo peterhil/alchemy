@@ -8,6 +8,10 @@
             :green 2
             :blue 4
             :bg 34
+            :r 7 ; radius (half width)
+            :w 14 ; width
+            :h 12 ; height
+            :sp 2 ; spacing
             })
 
 (local transp 0)
@@ -28,8 +32,10 @@
      (when (btn 3) (set x (+ x 1)))
      (cls 0)
 
-     ;; background
+     ;; background grid
      (draw-grid hex.bg 0 0)
+     (draw-grid hex.bg (+ hex.w hex.sp) 0)
+     (draw-grid hex.bg (+ hex.r (/ hex.sp 2)) (+ hex.h hex.sp))
 
      (spr (+ 2 (* (// (% t 60) 30) 2))
           x y transp 1 0 0 2 2)
