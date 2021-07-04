@@ -21,7 +21,10 @@
 (var y 24)
 
 (fn draw-grid [id x y]
-    (spr id x y transp 1 0 0 2 2))
+    (spr id
+         (* x (+ hex.w hex.sp))
+         (* y (+ hex.h hex.sp))
+         transp 1 0 0 2 2))
 
 (global
  TIC
@@ -34,8 +37,11 @@
 
      ;; background grid
      (draw-grid hex.bg 0 0)
-     (draw-grid hex.bg (+ hex.w hex.sp) 0)
-     (draw-grid hex.bg (+ hex.r (/ hex.sp 2)) (+ hex.h hex.sp))
+     (draw-grid hex.bg 1 0)
+     (draw-grid hex.bg 2 0)
+     (draw-grid hex.bg 0.5 1)
+     (draw-grid hex.bg 1.5 1)
+     (draw-grid hex.bg 1 2)
 
      (spr (+ 2 (* (// (% t 60) 30) 2))
           x y transp 1 0 0 2 2)
