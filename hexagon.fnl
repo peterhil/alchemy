@@ -1,6 +1,6 @@
-;; title:  game title
-;; author: game developer
-;; desc:   short description
+;; title:  Hexagonal map
+;; author: peterhil
+;; desc:   Hexagonal map demo
 ;; script: fennel
 
 (var t 0)
