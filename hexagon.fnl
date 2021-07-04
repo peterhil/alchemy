@@ -3,21 +3,38 @@
 ;; desc:   Hexagonal map demo
 ;; script: fennel
 
+;; Sprite map
+(local hex {
+            :green 2
+            :blue 4
+            :bg 34
+            })
+
+(local transp 0)
+
 (var t 0)
 (var x 96)
 (var y 24)
 
-(global TIC
+(fn draw-grid [id x y]
+    (spr id x y transp 1 0 0 2 2))
+
+(global
+ TIC
  (fn tic []
-  (when (btn 0) (set y (- y 1)))
-  (when (btn 1) (set y (+ y 1)))
-  (when (btn 2) (set x (- x 1)))
-  (when (btn 3) (set x (+ x 1)))
-  (cls 0)
-  (spr (+ 2 (* (// (% t 60) 30) 2))
-       x y 14 1 0 0 2 2)
-  (print "HELLO WORLD!" 84 84)
-  (set t (+ t 1))))
+     (when (btn 0) (set y (- y 1)))
+     (when (btn 1) (set y (+ y 1)))
+     (when (btn 2) (set x (- x 1)))
+     (when (btn 3) (set x (+ x 1)))
+     (cls 0)
+
+     ;; background
+     (draw-grid hex.bg 0 0)
+
+     (spr (+ 2 (* (// (% t 60) 30) 2))
+          x y transp 1 0 0 2 2)
+     (print "HELLO WORLD!" 84 84)
+     (set t (+ t 1))))
 
 ;; <TILES>
 ;; 002:0000006500006555006555556555555555555555555555555555555555555555
@@ -28,6 +45,10 @@
 ;; 019:5555555055555550555555505555555055555560555560005560000060000000
 ;; 020:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbabbbbbbb00abbbbb0000abbb000000ab
 ;; 021:bbbbbbb0bbbbbbb0bbbbbbb0bbbbbbb0bbbbbba0bbbba000bba00000a0000000
+;; 034:000000ff0000ff0000ff0000ff000000f0000000f0000000f0000000f0000000
+;; 035:f00000000ff00000000ff00000000ff0000000f0000000f0000000f0000000f0
+;; 050:f0000000f0000000f0000000f0000000ff00000000ff00000000ff00000000ff
+;; 051:000000f0000000f0000000f0000000f000000ff0000ff0000ff00000f0000000
 ;; </TILES>
 
 ;; <MAP>
