@@ -3,32 +3,31 @@
 ;; desc:   Hexagonal map demo
 ;; script: fennel
 
-;; Sprite map
-
-(local size 7)
-
-(local hex {
-            :green 2
-            :blue 4
-            :bg 34
-            :kind :pointy
-            :r size ; radius
-            :w (* 2 size) ; width
-            :h (math.floor (* size (math.sqrt 3))) ; height
-            :sp 2 ; spacing
-            })
-
+(local scr {:w 240 :h 136})
 (local transp 0)
+
+;; Hexagon grid
+(local size 7)
+(local sq3 (math.sqrt 3))
+(local hex {:kind :pointy
+            :w (* size 2) ; width
+            :h (math.floor (* size sq3)) ; height
+            :sp 2 ; spacing
+                  })
+
+;; Sprite map
+(local sp
+       {:green 2
+        :blue 4
+        :bg 34})
 
 (var t 0)
 (var x 96)
 (var y 28)
 
-(fn add [a b]
-    (+ a b))
-
-(fn sub [a b]
-    (- a b))
+(fn add [a b] (+ a b))
+(fn sub [a b] (- a b))
+(fn half [v] (/ v 2))
 
 ;; Hex algorithms from https://www.redblobgames.com/grids/hexagons/
 
@@ -84,6 +83,14 @@
            (* y (+ hex.h hex.sp))
            transp 1 0 0 2 2)))
 
+(fn printc [msg x y]
+    "Print message centered on coordinates"
+    (local width (print msg 0 scr.h))
+    (print msg (- x (half width)) y))
+
+(fn hello []
+    (printc "HEXAGONAL WORLD!" (half scr.w) 84))
+
 (global
  TIC
  (fn tic []
@@ -103,17 +110,18 @@
              {:row 1 :col 2}])
 
      (each [_ cell (ipairs cells)]
-           (draw-grid hex.bg cell))
+           (draw-grid sp.bg cell))
 
      (for [q 0 3]
           (for [r 3 6]
-               (draw-grid hex.blue (axial->hex {: q : r} hex.kind))))
+               (draw-grid sp.blue (axial->hex {: q : r} hex.kind))))
 
-     (draw-grid hex.green (axial->hex {:q 1 :r 3} hex.kind))
+     (draw-grid sp.green (axial->hex {:q 1 :r 3} hex.kind))
 
      (spr (+ 2 (* (// (% t 60) 30) 2))
           x y transp 1 0 0 2 2)
-     (print "HELLO WORLD!" 84 84)
+
+     (hello)
      (set t (+ t 1))))
 
 ;; <TILES>
