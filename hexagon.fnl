@@ -11,6 +11,7 @@
             :green 2
             :blue 4
             :bg 34
+            :kind :pointy
             :r size ; radius
             :w (* 2 size) ; width
             :h (math.floor (* size (math.sqrt 3))) ; height
@@ -21,7 +22,7 @@
 
 (var t 0)
 (var x 96)
-(var y 24)
+(var y 28)
 
 (fn add [a b]
     (+ a b))
@@ -35,69 +36,46 @@
     (let [f (if ?even add sub)
           v (. map key)
           o (/ (band v 1) 2)]
-      ;; (trace (.. :hex-offset ": " o))
       (f v o)))
+
+(lambda cube-y [x z]
+  (- (- x) z))
 
 (fn cube->axial [cube]
     (let [{:x q
            :z r} cube]
-      {:q q
-       :r r}))
+      {: q : r}))
 
 (fn axial->cube [ax]
     (let [{:q x
            :r z} ax]
-      {:x x
-       :y (- (- x) z)
-       :z z}))
+      {: x : z :y (cube-y x z)}))
 
-(fn cube->hexr [cube ?even]
-    (let [{:x x :z z} cube
-          col (+ x (hex-offset cube :z ?even))
-          row z]
-      {:col col
-       :row row}))
+(fn cube->hex [cube kind ?even]
+    (let [{:x col
+           :z row} cube]
+      (match kind
+             :flat   {:col (+ col (hex-offset cube :z ?even)) : row}
+             :pointy {:row (+ row (hex-offset cube :x ?even)) : col})))
 
-(fn cube->hexq [cube ?even]
-    (let [{:x x :z z} cube
-          col x
-          row (+ z (hex-offset cube :x ?even))]
-      {:col col
-       :row row}))
+(fn hex->cube [hx kind ?even]
+    (let [{:col col
+           :row row} hx]
+      (match kind
+             :flat   (let [x (- col (hex-offset hx :row ?even))
+                           z row]
+                       {: x : z :y (cube-y x z)})
+             :pointy (let [x col
+                           z (- row (hex-offset hx :col ?even))]
+                       {: x : z :y (cube-y x z)}))))
 
-(fn hexr->cube [hx ?even]
-    (let [{:col col :row rox} hx
-          x (- col (hex-offset hx :row ?even))
-          z row
-          y (- -x z)]
-      {:x x
-       :y y
-       :z z}))
-
-(fn hexq->cube [hx ?even]
-    (let [{:col col :row rox} hx
-          x col
-          z (- row (hex-offset hx :row ?even))
-          y (- -x z)]
-      {:x x
-       :y y
-       :z z}))
-
-(lambda hexr->axial [hx ?even]
-  (-> (hexr->cube hx ?even)
+(lambda hex->axial [hx kind ?even]
+  (-> (hex->cube hx kind ?even)
       (cube->axial)))
 
-(lambda axial->hexr [ax ?even]
+(lambda axial->hex [ax kind ?even]
   (-> (axial->cube ax)
-      (cube->hexr ?even)))
-
-(lambda hexq->axial [hx ?even]
-  (-> (hexq->cube hx ?even)
-      (cube->axial)))
-
-(lambda axial->hexq [ax ?even]
-  (-> (axial->cube ax)
-      (cube->hexq ?even)))
+      (cube->hex kind ?even)))
 
 (fn draw-grid [id cell]
     (let [{:row x :col y} cell]
@@ -127,11 +105,11 @@
      (each [_ cell (ipairs cells)]
            (draw-grid hex.bg cell))
 
-     (for [q 0 4]
-          (for [r 0 4]
-               (draw-grid hex.blue (axial->hexq {: q : r}))))
+     (for [q 0 3]
+          (for [r 3 6]
+               (draw-grid hex.blue (axial->hex {: q : r} hex.kind))))
 
-     (draw-grid hex.green (axial->hexq {:q 2 :r 2}))
+     (draw-grid hex.green (axial->hex {:q 1 :r 3} hex.kind))
 
      (spr (+ 2 (* (// (% t 60) 30) 2))
           x y transp 1 0 0 2 2)
