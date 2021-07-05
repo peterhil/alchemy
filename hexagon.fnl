@@ -6,6 +6,16 @@
 (local scr {:w 240 :h 136})
 (local transp 0)
 
+;; Useful helpers
+(fn add [a b] (+ a b))
+(fn sub [a b] (- a b))
+(fn half [v] (/ v 2))
+
+;; Sprite map
+(local sp {:green 2
+           :blue 4
+           :bg 34})
+
 ;; Hexagon grid
 (local size 7)
 (local sq3 (math.sqrt 3))
@@ -14,20 +24,6 @@
             :h (math.floor (* size sq3)) ; height
             :sp 2 ; spacing
                   })
-
-;; Sprite map
-(local sp
-       {:green 2
-        :blue 4
-        :bg 34})
-
-(var t 0)
-(var x 96)
-(var y 28)
-
-(fn add [a b] (+ a b))
-(fn sub [a b] (- a b))
-(fn half [v] (/ v 2))
 
 ;; Hex algorithms from https://www.redblobgames.com/grids/hexagons/
 
@@ -76,6 +72,8 @@
   (-> (axial->cube ax)
       (cube->hex kind ?even)))
 
+;; Game
+
 (fn draw-grid [id cell]
     (let [{:row x :col y} cell]
       (spr id
@@ -91,16 +89,24 @@
 (fn hello []
     (printc "HEXAGONAL WORLD!" (half scr.w) 84))
 
+
+(local plr {:x 96
+            :y 28})
+
+(var time 0)
+
 (global
  TIC
  (fn tic []
-     (when (btn 0) (set y (- y 1)))
-     (when (btn 1) (set y (+ y 1)))
-     (when (btn 2) (set x (- x 1)))
-     (when (btn 3) (set x (+ x 1)))
+     (when (btn 0) (tset plr :y (- plr.y 1)))
+     (when (btn 1) (tset plr :y (+ plr.y 1)))
+     (when (btn 2) (tset plr :x (- plr.x 1)))
+     (when (btn 3) (tset plr :x (+ plr.x 1)))
+
      (cls 0)
 
-     ;; background grid
+     ;; Draw hexagonal grid
+
      (local cells
             [{:row 0 :col 0}
              {:row 1 :col 0}
@@ -118,11 +124,12 @@
 
      (draw-grid sp.green (axial->hex {:q 1 :r 3} hex.kind))
 
-     (spr (+ 2 (* (// (% t 60) 30) 2))
-          x y transp 1 0 0 2 2)
+     ;; Draw player
+     (spr (+ 2 (* (// (% time 60) 30) 2))
+          plr.x plr.y transp 1 0 0 2 2)
 
      (hello)
-     (set t (+ t 1))))
+     (set time (+ time 1))))
 
 ;; <TILES>
 ;; 002:0000006500006555006555556555555555555555555555555555555555555555
