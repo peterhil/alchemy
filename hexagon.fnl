@@ -4,13 +4,16 @@
 ;; script: fennel
 
 ;; Sprite map
+
+(local size 7)
+
 (local hex {
             :green 2
             :blue 4
             :bg 34
-            :r 7 ; radius (half width)
-            :w 14 ; width
-            :h 12 ; height
+            :r size ; radius
+            :w (* 2 size) ; width
+            :h (math.floor (* size (math.sqrt 3))) ; height
             :sp 2 ; spacing
             })
 
