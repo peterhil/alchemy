@@ -23,11 +23,12 @@
 (var x 96)
 (var y 24)
 
-(fn draw-grid [id x y]
-    (spr id
-         (* x (+ hex.w hex.sp))
-         (* y (+ hex.h hex.sp))
-         transp 1 0 0 2 2))
+(fn draw-grid [id cell]
+    (let [{:row x :col y} cell]
+      (spr id
+           (* x (+ hex.w hex.sp))
+           (* y (+ hex.h hex.sp))
+           transp 1 0 0 2 2)))
 
 (global
  TIC
@@ -39,12 +40,12 @@
      (cls 0)
 
      ;; background grid
-     (draw-grid hex.bg 0 0)
-     (draw-grid hex.bg 1 0)
-     (draw-grid hex.bg 2 0)
-     (draw-grid hex.bg 0.5 1)
-     (draw-grid hex.bg 1.5 1)
-     (draw-grid hex.bg 1 2)
+     (draw-grid hex.bg {:row 0 :col 0})
+     (draw-grid hex.bg {:row 1 :col 0})
+     (draw-grid hex.bg {:row 2 :col 0})
+     (draw-grid hex.bg {:row 0.5 :col 1})
+     (draw-grid hex.bg {:row 1.5 :col 1})
+     (draw-grid hex.bg {:row 1 :col 2})
 
      (spr (+ 2 (* (// (% t 60) 30) 2))
           x y transp 1 0 0 2 2)
