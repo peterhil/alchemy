@@ -54,17 +54,17 @@
     (let [{:x x
            :z row} cube
           col (+ x (hex-offset cube :z ?even))]
-      {: col
-       : row}))
+      {:col col
+       :row row}))
 
 (fn hexr->cube [hx ?even]
     (let [{:col col
            :row z} hx
           x (- col (hex-offset hx :row ?even))
           y (- -x z)]
-      {: x
-       : y
-       : z}))
+      {:x x
+       :y y
+       :z z}))
 
 (fn hexr->axial [hx ?even]
     (-> hx
