@@ -23,11 +23,17 @@
 (var x 96)
 (var y 24)
 
+(fn add [a b]
+    (+ a b))
+
+(fn sub [a b]
+    (- a b))
+
 ;; Hex algorithms from https://www.redblobgames.com/grids/hexagons/
 
 (fn hex-offset [map key ?even]
-    (let [v (. map key)
-          f (if even :+ :-)]
+    (let [f (if ?even add sub)
+          v (. map key)]
       (/ (f v (band v 1))
          2)))
 
