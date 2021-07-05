@@ -47,7 +47,7 @@
     (let [{:q x
            :r z} ax]
       {:x x
-       :y (- -x z)
+       :y (- (- x) z)
        :z z}))
 
 (fn cube->hexr [cube ?even]
