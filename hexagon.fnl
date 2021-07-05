@@ -23,6 +23,53 @@
 (var x 96)
 (var y 24)
 
+;; Hex algorithms from https://www.redblobgames.com/grids/hexagons/
+
+(fn hex-offset [map key ?even]
+    (let [v (. map key)
+          f (if even :+ :-)]
+      (/ (f v (band v 1))
+         2)))
+
+(fn cube->axial [cube]
+    (let [{:x q
+           :z r} cube]
+      {:q q
+       :r r}))
+
+(fn axial->cube [ax]
+    (let [{:q x
+           :r z} ax]
+      {:x x
+       :y (- -x z)
+       :z z}))
+
+(fn cube->hexr [cube ?even]
+    (let [{:x x
+           :z row} cube
+          col (+ x (hex-offset cube :z ?even))]
+      {: col
+       : row}))
+
+(fn hexr->cube [hx ?even]
+    (let [{:col col
+           :row z} hx
+          x (- col (hex-offset hx :row ?even))
+          y (- -x z)]
+      {: x
+       : y
+       : z}))
+
+(fn hexr->axial [hx ?even]
+    (-> hx
+        (hexr->cube ?even)
+        (cube->axial)))
+
+(fn axial->hexr [ax ?even]
+    (-> ax
+        (axial->cube ax)
+        (cube->hexr ?even)))
+
 (fn draw-grid [id cell]
     (let [{:row x :col y} cell]
       (spr id
