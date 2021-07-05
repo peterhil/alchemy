@@ -40,12 +40,16 @@
      (cls 0)
 
      ;; background grid
-     (draw-grid hex.bg {:row 0 :col 0})
-     (draw-grid hex.bg {:row 1 :col 0})
-     (draw-grid hex.bg {:row 2 :col 0})
-     (draw-grid hex.bg {:row 0.5 :col 1})
-     (draw-grid hex.bg {:row 1.5 :col 1})
-     (draw-grid hex.bg {:row 1 :col 2})
+     (local cells
+            [{:row 0 :col 0}
+             {:row 1 :col 0}
+             {:row 2 :col 0}
+             {:row 0.5 :col 1}
+             {:row 1.5 :col 1}
+             {:row 1 :col 2}])
+
+     (each [_ cell (ipairs cells)]
+           (draw-grid hex.bg cell))
 
      (spr (+ 2 (* (// (% t 60) 30) 2))
           x y transp 1 0 0 2 2)
