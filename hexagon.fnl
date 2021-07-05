@@ -33,9 +33,10 @@
 
 (fn hex-offset [map key ?even]
     (let [f (if ?even add sub)
-          v (. map key)]
-      (/ (f v (band v 1))
-         2)))
+          v (. map key)
+          o (/ (band v 1) 2)]
+      ;; (trace (.. :hex-offset ": " o))
+      (f v o)))
 
 (fn cube->axial [cube]
     (let [{:x q
@@ -51,30 +52,52 @@
        :z z}))
 
 (fn cube->hexr [cube ?even]
-    (let [{:x x
-           :z row} cube
-          col (+ x (hex-offset cube :z ?even))]
+    (let [{:x x :z z} cube
+          col (+ x (hex-offset cube :z ?even))
+          row z]
+      {:col col
+       :row row}))
+
+(fn cube->hexq [cube ?even]
+    (let [{:x x :z z} cube
+          col x
+          row (+ z (hex-offset cube :x ?even))]
       {:col col
        :row row}))
 
 (fn hexr->cube [hx ?even]
-    (let [{:col col
-           :row z} hx
+    (let [{:col col :row rox} hx
           x (- col (hex-offset hx :row ?even))
+          z row
           y (- -x z)]
       {:x x
        :y y
        :z z}))
 
-(fn hexr->axial [hx ?even]
-    (-> hx
-        (hexr->cube ?even)
-        (cube->axial)))
+(fn hexq->cube [hx ?even]
+    (let [{:col col :row rox} hx
+          x col
+          z (- row (hex-offset hx :row ?even))
+          y (- -x z)]
+      {:x x
+       :y y
+       :z z}))
 
-(fn axial->hexr [ax ?even]
-    (-> ax
-        (axial->cube ax)
-        (cube->hexr ?even)))
+(lambda hexr->axial [hx ?even]
+  (-> (hexr->cube hx ?even)
+      (cube->axial)))
+
+(lambda axial->hexr [ax ?even]
+  (-> (axial->cube ax)
+      (cube->hexr ?even)))
+
+(lambda hexq->axial [hx ?even]
+  (-> (hexq->cube hx ?even)
+      (cube->axial)))
+
+(lambda axial->hexq [ax ?even]
+  (-> (axial->cube ax)
+      (cube->hexq ?even)))
 
 (fn draw-grid [id cell]
     (let [{:row x :col y} cell]
@@ -103,6 +126,12 @@
 
      (each [_ cell (ipairs cells)]
            (draw-grid hex.bg cell))
+
+     (for [q 0 4]
+          (for [r 0 4]
+               (draw-grid hex.blue (axial->hexq {: q : r}))))
+
+     (draw-grid hex.green (axial->hexq {:q 2 :r 2}))
 
      (spr (+ 2 (* (// (% t 60) 30) 2))
           x y transp 1 0 0 2 2)
