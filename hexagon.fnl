@@ -30,7 +30,7 @@
 (fn hex-offset [map key ?even]
     (let [f (if ?even add sub)
           v (. map key)
-          o (/ (band v 1) 2)]
+          o (half (band v 1))]
       (f v o)))
 
 (lambda cube-y [x z]
