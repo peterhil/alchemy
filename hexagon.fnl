@@ -143,10 +143,11 @@
      (printc (.. :alt " " (if plr-even "even" "odd")) (half scr.w) (- scr.h 30))
 
      ;; Events
+     (local alt-row-offset (hex-offset 1 (~= hex.even (odd? plr.q))))
      (when (btnp bt.l) (do (btd :l) (tset dir :q (- 1))))
      (when (btnp bt.r) (do (btd :r) (tset dir :q (+ 1))))
-     (when (btnp bt.u) (do (btd :l) (tset dir :q (hex-offset 1 (odd? plr.q))) (tset dir :r (- 1))))
-     (when (btnp bt.d) (do (btd :r) (tset dir :q (hex-offset 1 (odd? plr.q))) (tset dir :r (+ 1))))
+     (when (btnp bt.u) (do (btd :l) (tset dir :q alt-row-offset) (tset dir :r (- 1))))
+     (when (btnp bt.d) (do (btd :r) (tset dir :q alt-row-offset) (tset dir :r (+ 1))))
      (when (btnp bt.a) (do (btd :a) (tset dir :q (- 0.5)) (tset dir :r (- 1))))
      (when (btnp bt.s) (do (btd :s) (tset dir :q (+ 0.5)) (tset dir :r (- 1))))
      (when (btnp bt.x) (do (btd :x) (tset dir :q (- 0.5)) (tset dir :r (+ 1))))
