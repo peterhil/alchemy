@@ -130,7 +130,7 @@
      (each [_ cell (ipairs cells)]
            (draw-grid sp.bg cell))
 
-     (for [q 6 12]
+     (for [q 4 10]
           (for [r 0 6]
                (draw-grid sp.blue (axial->hex {: q : r} hex.kind))))
 
