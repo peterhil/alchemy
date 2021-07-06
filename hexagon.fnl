@@ -16,6 +16,16 @@
            :blue 4
            :bg 34})
 
+;; Buttons
+(local bt {;; :u 0
+           ;; :d 1
+           :l 2
+           :r 3
+           :x 4
+           :z 5
+           :a 6
+           :s 7})
+
 ;; Hexagon grid
 (local size 7)
 (local sq3 (math.sqrt 3))
@@ -28,11 +38,10 @@
 
 ;; Hex algorithms from https://www.redblobgames.com/grids/hexagons/
 
-(fn hex-offset [map key ?even]
-    (let [f (if ?even add sub)
-          v (. map key)
-          o (half (band v 1))]
-      (f v o)))
+(fn hex-offset [v ?even]
+    (let [f (if ?even sub add)
+          o (/ (math.abs (% v 2)) 2)]
+      (f 0 o)))
 
 (lambda cube-y [x z]
   (- (- x) z))
@@ -51,18 +60,24 @@
     (let [{:x col
            :z row} cube]
       (match kind
-             :flat   {:col (+ col (hex-offset cube :z ?even)) : row}
-             :pointy {:row (+ row (hex-offset cube :x ?even)) : col})))
+             :flat   {:row (+ row
+                              ;; (hex-offset row ?even)
+                              )
+                      : col}
+             :pointy {:col (+ col
+                              ;; (hex-offset col ?even)
+                              )
+                      : row})))
 
 (fn hex->cube [hx kind ?even]
     (let [{:col col
            :row row} hx]
       (match kind
-             :flat   (let [x (- col (hex-offset hx :row ?even))
+             :flat   (let [x (- col (hex-offset hx.row ?even))
                            z row]
                        {: x : z :y (cube-y x z)})
              :pointy (let [x col
-                           z (- row (hex-offset hx :col ?even))]
+                           z (- row (hex-offset hx.col ?even))]
                        {: x : z :y (cube-y x z)}))))
 
 (lambda hex->axial [hx kind ?even]
@@ -76,61 +91,80 @@
 ;; Game
 
 (fn draw-grid [id cell]
-    (let [{:row x :col y} cell]
+    (let [{:col x :row y} cell]
       (spr id
-           (* x hex.col)
+           (* (+ x (hex-offset y)) hex.col)
+           ;; (* x hex.col)
            (* y hex.row)
            transp 1 0 0 2 2)))
 
-(fn printc [msg x y]
+(fn printc [msg x y ?color]
     "Print message centered on coordinates"
     (local width (print msg 0 scr.h))
-    (print msg (- x (half width)) y))
+    (print msg (- x (half width)) y (or ?color 14)))
 
 (fn hello []
-    (printc "HEXAGONAL WORLD!" (half scr.w) 84))
+    (printc "HEXAGONAL WORLD!" (half scr.w) (- scr.h 20) 12))
 
+(fn btd [b]
+    (print (.. :btn ": " b) 0 (- scr.h 10) 14))
 
-(local plr {:x 96
-            :y 28})
-
+(local plr {:q 6 :r 7})
 (var time 0)
+(var dir {:q 0 :r 0})
 
 (global
  TIC
  (fn tic []
-     (when (btn 0) (tset plr :y (- plr.y 1)))
-     (when (btn 1) (tset plr :y (+ plr.y 1)))
-     (when (btn 2) (tset plr :x (- plr.x 1)))
-     (when (btn 3) (tset plr :x (+ plr.x 1)))
-
      (cls 0)
 
-     ;; Draw hexagonal grid
-
+     ;; Draw hexagonal grid and static background elements
      (local cells
-            [{:row 0 :col 0}
-             {:row 1 :col 0}
-             {:row 2 :col 0}
-             {:row 0.5 :col 1}
-             {:row 1.5 :col 1}
-             {:row 1 :col 2}])
+            [{:col 0 :row 0}
+             {:col 1 :row 0}
+             {:col 2 :row 0}
+             {:col 0 :row 1}
+             {:col 1 :row 1}
+             {:col 1 :row 2}])
 
      (each [_ cell (ipairs cells)]
            (draw-grid sp.bg cell))
 
-     (for [q 0 3]
-          (for [r 3 6]
+     (for [q 6 12]
+          (for [r 0 6]
                (draw-grid sp.blue (axial->hex {: q : r} hex.kind))))
 
-     (draw-grid sp.green (axial->hex {:q 1 :r 3} hex.kind))
+     (draw-grid sp.green (axial->hex {:q 1 :r 2} hex.kind))
+
+     ;; Events
+     (when (btnp bt.l) (do (btd :l) (tset dir :q (- 1))))
+     (when (btnp bt.r) (do (btd :r) (tset dir :q (+ 1))))
+     ;; (when (btnp bt.u) (do (btd :l) (tset dir :q (+ 0)) (tset dir :r (- 1))))
+     ;; (when (btnp bt.d) (do (btd :r) (tset dir :q (+ 0)) (tset dir :r (+ 1))))
+     (when (btnp bt.a) (do (btd :a) (tset dir :q (- 0.5)) (tset dir :r (- 1))))
+     (when (btnp bt.s) (do (btd :s) (tset dir :q (+ 0.5)) (tset dir :r (- 1))))
+     (when (btnp bt.x) (do (btd :x) (tset dir :q (- 0.5)) (tset dir :r (+ 1))))
+     (when (btnp bt.z) (do (btd :z) (tset dir :q (+ 0.5)) (tset dir :r (+ 1))))
+
+     ;; Move player
+     (let [{: col : row} (axial->hex dir :pointy)]
+       (tset plr :q (+ plr.q row))
+       (tset plr :r (+ plr.r col)))
 
      ;; Draw player
-     (spr (+ 2 (* (// (% time 60) 30) 2))
-          plr.x plr.y transp 1 0 0 2 2)
+     (let [{:row x :col y} (axial->hex plr :pointy)
+           id (+ 2 (* (// (% time 60) 30) 2))]
+       (printc (.. :player " x: " x " y: " y) (half scr.w) (- scr.h 10) 15)
+       (spr id
+            (* x hex.col)
+            (* y hex.row)
+            transp 1 0 0 2 2))
 
      (hello)
-     (set time (+ time 1))))
+
+     (set dir {:q 0 :r 0})
+     (set time (+ time 1))
+     ))
 
 ;; <TILES>
 ;; 002:0000006500006555006555556555555555555555555555555555555555555555
