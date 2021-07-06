@@ -19,11 +19,12 @@
 ;; Hexagon grid
 (local size 7)
 (local sq3 (math.sqrt 3))
-(local hex {:kind :pointy
-            :w (* size 2) ; width
+(local hex {:w (* size 2) ; width
             :h (math.floor (* size sq3)) ; height
             :sp 2 ; spacing
-                  })
+            :kind :pointy})
+(tset hex :col (+ hex.w hex.sp))
+(tset hex :row (+ hex.h hex.sp))
 
 ;; Hex algorithms from https://www.redblobgames.com/grids/hexagons/
 
@@ -77,8 +78,8 @@
 (fn draw-grid [id cell]
     (let [{:row x :col y} cell]
       (spr id
-           (* x (+ hex.w hex.sp))
-           (* y (+ hex.h hex.sp))
+           (* x hex.col)
+           (* y hex.row)
            transp 1 0 0 2 2)))
 
 (fn printc [msg x y]
