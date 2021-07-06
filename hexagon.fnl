@@ -32,7 +32,8 @@
 (local hex {:w (* size 2) ; width
             :h (math.floor (* size sq3)) ; height
             :sp 2 ; spacing
-            :kind :pointy})
+            :kind :pointy
+            :even false})
 (tset hex :col (+ hex.w hex.sp))
 (tset hex :row (+ hex.h hex.sp))
 
@@ -93,7 +94,7 @@
 (fn draw-grid [id cell]
     (let [{:col x :row y} cell]
       (spr id
-           (* (+ x (hex-offset y)) hex.col)
+           (* (+ x (hex-offset y hex.even)) hex.col)
            ;; (* x hex.col)
            (* y hex.row)
            transp 1 0 0 2 2)))
