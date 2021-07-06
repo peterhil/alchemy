@@ -10,6 +10,8 @@
 (fn add [a b] (+ a b))
 (fn sub [a b] (- a b))
 (fn half [v] (/ v 2))
+(fn even? [v] (= 0 (% v 2)))
+(fn odd? [v] (= 1 (% v 2)))
 
 ;; Sprite map
 (local sp {:green 2
@@ -17,8 +19,8 @@
            :bg 34})
 
 ;; Buttons
-(local bt {;; :u 0
-           ;; :d 1
+(local bt {:u 0
+           :d 1
            :l 2
            :r 3
            :x 4
@@ -110,7 +112,7 @@
 (fn btd [b]
     (print (.. :btn ": " b) 0 (- scr.h 10) 14))
 
-(local plr {:q 6 :r 7})
+(local plr {:q 0 :r 7})
 (var time 0)
 (var dir {:q 0 :r 0})
 
@@ -137,11 +139,14 @@
 
      (draw-grid sp.green (axial->hex {:q 1 :r 2} hex.kind))
 
+     (local plr-even (even? plr.q))
+     (printc (.. :alt " " (if plr-even "even" "odd")) (half scr.w) (- scr.h 30))
+
      ;; Events
      (when (btnp bt.l) (do (btd :l) (tset dir :q (- 1))))
      (when (btnp bt.r) (do (btd :r) (tset dir :q (+ 1))))
-     ;; (when (btnp bt.u) (do (btd :l) (tset dir :q (+ 0)) (tset dir :r (- 1))))
-     ;; (when (btnp bt.d) (do (btd :r) (tset dir :q (+ 0)) (tset dir :r (+ 1))))
+     (when (btnp bt.u) (do (btd :l) (tset dir :q (hex-offset 1 (odd? plr.q))) (tset dir :r (- 1))))
+     (when (btnp bt.d) (do (btd :r) (tset dir :q (hex-offset 1 (odd? plr.q))) (tset dir :r (+ 1))))
      (when (btnp bt.a) (do (btd :a) (tset dir :q (- 0.5)) (tset dir :r (- 1))))
      (when (btnp bt.s) (do (btd :s) (tset dir :q (+ 0.5)) (tset dir :r (- 1))))
      (when (btnp bt.x) (do (btd :x) (tset dir :q (- 0.5)) (tset dir :r (+ 1))))
@@ -154,8 +159,9 @@
 
      ;; Draw player
      (let [{:row x :col y} (axial->hex plr :pointy)
-           id (+ 2 (* (// (% time 60) 30) 2))]
-       (printc (.. :player " x: " x " y: " y) (half scr.w) (- scr.h 10) 15)
+           id 2 ;;(+ 2 (* (// (% time 60) 30) 2))
+           ]
+       (printc (.. :player " q: " plr.q " r: " plr.r " x: " x " y: " y) (half scr.w) (- scr.h 10) 15)
        (spr id
             (* x hex.col)
             (* y hex.row)
