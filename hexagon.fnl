@@ -39,65 +39,18 @@
 (tset hex :col (+ hex.w hex.sp))
 (tset hex :row (+ hex.h hex.sp))
 
-;; Hex algorithms from https://www.redblobgames.com/grids/hexagons/
-
-(fn hex-offset [v ?even]
-    (let [f (if ?even sub add)
+(fn hex-offset [v ?sub]
+    "Alternate odd rows on grid"
+    (let [f (if ?sub sub add)
           o (/ (math.abs (% v 2)) 2)]
       (f 0 o)))
-
-(lambda cube-y [x z]
-  (- (- x) z))
-
-(fn cube->axial [cube]
-    (let [{:x q
-           :z r} cube]
-      {: q : r}))
-
-(fn axial->cube [ax]
-    (let [{:q x
-           :r z} ax]
-      {: x : z :y (cube-y x z)}))
-
-(fn cube->hex [cube kind ?even]
-    (let [{:x col
-           :z row} cube]
-      (match kind
-             :flat   {:row (+ row
-                              ;; (hex-offset row ?even)
-                              )
-                      : col}
-             :pointy {:col (+ col
-                              ;; (hex-offset col ?even)
-                              )
-                      : row})))
-
-(fn hex->cube [hx kind ?even]
-    (let [{:col col
-           :row row} hx]
-      (match kind
-             :flat   (let [x (- col (hex-offset hx.row ?even))
-                           z row]
-                       {: x : z :y (cube-y x z)})
-             :pointy (let [x col
-                           z (- row (hex-offset hx.col ?even))]
-                       {: x : z :y (cube-y x z)}))))
-
-(lambda hex->axial [hx kind ?even]
-  (-> (hex->cube hx kind ?even)
-      (cube->axial)))
-
-(lambda axial->hex [ax kind ?even]
-  (-> (axial->cube ax)
-      (cube->hex kind ?even)))
 
 ;; Game
 
 (fn draw-grid [id cell]
-    (let [{:col x :row y} cell]
+    (let [{: x : y} cell]
       (spr id
            (* (+ x (hex-offset y hex.even)) hex.col)
-           ;; (* x hex.col)
            (* y hex.row)
            transp 1 0 0 2 2)))
 
@@ -112,9 +65,9 @@
 (fn btd [b]
     (print (.. :btn ": " b) 0 (- scr.h 10) 14))
 
-(local plr {:q 0 :r 7})
+(local plr {:y 0 :x 7})
+(var   dir {:y 0 :x 0})
 (var time 0)
-(var dir {:q 0 :r 0})
 
 (global
  TIC
@@ -123,46 +76,45 @@
 
      ;; Draw hexagonal grid and static background elements
      (local cells
-            [{:col 0 :row 0}
-             {:col 1 :row 0}
-             {:col 2 :row 0}
-             {:col 0 :row 1}
-             {:col 1 :row 1}
-             {:col 1 :row 2}])
+            [{:x 0 :y 0}
+             {:x 1 :y 0}
+             {:x 2 :y 0}
+             {:x 0 :y 1}
+             {:x 1 :y 1}
+             {:x 1 :y 2}])
 
      (each [_ cell (ipairs cells)]
            (draw-grid sp.bg cell))
 
-     (for [q 4 10]
-          (for [r 0 6]
-               (draw-grid sp.blue (axial->hex {: q : r} hex.kind))))
+     (for [y 0 6]
+          (for [x 4 10]
+               (draw-grid sp.blue {: y : x})))
 
-     (draw-grid sp.green (axial->hex {:q 1 :r 2} hex.kind))
+     (draw-grid sp.green {:y 1 :x 2})
 
-     (local plr-even (even? plr.q))
+     (local plr-even (even? plr.y))
      (printc (.. :alt " " (if plr-even "even" "odd")) (half scr.w) (- scr.h 30))
 
      ;; Events
-     (local alt-row-offset (hex-offset 1 (~= hex.even (odd? plr.q))))
-     (when (btnp bt.l) (do (btd :l) (tset dir :q (- 1))))
-     (when (btnp bt.r) (do (btd :r) (tset dir :q (+ 1))))
-     (when (btnp bt.u) (do (btd :l) (tset dir :q alt-row-offset) (tset dir :r (- 1))))
-     (when (btnp bt.d) (do (btd :r) (tset dir :q alt-row-offset) (tset dir :r (+ 1))))
-     (when (btnp bt.a) (do (btd :a) (tset dir :q (- 0.5)) (tset dir :r (- 1))))
-     (when (btnp bt.s) (do (btd :s) (tset dir :q (+ 0.5)) (tset dir :r (- 1))))
-     (when (btnp bt.x) (do (btd :x) (tset dir :q (- 0.5)) (tset dir :r (+ 1))))
-     (when (btnp bt.z) (do (btd :z) (tset dir :q (+ 0.5)) (tset dir :r (+ 1))))
+     (local alt-row-offset (hex-offset 1 (~= hex.even (odd? plr.y))))
+     (when (btnp bt.l) (do (btd :l) (tset dir :x (- 1))))
+     (when (btnp bt.r) (do (btd :r) (tset dir :x (+ 1))))
+     (when (btnp bt.u) (do (btd :l) (tset dir :x alt-row-offset) (tset dir :y (- 1))))
+     (when (btnp bt.d) (do (btd :r) (tset dir :x alt-row-offset) (tset dir :y (+ 1))))
+     (when (btnp bt.a) (do (btd :a) (tset dir :x (- 0.5)) (tset dir :y (- 1))))
+     (when (btnp bt.s) (do (btd :s) (tset dir :x (+ 0.5)) (tset dir :y (- 1))))
+     (when (btnp bt.x) (do (btd :y) (tset dir :x (- 0.5)) (tset dir :y (+ 1))))
+     (when (btnp bt.z) (do (btd :x) (tset dir :x (+ 0.5)) (tset dir :y (+ 1))))
 
      ;; Move player
-     (let [{: col : row} (axial->hex dir :pointy)]
-       (tset plr :q (+ plr.q row))
-       (tset plr :r (+ plr.r col)))
+     (tset plr :y (+ plr.y dir.y))
+     (tset plr :x (+ plr.x dir.x))
 
      ;; Draw player
-     (let [{:row x :col y} (axial->hex plr :pointy)
+     (let [{: y : x} plr
            id 2 ;;(+ 2 (* (// (% time 60) 30) 2))
            ]
-       (printc (.. :player " q: " plr.q " r: " plr.r " x: " x " y: " y) (half scr.w) (- scr.h 10) 15)
+       (printc (.. :player " x: " x " y: " y) (half scr.w) (- scr.h 10) 15)
        (spr id
             (* x hex.col)
             (* y hex.row)
@@ -170,7 +122,7 @@
 
      (hello)
 
-     (set dir {:q 0 :r 0})
+     (set dir {:y 0 :x 0})
      (set time (+ time 1))
      ))
 
