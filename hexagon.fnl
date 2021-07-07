@@ -10,8 +10,30 @@
 (fn add [a b] (+ a b))
 (fn sub [a b] (- a b))
 (fn half [v] (/ v 2))
+
 (fn even? [v] (= 0 (% v 2)))
 (fn odd? [v] (= 1 (% v 2)))
+
+(fn incr [v a] (+ v (or a 1)))
+(fn decr [v a] (- v (or a 1)))
+
+(fn is [typ v] (= (type v) typ))
+
+(fn zbi [v]
+    "Decrease numeric values by one for zero based indexing"
+    (if (is "number" v)
+        (decr v)
+        v))
+
+(fn rev-idx [map]
+    "Swap values as keys with zero based indexing"
+    ;; Collect could be used on Fennel 0.9.x:
+    ;; (collect [i v (pairs map)] (values v (zbi i)))
+    (let [idx {}]
+      (each [i v (pairs map)]
+            (match (values v i)
+                   (key val) (tset idx key (zbi val))))
+      idx))
 
 ;; Sprite map
 (local sp {:green 2
@@ -25,14 +47,7 @@
 (var time 0)
 
 ;; Buttons
-(local bt {:u 0
-           :d 1
-           :l 2
-           :r 3
-           :x 4
-           :z 5
-           :a 6
-           :s 7})
+(local bt (rev-idx [:u :d :l :r :x :z :a :s]))
 
 ;; Hexagon grid
 (local size 7)
