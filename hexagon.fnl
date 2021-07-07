@@ -88,18 +88,21 @@
      (and (>= x map.dx) (< x (+ map.dx map.w)))
      (and (>= y 0) (< y map.h))))
 
+(fn draw-map [cells]
+    "Draw hexagonal grid"
+    (var i 0)
+    (for [y 0 (- map.h 1)]
+         (for [x 0 (- map.w 1)]
+              (set i (+ i 1))
+              (sp-draw (. cells i)
+                       {: y :x (+ x map.dx)}))))
+
 (global
  TIC
  (fn tic []
      (cls 0)
 
-     ;; Draw hexagonal grid and static background elements
-     (var i 0)
-     (for [y 0 6]
-          (for [x 0 6]
-               (set i (+ i 1))
-               (sp-draw (. cells i)
-                        {: y :x (+ x map.dx)})))
+     (draw-map cells)
 
      ;; Events
      (local alt-row-offset (hex-offset 1 (~= hex.even (odd? plr.y))))
