@@ -20,7 +20,7 @@
 
 ;; General
 (local air sp.blue)
-(local map {:w 7 :h 7 :dx 4 :thr 0.278})
+(local map {:w 9 :h 6 :dx 3 :thr 0.278 :wrap true})
 (local plr {:y 0 :x 7})
 (var time 0)
 
@@ -113,8 +113,12 @@
 
 (fn move-player [plr dir cells]
     "Move player to some direction"
-    (let [y (+ plr.y dir.y)
-          x (+ plr.x dir.x)
+    (let [y (if map.wrap
+                (% (+ plr.y dir.y) map.h)
+                (+ plr.y dir.y))
+          x (if map.wrap
+                (+ (% (- (+ plr.x dir.x) map.dx) map.w) map.dx)
+                (+ plr.x dir.x))
           ty (math.floor y)
           tx (math.floor (- (+ 1 x) map.dx))]
       (if (and (in-map? y x)
