@@ -47,7 +47,8 @@
 
 ;; Game
 
-(fn draw-grid [id cell]
+(fn sp-draw [id cell]
+    "Draw sprite id on cell with x and y coordinates"
     (let [{: x : y} cell]
       (spr id
            (* (+ x (hex-offset y hex.even)) hex.col)
@@ -77,7 +78,7 @@
      ;; Draw hexagonal grid and static background elements
      (for [y 0 6]
           (for [x 4 10]
-               (draw-grid sp.blue {: y : x})))
+               (sp-draw sp.blue {: y : x})))
 
      (local plr-even (even? plr.y))
      (printc (.. :alt " " (if plr-even "even" "odd")) (half scr.w) (- scr.h 30))
