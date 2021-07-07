@@ -18,6 +18,13 @@
            :blue 4
            :bg 34})
 
+;; General
+(local air sp.blue)
+(local map {:w 7 :h 7 :dx 4 :thr 0.278})
+(local plr {:y 0 :x 7})
+(var   dir {:y 0 :x 0})
+(var time 0)
+
 ;; Buttons
 (local bt {:u 0
            :d 1
@@ -75,14 +82,6 @@
          (table.insert map (if (> threshold (math.random)) sp.bg sp.blue)))
     map)
 
-(local air sp.blue)
-(local map {:w 7 :h 7 :dx 4 :thr 0.278})
-(local plr {:y 0 :x 7})
-(var   dir {:y 0 :x 0})
-(var time 0)
-
-(local cells (gen-map 52 map.thr))
-
 (fn can-move? [cells y x]
     (= air (. cells (+ (* y map.w) x))))
 
@@ -99,6 +98,8 @@
               (set i (+ i 1))
               (sp-draw (. cells i)
                        {: y :x (+ x map.dx)}))))
+
+(local cells (gen-map 52 map.thr))
 
 (global
  TIC
