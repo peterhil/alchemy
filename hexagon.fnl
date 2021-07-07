@@ -66,9 +66,18 @@
 (fn btd [b]
     (print (.. :btn ": " b) 0 (- scr.h 10) 14))
 
+(fn gen-map [n threshold]
+    (var map [])
+    (for [i 0 (- n 1)]
+         (table.insert map (if (> threshold (math.random)) sp.bg sp.blue)))
+    map)
+
+(local map {:thr 0.278})
 (local plr {:y 0 :x 7})
 (var   dir {:y 0 :x 0})
 (var time 0)
+
+(local cells (gen-map 52 map.thr))
 
 (global
  TIC
@@ -78,7 +87,7 @@
      ;; Draw hexagonal grid and static background elements
      (for [y 0 6]
           (for [x 4 10]
-               (sp-draw sp.blue {: y : x})))
+               (sp-draw (. cells (+ (* 7 y) x)) {: y : x})))
 
      (local plr-even (even? plr.y))
      (printc (.. :alt " " (if plr-even "even" "odd")) (half scr.w) (- scr.h 30))
