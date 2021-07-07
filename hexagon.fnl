@@ -22,7 +22,6 @@
 (local air sp.blue)
 (local map {:w 7 :h 7 :dx 4 :thr 0.278})
 (local plr {:y 0 :x 7})
-(var   dir {:y 0 :x 0})
 (var time 0)
 
 ;; Buttons
@@ -115,25 +114,29 @@
           (printc (.. "Can not move to (:y " ty " :x " tx ")") (half scr.w) (- scr.h 30) 12)))
     plr)
 
+(fn dir-events [plr]
+    "Get directions from button events"
+    (local dir {:y 0 :x 0})
+    (local ox (alt-row-offset plr))
+    (when (btnp bt.l) (do (btd :l) (tset dir :x (- 1))))
+    (when (btnp bt.r) (do (btd :r) (tset dir :x (+ 1))))
+    (when (btnp bt.u) (do (btd :l) (tset dir :x ox) (tset dir :y (- 1))))
+    (when (btnp bt.d) (do (btd :r) (tset dir :x ox) (tset dir :y (+ 1))))
+    (when (btnp bt.a) (do (btd :a) (tset dir :x (- 0.5)) (tset dir :y (- 1))))
+    (when (btnp bt.s) (do (btd :s) (tset dir :x (+ 0.5)) (tset dir :y (- 1))))
+    (when (btnp bt.x) (do (btd :y) (tset dir :x (- 0.5)) (tset dir :y (+ 1))))
+    (when (btnp bt.z) (do (btd :x) (tset dir :x (+ 0.5)) (tset dir :y (+ 1))))
+    dir)
+
 (local cells (gen-map 52 map.thr))
 
 (global
  TIC
  (fn tic []
      (cls 0)
-
      (draw-map cells)
 
-     ;; Events
-     (local ox (alt-row-offset plr))
-     (when (btnp bt.l) (do (btd :l) (tset dir :x (- 1))))
-     (when (btnp bt.r) (do (btd :r) (tset dir :x (+ 1))))
-     (when (btnp bt.u) (do (btd :l) (tset dir :x ox) (tset dir :y (- 1))))
-     (when (btnp bt.d) (do (btd :r) (tset dir :x ox) (tset dir :y (+ 1))))
-     (when (btnp bt.a) (do (btd :a) (tset dir :x (- 0.5)) (tset dir :y (- 1))))
-     (when (btnp bt.s) (do (btd :s) (tset dir :x (+ 0.5)) (tset dir :y (- 1))))
-     (when (btnp bt.x) (do (btd :y) (tset dir :x (- 0.5)) (tset dir :y (+ 1))))
-     (when (btnp bt.z) (do (btd :x) (tset dir :x (+ 0.5)) (tset dir :y (+ 1))))
+     (local dir (dir-events plr))
 
      (move-player plr dir cells)
 
@@ -149,7 +152,6 @@
 
      (hello)
 
-     (set dir {:y 0 :x 0})
      (set time (+ time 1))
      ))
 
