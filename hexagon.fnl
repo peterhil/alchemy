@@ -101,6 +101,20 @@
               (sp-draw (. cells i)
                        {: y :x (+ x map.dx)}))))
 
+(fn move-player [plr dir cells]
+    "Move player to some direction"
+    (let [y (+ plr.y dir.y)
+          x (+ plr.x dir.x)
+          ty (math.floor y)
+          tx (math.floor (- (+ 1 x) map.dx))]
+      (if (and (in-map? y x)
+               (can-move? cells ty tx))
+          (do
+           (tset plr :y y)
+           (tset plr :x x))
+          (printc (.. "Can not move to (:y " ty " :x " tx ")") (half scr.w) (- scr.h 30) 12)))
+    plr)
+
 (local cells (gen-map 52 map.thr))
 
 (global
@@ -121,16 +135,7 @@
      (when (btnp bt.x) (do (btd :y) (tset dir :x (- 0.5)) (tset dir :y (+ 1))))
      (when (btnp bt.z) (do (btd :x) (tset dir :x (+ 0.5)) (tset dir :y (+ 1))))
 
-     ;; Move player
-     (let [y (+ plr.y dir.y)
-           x (+ plr.x dir.x)
-           ty (math.floor y)
-           tx (math.floor (- (+ 1 x) map.dx))]
-       (if (and (in-map? y x)
-                (can-move? cells ty tx))
-           (do (tset plr :y y)
-               (tset plr :x x))
-           (printc (.. "Can not move to (:y " ty " :x " tx ")") (half scr.w) (- scr.h 30) 12)))
+     (move-player plr dir cells)
 
      ;; Draw player
      (let [{: y : x} plr
