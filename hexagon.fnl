@@ -130,7 +130,7 @@
            (* y hex.row)
            transp 1 0 0 2 2)))
 
-(fn move-player [plr dir cells]
+(fn move-player! [plr dir cells]
     "Move player to some direction"
     (let [y (if map.wrap
                 (% (+ plr.y dir.y) map.h)
@@ -172,7 +172,7 @@
 
      (local dir (dir-events plr))
 
-     (move-player plr dir cells)
+     (move-player! plr dir cells)
      (draw-player plr)
 
      (hello)
