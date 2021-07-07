@@ -76,6 +76,8 @@
 (fn btd [b]
     (print (.. :btn ": " b) 0 (- scr.h 10) 14))
 
+;; Map generation and movement
+
 (fn gen-map [n threshold]
     (var map [])
     (for [i 1 n]
