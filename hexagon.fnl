@@ -101,9 +101,6 @@
                (sp-draw (. cells i)
                         {: y :x (+ x map.dx)})))
 
-     (local plr-even (even? plr.y))
-     (printc (.. :alt " " (if plr-even "even" "odd")) (half scr.w) (- scr.h 30))
-
      ;; Events
      (local alt-row-offset (hex-offset 1 (~= hex.even (odd? plr.y))))
      (when (btnp bt.l) (do (btd :l) (tset dir :x (- 1))))
