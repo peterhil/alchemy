@@ -19,6 +19,10 @@
 
 (fn is [typ v] (= (type v) typ))
 
+(lambda iv? [v low high]
+  "Is value within half open interval"
+  (and (>= v low) (< v high)))
+
 (fn zbi [v]
     "Decrease numeric values by one for zero based indexing"
     (if (is "number" v)
@@ -103,8 +107,8 @@
 
 (fn in-map? [y x]
     (and
-     (and (>= x map.dx) (< x (+ map.dx map.w)))
-     (and (>= y 0) (< y map.h))))
+     (iv? x map.dx (+ map.dx map.w))
+     (iv? y 0 map.h)))
 
 (fn draw-map [cells]
     "Draw hexagonal grid"
