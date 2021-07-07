@@ -68,7 +68,7 @@
 
 (fn gen-map [n threshold]
     (var map [])
-    (for [i 0 (- n 1)]
+    (for [i 1 n]
          (table.insert map (if (> threshold (math.random)) sp.bg sp.blue)))
     map)
 
