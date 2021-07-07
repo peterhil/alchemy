@@ -17,6 +17,28 @@
 (fn incr [v a] (+ v (or a 1)))
 (fn decr [v a] (- v (or a 1)))
 
+(fn << [b disp] (% (* b (^ 2 disp)) (^ 2 32)))
+(fn >> [b disp] (math.floor (/ (% b (^ 2 32)) (^ 2 disp))))
+
+(fn halfstep [v]
+    "Floor rounding in half steps so you get zero on interval [-0.25 0.25).
+In absolute value, each increment of 0.5 increases the result by 0.5."
+    (/ (math.floor (+ (* v 2) 0.5)) 2))
+
+(local pi2 (* 2 math.pi))
+
+(fn chexp [theta ?mag]
+    "Complex number exponential in polar coordinates,
+but rounded to multiples of 0.5 so it works on hexagonal grid"
+    (let [w (* pi2 theta)]
+      (values (halfstep (* (or ?mag 1) (math.cos w)))
+              (halfstep (* (or ?mag 1) (math.sin w))))))
+
+(fn cartesian [...]
+    "Pack two values into a map with x and y coordinates"
+    (let [(x y) ...]
+      {: x : y}))
+
 (fn is [typ v] (= (type v) typ))
 
 (lambda iv? [v low high]
