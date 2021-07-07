@@ -45,6 +45,9 @@
           o (/ (math.abs (% v 2)) 2)]
       (f 0 o)))
 
+(fn alt-row-offset [plr]
+    (hex-offset 1 (~= hex.even (odd? plr.y))))
+
 ;; Game
 
 (fn sp-draw [id cell]
@@ -105,11 +108,11 @@
      (draw-map cells)
 
      ;; Events
-     (local alt-row-offset (hex-offset 1 (~= hex.even (odd? plr.y))))
+     (local ox (alt-row-offset plr))
      (when (btnp bt.l) (do (btd :l) (tset dir :x (- 1))))
      (when (btnp bt.r) (do (btd :r) (tset dir :x (+ 1))))
-     (when (btnp bt.u) (do (btd :l) (tset dir :x alt-row-offset) (tset dir :y (- 1))))
-     (when (btnp bt.d) (do (btd :r) (tset dir :x alt-row-offset) (tset dir :y (+ 1))))
+     (when (btnp bt.u) (do (btd :l) (tset dir :x ox) (tset dir :y (- 1))))
+     (when (btnp bt.d) (do (btd :r) (tset dir :x ox) (tset dir :y (+ 1))))
      (when (btnp bt.a) (do (btd :a) (tset dir :x (- 0.5)) (tset dir :y (- 1))))
      (when (btnp bt.s) (do (btd :s) (tset dir :x (+ 0.5)) (tset dir :y (- 1))))
      (when (btnp bt.x) (do (btd :y) (tset dir :x (- 0.5)) (tset dir :y (+ 1))))
