@@ -139,7 +139,7 @@
     (when (btnp bt.z) (do (btd :x) (tset dir :x (+ 0.5)) (tset dir :y (+ 1))))
     dir)
 
-(local cells (gen-map 52 map.thr))
+(local cells (gen-map (* map.w map.h) map.thr))
 
 (global
  TIC
