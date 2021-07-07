@@ -72,12 +72,21 @@
          (table.insert map (if (> threshold (math.random)) sp.bg sp.blue)))
     map)
 
-(local map {:thr 0.278})
+(local air sp.blue)
+(local map {:w 7 :h 7 :dx 4 :thr 0.278})
 (local plr {:y 0 :x 7})
 (var   dir {:y 0 :x 0})
 (var time 0)
 
 (local cells (gen-map 52 map.thr))
+
+(fn can-move? [cells y x]
+    (= air (. cells (+ (* y map.w) x))))
+
+(fn in-map? [y x]
+    (and
+     (and (>= x map.dx) (< x (+ map.dx map.w)))
+     (and (>= y 0) (< y map.h))))
 
 (global
  TIC
@@ -85,9 +94,12 @@
      (cls 0)
 
      ;; Draw hexagonal grid and static background elements
+     (var i 0)
      (for [y 0 6]
-          (for [x 4 10]
-               (sp-draw (. cells (+ (* 7 y) x)) {: y : x})))
+          (for [x 0 6]
+               (set i (+ i 1))
+               (sp-draw (. cells i)
+                        {: y :x (+ x map.dx)})))
 
      (local plr-even (even? plr.y))
      (printc (.. :alt " " (if plr-even "even" "odd")) (half scr.w) (- scr.h 30))
@@ -104,8 +116,15 @@
      (when (btnp bt.z) (do (btd :x) (tset dir :x (+ 0.5)) (tset dir :y (+ 1))))
 
      ;; Move player
-     (tset plr :y (+ plr.y dir.y))
-     (tset plr :x (+ plr.x dir.x))
+     (let [y (+ plr.y dir.y)
+           x (+ plr.x dir.x)
+           ty (math.floor y)
+           tx (math.floor (- (+ 1 x) map.dx))]
+       (if (and (in-map? y x)
+                (can-move? cells ty tx))
+           (do (tset plr :y y)
+               (tset plr :x x))
+           (printc (.. "Can not move to (:y " ty " :x " tx ")") (half scr.w) (- scr.h 30) 12)))
 
      ;; Draw player
      (let [{: y : x} plr
