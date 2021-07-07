@@ -75,22 +75,9 @@
      (cls 0)
 
      ;; Draw hexagonal grid and static background elements
-     (local cells
-            [{:x 0 :y 0}
-             {:x 1 :y 0}
-             {:x 2 :y 0}
-             {:x 0 :y 1}
-             {:x 1 :y 1}
-             {:x 1 :y 2}])
-
-     (each [_ cell (ipairs cells)]
-           (draw-grid sp.bg cell))
-
      (for [y 0 6]
           (for [x 4 10]
                (draw-grid sp.blue {: y : x})))
-
-     (draw-grid sp.green {:y 1 :x 2})
 
      (local plr-even (even? plr.y))
      (printc (.. :alt " " (if plr-even "even" "odd")) (half scr.w) (- scr.h 30))
