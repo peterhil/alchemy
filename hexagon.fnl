@@ -100,6 +100,17 @@
               (sp-draw (. cells i)
                        {: y :x (+ x map.dx)}))))
 
+(fn draw-player [plr]
+    "Draw player"
+    (let [{: y : x} plr
+          id 2 ;;(+ 2 (* (// (% time 60) 30) 2))
+          ]
+      (printc (.. :player " x: " x " y: " y) (half scr.w) (- scr.h 10) 15)
+      (spr id
+           (* x hex.col)
+           (* y hex.row)
+           transp 1 0 0 2 2)))
+
 (fn move-player [plr dir cells]
     "Move player to some direction"
     (let [y (+ plr.y dir.y)
@@ -139,21 +150,11 @@
      (local dir (dir-events plr))
 
      (move-player plr dir cells)
-
-     ;; Draw player
-     (let [{: y : x} plr
-           id 2 ;;(+ 2 (* (// (% time 60) 30) 2))
-           ]
-       (printc (.. :player " x: " x " y: " y) (half scr.w) (- scr.h 10) 15)
-       (spr id
-            (* x hex.col)
-            (* y hex.row)
-            transp 1 0 0 2 2))
+     (draw-player plr)
 
      (hello)
 
-     (set time (+ time 1))
-     ))
+     (set time (+ time 1))))
 
 ;; <TILES>
 ;; 002:0000006500006555006555556555555555555555555555555555555555555555
