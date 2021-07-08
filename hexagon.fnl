@@ -92,8 +92,11 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
           o (/ (math.abs (% v 2)) 2)]
       (f 0 o)))
 
+(fn odd-row? [plr]
+    (~= hex.even (odd? plr.y)))
+
 (fn alt-row-offset [plr]
-    (hex-offset 1 (~= hex.even (odd? plr.y))))
+    (hex-offset 1 (odd-row? plr)))
 
 ;; Game
 
@@ -172,18 +175,22 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
     plr)
 
 (fn dir-events [plr]
-    "Get directions from button events"
-    (local dir {:y 0 :x 0})
-    (local ox (alt-row-offset plr))
-    (when (btnp bt.l) (do (btd :l) (tset dir :x (- 1))))
-    (when (btnp bt.r) (do (btd :r) (tset dir :x (+ 1))))
-    (when (btnp bt.u) (do (btd :l) (tset dir :x ox) (tset dir :y (- 1))))
-    (when (btnp bt.d) (do (btd :r) (tset dir :x ox) (tset dir :y (+ 1))))
-    (when (btnp bt.a) (do (btd :a) (tset dir :x (- 0.5)) (tset dir :y (- 1))))
-    (when (btnp bt.s) (do (btd :s) (tset dir :x (+ 0.5)) (tset dir :y (- 1))))
-    (when (btnp bt.x) (do (btd :y) (tset dir :x (- 0.5)) (tset dir :y (+ 1))))
-    (when (btnp bt.z) (do (btd :x) (tset dir :x (+ 0.5)) (tset dir :y (+ 1))))
-    dir)
+    "Get directions from button events.
+Uses polar coordinates and converts to cartesian."
+    ;; Angle deviation for up and down movement to align with hex grid on alternate rows
+    (local deviation (if (odd-row? plr) (/ 1 12) (/ -1 12)))
+    (var phi nil) ; TODO Add points with setmetatable
+    (when (btnp bt.r) (do (btd :r) (set phi (/ 0 6))))
+    (when (btnp bt.z) (do (btd :x) (set phi (/ 1 6))))
+    (when (btnp bt.x) (do (btd :y) (set phi (/ 2 6))))
+    (when (btnp bt.l) (do (btd :l) (set phi (/ 3 6))))
+    (when (btnp bt.a) (do (btd :a) (set phi (/ 4 6))))
+    (when (btnp bt.s) (do (btd :s) (set phi (/ 5 6))))
+    (when (btnp bt.u) (do (btd :l) (set phi (+ (/ 3 4) deviation))))
+    (when (btnp bt.d) (do (btd :r) (set phi (+ (/ 1 4) deviation))))
+    (if phi
+        (cartesian (chexp phi))
+        {:x 0 :y 0}))
 
 (local cells (gen-map (* map.w map.h) map.thr))
 
