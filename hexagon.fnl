@@ -6,7 +6,10 @@
 (local scr {:w 240 :h 136})
 (local transp 0)
 
-;; Useful helpers
+;; Math ----------------
+
+(local pi2 (* 2 math.pi))
+
 (fn add [a b ...]
     (let [sum (+ (or a 0) (or b 0))]
       (if (= (select :# ...) 0)
@@ -20,22 +23,21 @@
           (sub sum ...))))
 
 (fn half [v] (/ v 2))
-
 (fn even? [v] (= 0 (% v 2)))
 (fn odd? [v] (= 1 (% v 2)))
-
 (fn incr [v a] (+ v (or a 1)))
 (fn decr [v a] (- v (or a 1)))
-
 (fn << [b disp] (% (* b (^ 2 disp)) (^ 2 32)))
 (fn >> [b disp] (math.floor (/ (% b (^ 2 32)) (^ 2 disp))))
+
+(lambda iv? [v low high]
+  "Is value within half open interval"
+  (and (>= v low) (< v high)))
 
 (fn halfstep [v]
     "Floor rounding in half steps so you get zero on interval [-0.25 0.25).
 In absolute value, each increment of 0.5 increases the result by 0.5."
     (/ (math.floor (+ (* v 2) 0.5)) 2))
-
-(local pi2 (* 2 math.pi))
 
 (fn chexp [theta ?mag]
     "Complex number exponential in polar coordinates,
@@ -44,35 +46,8 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
       (values (halfstep (* (or ?mag 1) (math.cos w)))
               (halfstep (* (or ?mag 1) (math.sin w))))))
 
-(fn cartesian [...]
-    "Pack two values into a map with x and y coordinates"
-    (let [(x y) ...]
-      {: x : y}))
-
-(fn is [typ v] (= (type v) typ))
-
-(lambda iv? [v low high]
-  "Is value within half open interval"
-  (and (>= v low) (< v high)))
-
-(fn zbi [v]
-    "Decrease numeric values by one for zero based indexing"
-    (if (is "number" v)
-        (decr v)
-        v))
-
-(fn rev-idx [map]
-    "Swap values as keys with zero based indexing"
-    ;; Collect could be used on Fennel 0.9.x:
-    ;; (collect [i v (pairs map)] (values v (zbi i)))
-    (let [idx {}]
-      (each [i v (pairs map)]
-            (match (values v i)
-                   (key val) (tset idx key (zbi val))))
-      idx))
-
 
-;; Complex numbers
+;; Complex numbers ----------------
 
 (local cx {})
 (local cx-meta {})
@@ -119,16 +94,54 @@ When b is real then it’s real part is used as modulo for y also."
 (setmetatable cx cx-meta)
 
 
-;; Sprite map
+;; Lib ----------------
+
+(fn is [typ v] (= (type v) typ))
+
+;; Printing
+
+(fn printc [msg x y ?color]
+    "Print message centered on coordinates"
+    (local width (print msg 0 scr.h))
+    (print msg (- x (half width)) y (or ?color 14)))
+
+(fn btd [b]
+    (print (.. :btn ": " b) 0 (- scr.h 10) 14))
+
+;; Tables
+
+(fn cartesian [...]
+    "Pack two values into a map with x and y coordinates"
+    (let [(x y) ...]
+      {: x : y}))
+
+(fn zbi [v]
+    "Decrease numeric values by one for zero based indexing"
+    (if (is "number" v)
+        (decr v)
+        v))
+
+(fn rev-idx [map]
+    "Swap values as keys with zero based indexing"
+    ;; Collect could be used on Fennel 0.9.x:
+    ;; (collect [i v (pairs map)] (values v (zbi i)))
+    (let [idx {}]
+      (each [i v (pairs map)]
+            (match (values v i)
+                   (key val) (tset idx key (zbi val))))
+      idx))
+
+
+;; Game ----------------
+
+;; General config
+(local map {:w 9 :h 6 :dx 3 :dy 0 :thr 0.278 :wrap true})
+
+;; Sprites
 (local sp {:green 2
            :blue 4
            :bg 34})
-
-;; General
 (local air sp.blue)
-(local map {:w 9 :h 6 :dx 3 :dy 0 :thr 0.278 :wrap true})
-(var plr (cx {:y 0 :x 7}))
-(var time 0)
 
 ;; Buttons
 (local bt (rev-idx [:u :d :l :r :x :z :a :s]))
@@ -166,28 +179,7 @@ When b is real then it’s real part is used as modulo for y also."
     (hex-offset 1 (odd-row? plr)))
 
 
-;; Game
-
-(fn sp-draw [id cell]
-    "Draw sprite id on cell with x and y coordinates"
-    (let [{: x : y} cell]
-      (spr id
-           (* (+ x (hex-offset y hex.even)) hex.col)
-           (* y hex.row)
-           transp 1 0 0 2 2)))
-
-(fn printc [msg x y ?color]
-    "Print message centered on coordinates"
-    (local width (print msg 0 scr.h))
-    (print msg (- x (half width)) y (or ?color 14)))
-
-(fn hello []
-    (printc "HEXAGONAL WORLD!" (half scr.w) (- scr.h 20) 12))
-
-(fn btd [b]
-    (print (.. :btn ": " b) 0 (- scr.h 10) 14))
-
-;; Map generation and movement
+;; Map and movement ----------------
 
 (fn gen-map [n threshold]
     (var map [])
@@ -209,27 +201,6 @@ When b is real then it’s real part is used as modulo for y also."
 (fn collision? [pos cells]
     (or (not (in-map? pos))
         (not (can-move? pos cells))))
-
-(fn draw-map [cells]
-    "Draw hexagonal grid"
-    (var i 0)
-    (for [y 0 (- map.h 1)]
-         (for [x 0 (- map.w 1)]
-              (set i (+ i 1))
-              (sp-draw (. cells i)
-                       {:y (+ y map.dy)
-                        :x (+ x map.dx)}))))
-
-(fn draw-player [plr]
-    "Draw player"
-    (let [{: y : x} plr
-          id 2 ;;(+ 2 (* (// (% time 60) 30) 2))
-          ]
-      (printc (.. :player " x: " x " y: " y) (half scr.w) (- scr.h 10) 15)
-      (spr id
-           (* hex.col (+ x map.dx))
-           (* hex.row (+ y map.dy))
-           transp 1 0 0 2 2)))
 
 (fn move [val dir]
     "Move complex value to some direction on map"
@@ -268,9 +239,48 @@ Uses polar coordinates and converts to cartesian."
                   (table.insert moves move)))))
     (cx (add (table.unpack moves))))
 
-(local cells (gen-map (* map.w map.h) map.thr))
+
+;; Side effects --------
+
+(fn hello []
+    (printc "HEXAGONAL WORLD!" (half scr.w) (- scr.h 20) 12))
+
+(fn sp-draw [id cell]
+    "Draw sprite id on cell with x and y coordinates"
+    (let [{: x : y} cell]
+      (spr id
+           (* (+ x (hex-offset y hex.even)) hex.col)
+           (* y hex.row)
+           transp 1 0 0 2 2)))
+
+(fn draw-map [cells]
+    "Draw hexagonal grid"
+    (var i 0)
+    (for [y 0 (- map.h 1)]
+         (for [x 0 (- map.w 1)]
+              (set i (+ i 1))
+              (sp-draw (. cells i)
+                       {:y (+ y map.dy)
+                        :x (+ x map.dx)}))))
+
+(fn draw-player [plr]
+    "Draw player"
+    (let [{: y : x} plr
+          id 2 ;;(+ 2 (* (// (% time 60) 30) 2))
+          ]
+      (printc (.. :player " x: " x " y: " y) (half scr.w) (- scr.h 10) 15)
+      (spr id
+           (* hex.col (+ x map.dx))
+           (* hex.row (+ y map.dy))
+           transp 1 0 0 2 2)))
 
 
+;; Main ----------------
+
+(var cells (gen-map (* map.w map.h) map.thr))
+(var plr (cx {:y 0 :x 7}))
+(var time 0)
+
 (global
  TIC
  (fn tic []
@@ -278,10 +288,8 @@ Uses polar coordinates and converts to cartesian."
      (draw-map cells)
 
      (local dir (dir-events plr))
-
      (set plr (new-position plr dir cells))
      (draw-player plr)
-
      (hello)
 
      (set time (+ time 1))))
