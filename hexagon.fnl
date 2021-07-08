@@ -145,29 +145,6 @@ When b is real then it’s real part is used as modulo for y also."
 (fn btd [b]
     (print (.. :btn ": " b) 0 (- scr.h 10) 14))
 
-;; Tables
-
-(fn cartesian [...]
-    "Pack two values into a map with x and y coordinates"
-    (let [(x y) ...]
-      {: x : y}))
-
-(fn zbi [v]
-    "Decrease numeric values by one for zero based indexing"
-    (if (is "number" v)
-        (decr v)
-        v))
-
-(fn rev-idx [map]
-    "Swap values as keys with zero based indexing"
-    ;; Collect could be used on Fennel 0.9.x:
-    ;; (collect [i v (pairs map)] (values v (zbi i)))
-    (let [idx {}]
-      (each [i v (pairs map)]
-            (match (values v i)
-                   (key val) (tset idx key (zbi val))))
-      idx))
-
 ;; Hex grid map
 
 (fn hex-offset [v ?sub]
