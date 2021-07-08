@@ -71,6 +71,29 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
                    (key val) (tset idx key (zbi val))))
       idx))
 
+;; Complex numbers
+
+(local cx {})
+(local cx-meta {})
+
+(fn cx.from [x ?y]
+    "Complex number vector"
+    (let [v {:x x
+             :y (or ?y 0)}]
+      (setmetatable v cx-meta)))
+
+(fn cx.add [a b]
+    (let [v {:x (+ a.x b.x)
+             :y (+ a.y b.y)}]
+      (setmetatable v cx-meta)))
+
+(tset cx :add cx.add)
+(tset cx :from cx.from)
+
+(tset cx-meta :__call (fn [_ x ?y] (cx.from x ?y)))
+(tset cx-meta :__add cx.add)
+(setmetatable cx cx-meta)
+
 ;; Sprite map
 (local sp {:green 2
            :blue 4
