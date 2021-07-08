@@ -106,7 +106,7 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
 (tset cx-meta :__call (fn __call [_ x ?y] (cx.from x ?y)))
 (tset cx-meta :__add cx.add)
 (setmetatable cx cx-meta)
-
+
 ;; Sprite map
 (local sp {:green 2
            :blue 4
@@ -152,7 +152,7 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
 
 (fn alt-row-offset [plr]
     (hex-offset 1 (odd-row? plr)))
-
+
 ;; Game
 
 (fn sp-draw [id cell]
@@ -251,7 +251,7 @@ Uses polar coordinates and converts to cartesian."
     (cx (add (table.unpack moves))))
 
 (local cells (gen-map (* map.w map.h) map.thr))
-
+
 (global
  TIC
  (fn tic []
