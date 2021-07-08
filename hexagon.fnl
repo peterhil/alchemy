@@ -127,7 +127,7 @@ When b is real then it’s real part is used as modulo for y also."
 ;; General
 (local air sp.blue)
 (local map {:w 9 :h 6 :dx 3 :dy 0 :thr 0.278 :wrap true})
-(local plr (cx {:y 0 :x 7}))
+(var plr (cx {:y 0 :x 7}))
 (var time 0)
 
 ;; Buttons
@@ -198,10 +198,10 @@ When b is real then it’s real part is used as modulo for y also."
 (fn can-move? [cells y x]
     (= air (. cells (+ (* y map.w) x))))
 
-(fn in-map? [y x]
+(fn in-map? [pos]
     (and
-     (iv? x 0 map.w)
-     (iv? y 0 map.h)))
+     (iv? pos.x 0 map.w)
+     (iv? pos.y 0 map.h)))
 
 (fn draw-map [cells]
     "Draw hexagonal grid"
@@ -224,23 +224,20 @@ When b is real then it’s real part is used as modulo for y also."
            (* hex.row (+ y map.dy))
            transp 1 0 0 2 2)))
 
-(fn move-player! [plr dir cells]
+(fn move-player [plr dir cells]
     "Move player to some direction"
-    (let [y (if map.wrap
-                (% (+ plr.y dir.y) map.h)
-                (+ plr.y dir.y))
-          x (if map.wrap
-                (% (+ plr.x dir.x) map.w)
-                (+ plr.x dir.x))
-          ty (math.floor y)
-          tx (math.floor (incr x))]
-      (if (and (in-map? y x)
+    (let [pos (if map.wrap
+                  (% (+ plr dir)
+                     (cx.new map.w map.h))
+                (+ plr dir))
+          ty (math.floor pos.y)
+          tx (math.floor (incr pos.x))]
+      (if (and (in-map? pos)
                (can-move? cells ty tx))
+          pos
           (do
-           (tset plr :y y)
-           (tset plr :x x))
-          (printc (.. "Can not move to (:y " ty " :x " tx ")") (half scr.w) (- scr.h 30) 12)))
-    plr)
+           (printc (.. "Can not move to (:y " ty " :x " tx ")") (half scr.w) (- scr.h 30) 12)
+           plr))))
 
 (fn deviation [plr key]
     "Angle deviation for up and down movement to align with hex grid on alternate rows"
@@ -274,7 +271,7 @@ Uses polar coordinates and converts to cartesian."
 
      (local dir (dir-events plr))
 
-     (move-player! plr dir cells)
+     (set plr (move-player plr dir cells))
      (draw-player plr)
 
      (hello)
