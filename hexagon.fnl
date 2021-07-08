@@ -74,6 +74,15 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
 
 ;; Buttons
 (local bt (rev-idx [:u :d :l :r :x :z :a :s]))
+(local directions
+           {:r (/ 0 6)
+            :z (/ 1 6)
+            :x (/ 2 6)
+            :l (/ 3 6)
+            :a (/ 4 6)
+            :s (/ 5 6)
+            :u (/ 3 4)
+            :d (/ 1 4)})
 
 ;; Hexagon grid
 (local size 7)
@@ -174,25 +183,23 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
           (printc (.. "Can not move to (:y " ty " :x " tx ")") (half scr.w) (- scr.h 30) 12)))
     plr)
 
+(fn deviation [plr key]
+    "Angle deviation for up and down movement to align with hex grid on alternate rows"
+    (match key
+           :u (if (odd-row? plr) (/ -1 12) (/  1 12))
+           :d (if (odd-row? plr) (/  1 12) (/ -1 12))))
+
 (fn dir-events [plr]
     "Get directions from button events.
 Uses polar coordinates and converts to cartesian."
     (var phi nil) ; TODO Add points with setmetatable
-    ;; Angle deviation for up and down movement to align with hex grid on alternate rows
-    (local deviation (if (odd-row? plr) (/ 1 12) (/ -1 12)))
-    (local directions
-           {:r (/ 0 6)
-            :z (/ 1 6)
-            :x (/ 2 6)
-            :l (/ 3 6)
-            :a (/ 4 6)
-            :s (/ 5 6)
-            :u (+ (/ 3 4) deviation)
-            :d (+ (/ 1 4) deviation)})
     (each [key angle (pairs directions)]
           (when (btnp (. bt key))
             (do (btd key)
-                (set phi angle))))
+                (match key
+                 :u (set phi (+ angle (deviation plr key)))
+                 :d (set phi (+ angle (deviation plr key)))
+                 (set phi angle)))))
     (if phi
         (cartesian (chexp phi))
         {:x 0 :y 0}))
