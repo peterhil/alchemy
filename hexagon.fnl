@@ -177,17 +177,22 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
 (fn dir-events [plr]
     "Get directions from button events.
 Uses polar coordinates and converts to cartesian."
+    (var phi nil) ; TODO Add points with setmetatable
     ;; Angle deviation for up and down movement to align with hex grid on alternate rows
     (local deviation (if (odd-row? plr) (/ 1 12) (/ -1 12)))
-    (var phi nil) ; TODO Add points with setmetatable
-    (when (btnp bt.r) (do (btd :r) (set phi (/ 0 6))))
-    (when (btnp bt.z) (do (btd :x) (set phi (/ 1 6))))
-    (when (btnp bt.x) (do (btd :y) (set phi (/ 2 6))))
-    (when (btnp bt.l) (do (btd :l) (set phi (/ 3 6))))
-    (when (btnp bt.a) (do (btd :a) (set phi (/ 4 6))))
-    (when (btnp bt.s) (do (btd :s) (set phi (/ 5 6))))
-    (when (btnp bt.u) (do (btd :l) (set phi (+ (/ 3 4) deviation))))
-    (when (btnp bt.d) (do (btd :r) (set phi (+ (/ 1 4) deviation))))
+    (local directions
+           {:r (/ 0 6)
+            :z (/ 1 6)
+            :x (/ 2 6)
+            :l (/ 3 6)
+            :a (/ 4 6)
+            :s (/ 5 6)
+            :u (+ (/ 3 4) deviation)
+            :d (+ (/ 1 4) deviation)})
+    (each [key angle (pairs directions)]
+          (when (btnp (. bt key))
+            (do (btd key)
+                (set phi angle))))
     (if phi
         (cartesian (chexp phi))
         {:x 0 :y 0}))
