@@ -71,6 +71,7 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
                    (key val) (tset idx key (zbi val))))
       idx))
 
+
 ;; Complex numbers
 
 (local cx {})
@@ -95,17 +96,28 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
        [_ _] (error (.. "Can’t make a complex number from: " num)))))
 
 (fn cx.add [a b]
-    (let [ca (cx.from a)
-          cb (cx.from b)
-          v {:x (+ ca.x cb.x)
-             :y (+ ca.y cb.y)}]
+    (let [a (cx.from a)
+          b (cx.from b)
+          v {:x (+ a.x b.x)
+             :y (+ a.y b.y)}]
+      (setmetatable v cx-meta)))
+
+(fn cx.mod [a b]
+    "Complex modulo for wrapping around the map.
+When b is real then it’s real part is used as modulo for y also."
+    (let [a (cx.from a)
+          b (cx.from b)
+          v {:x (% a.x b.x)
+             :y (% a.y (if (= 0 b.y) b.x b.y))}]
       (setmetatable v cx-meta)))
 
 (tset cx :add cx.add)
 
 (tset cx-meta :__call (fn __call [_ x ?y] (cx.from x ?y)))
 (tset cx-meta :__add cx.add)
+(tset cx-meta :__mod cx.mod)
 (setmetatable cx cx-meta)
+
 
 ;; Sprite map
 (local sp {:green 2
@@ -152,6 +164,7 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
 
 (fn alt-row-offset [plr]
     (hex-offset 1 (odd-row? plr)))
+
 
 ;; Game
 
@@ -251,6 +264,7 @@ Uses polar coordinates and converts to cartesian."
     (cx (add (table.unpack moves))))
 
 (local cells (gen-map (* map.w map.h) map.thr))
+
 
 (global
  TIC
