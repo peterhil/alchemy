@@ -82,14 +82,16 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
              :y (or ?y 0)}]
       (setmetatable v cx-meta)))
 
-(fn cx.from [num]
+(fn cx.from [num ?imag]
     "Return complex number from numeric argument"
     (let [cm cx-meta]
       (match
        [(type num) (getmetatable num)]
        [:table cm] num
        [:table  _] (let [{: x : y} num] (cx.new x y))
-       [:number _] (cx.new num)
+       [:number _] (cx.new num
+                           ;: TODO Check type, now non-numbers pass through as nils
+                           (tonumber ?imag))
        [_ _] (error (.. "Can’t make a complex number from: " num)))))
 
 (fn cx.add [a b]
@@ -101,7 +103,7 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
 
 (tset cx :add cx.add)
 
-(tset cx-meta :__call (fn __call [_ x ?y] (cx.new x ?y)))
+(tset cx-meta :__call (fn __call [_ x ?y] (cx.from x ?y)))
 (tset cx-meta :__add cx.add)
 (setmetatable cx cx-meta)
 
@@ -113,7 +115,7 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
 ;; General
 (local air sp.blue)
 (local map {:w 9 :h 6 :dx 3 :dy 0 :thr 0.278 :wrap true})
-(local plr {:y 0 :x 7})
+(local plr (cx {:y 0 :x 7}))
 (var time 0)
 
 ;; Buttons
@@ -236,17 +238,17 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
 (fn dir-events [plr]
     "Get directions from button events.
 Uses polar coordinates and converts to cartesian."
-    (var phi nil) ; TODO Add points with setmetatable
+    (local moves [])
     (each [key angle (pairs directions)]
           (when (btnp (. bt key))
             (do (btd key)
-                (match key
-                 :u (set phi (+ angle (deviation plr key)))
-                 :d (set phi (+ angle (deviation plr key)))
-                 (set phi angle)))))
-    (if phi
-        (cartesian (chexp phi))
-        {:x 0 :y 0}))
+                (let [phi (match key
+                                 :u (+ angle (deviation plr key))
+                                 :d (+ angle (deviation plr key))
+                                 angle)
+                      move (cx (chexp phi))]
+                  (table.insert moves move)))))
+    (cx (add (table.unpack moves))))
 
 (local cells (gen-map (* map.w map.h) map.thr))
 
