@@ -107,7 +107,7 @@
 
 (fn in-map? [y x]
     (and
-     (iv? x map.dx (+ map.dx map.w))
+     (iv? x 0 map.w)
      (iv? y 0 map.h)))
 
 (fn draw-map [cells]
@@ -126,8 +126,8 @@
           ]
       (printc (.. :player " x: " x " y: " y) (half scr.w) (- scr.h 10) 15)
       (spr id
-           (* x hex.col)
-           (* y hex.row)
+           (* hex.col (+ x map.dx))
+           (* hex.row y)
            transp 1 0 0 2 2)))
 
 (fn move-player! [plr dir cells]
@@ -136,10 +136,10 @@
                 (% (+ plr.y dir.y) map.h)
                 (+ plr.y dir.y))
           x (if map.wrap
-                (+ (% (- (+ plr.x dir.x) map.dx) map.w) map.dx)
+                (% (+ plr.x dir.x) map.w)
                 (+ plr.x dir.x))
           ty (math.floor y)
-          tx (math.floor (- (+ 1 x) map.dx))]
+          tx (math.floor (incr x))]
       (if (and (in-map? y x)
                (can-move? cells ty tx))
           (do
