@@ -7,8 +7,18 @@
 (local transp 0)
 
 ;; Useful helpers
-(fn add [a b] (+ a b))
-(fn sub [a b] (- a b))
+(fn add [a b ...]
+    (let [sum (+ (or a 0) (or b 0))]
+      (if (= (select :# ...) 0)
+          sum
+          (add sum ...))))
+
+(fn sub [a b ...]
+    (let [sum (- (or a 0) (or b 0))]
+      (if (= (select :# ...) 0)
+          sum
+          (sub sum ...))))
+
 (fn half [v] (/ v 2))
 
 (fn even? [v] (= 0 (% v 2)))
