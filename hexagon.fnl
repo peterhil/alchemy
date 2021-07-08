@@ -76,21 +76,32 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
 (local cx {})
 (local cx-meta {})
 
-(fn cx.from [x ?y]
+(fn cx.new [x ?y]
     "Complex number vector"
     (let [v {:x x
              :y (or ?y 0)}]
       (setmetatable v cx-meta)))
 
+(fn cx.from [num]
+    "Return complex number from numeric argument"
+    (let [cm cx-meta]
+      (match
+       [(type num) (getmetatable num)]
+       [:table cm] num
+       [:table  _] (let [{: x : y} num] (cx.new x y))
+       [:number _] (cx.new num)
+       [_ _] (error (.. "Can’t make a complex number from: " num)))))
+
 (fn cx.add [a b]
-    (let [v {:x (+ a.x b.x)
-             :y (+ a.y b.y)}]
+    (let [ca (cx.from a)
+          cb (cx.from b)
+          v {:x (+ ca.x cb.x)
+             :y (+ ca.y cb.y)}]
       (setmetatable v cx-meta)))
 
 (tset cx :add cx.add)
-(tset cx :from cx.from)
 
-(tset cx-meta :__call (fn [_ x ?y] (cx.from x ?y)))
+(tset cx-meta :__call (fn __call [_ x ?y] (cx.new x ?y)))
 (tset cx-meta :__add cx.add)
 (setmetatable cx cx-meta)
 
