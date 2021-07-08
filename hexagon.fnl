@@ -195,13 +195,20 @@ When b is real then it’s real part is used as modulo for y also."
          (table.insert map (if (> threshold (math.random)) sp.bg sp.blue)))
     map)
 
-(fn can-move? [cells y x]
-    (= air (. cells (+ (* y map.w) x))))
+(fn can-move? [pos cells]
+    (let [fy (math.floor pos.y)
+          fx (math.floor (incr pos.x))
+          idx (+ (* fy map.w) fx)]
+      (= air (. cells idx))))
 
 (fn in-map? [pos]
     (and
      (iv? pos.x 0 map.w)
      (iv? pos.y 0 map.h)))
+
+(fn collision? [pos cells]
+    (or (not (in-map? pos))
+        (not (can-move? pos cells))))
 
 (fn draw-map [cells]
     "Draw hexagonal grid"
@@ -224,20 +231,21 @@ When b is real then it’s real part is used as modulo for y also."
            (* hex.row (+ y map.dy))
            transp 1 0 0 2 2)))
 
-(fn move-player [plr dir cells]
+(fn move [val dir]
+    "Move complex value to some direction on map"
+    (let [cxmap (cx.new map.w map.h)]
+      (if map.wrap
+          (% (+ val dir) cxmap)
+          (+ val dir))))
+
+(fn new-position [plr dir cells]
     "Move player to some direction"
-    (let [pos (if map.wrap
-                  (% (+ plr dir)
-                     (cx.new map.w map.h))
-                (+ plr dir))
-          ty (math.floor pos.y)
-          tx (math.floor (incr pos.x))]
-      (if (and (in-map? pos)
-               (can-move? cells ty tx))
-          pos
-          (do
-           (printc (.. "Can not move to (:y " ty " :x " tx ")") (half scr.w) (- scr.h 30) 12)
-           plr))))
+    (let [pos (move plr dir)]
+      (if (collision? pos cells)
+          (do (printc (.. "Can not move to (:y " pos.y " :x " pos.x ")")
+                      (half scr.w) (- scr.h 30) 12)
+              plr)
+          pos)))
 
 (fn deviation [plr key]
     "Angle deviation for up and down movement to align with hex grid on alternate rows"
@@ -271,7 +279,7 @@ Uses polar coordinates and converts to cartesian."
 
      (local dir (dir-events plr))
 
-     (set plr (move-player plr dir cells))
+     (set plr (new-position plr dir cells))
      (draw-player plr)
 
      (hello)
