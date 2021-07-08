@@ -3,13 +3,52 @@
 ;; desc:   Hexagonal map demo
 ;; script: fennel
 
+(local pi2 (* 2 math.pi))
+(local sq3 (math.sqrt 3))
+
+;; Config ----------------
 (local scr {:w 240 :h 136})
+(local map {:w 9  :h 6
+            :dx 3 :dy 0
+            :thr 0.278
+            :wrap true})
+
+;; Palette
 (local transp 0)
 
+;; Sprites
+(local sp {:green 2
+           :blue 4
+           :bg 34})
+(local air sp.blue)
+
+;; Grid settings
+(local size 7)
+(local hex {:w (* size 2) ; width
+            :h (math.floor (* size sq3)) ; height
+            :sp 2 ; spacing
+            :kind :pointy
+            :even false})
+(tset hex :col (+ hex.w hex.sp))
+(tset hex :row (+ hex.h hex.sp))
+
+;; Buttons
+(local bt {:u 0 :d 1
+           :l 2 :r 3
+           :x 4 :z 5
+           :a 6 :s 7})
+(local directions
+           {:r (/ 0 6)
+            :z (/ 1 6)
+            :x (/ 2 6)
+            :l (/ 3 6)
+            :a (/ 4 6)
+            :s (/ 5 6)
+            :u (/ 3 4)
+            :d (/ 1 4)})
+
+
 ;; Math ----------------
-
-(local pi2 (* 2 math.pi))
-
 (fn add [a b ...]
     (let [sum (+ (or a 0) (or b 0))]
       (if (= (select :# ...) 0)
@@ -48,7 +87,6 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
 
 
 ;; Complex numbers ----------------
-
 (local cx {})
 (local cx-meta {})
 
@@ -95,7 +133,6 @@ When b is real then it’s real part is used as modulo for y also."
 
 
 ;; Lib ----------------
-
 (fn is [typ v] (= (type v) typ))
 
 ;; Printing
@@ -131,40 +168,7 @@ When b is real then it’s real part is used as modulo for y also."
                    (key val) (tset idx key (zbi val))))
       idx))
 
-
-;; Game ----------------
-
-;; General config
-(local map {:w 9 :h 6 :dx 3 :dy 0 :thr 0.278 :wrap true})
-
-;; Sprites
-(local sp {:green 2
-           :blue 4
-           :bg 34})
-(local air sp.blue)
-
-;; Buttons
-(local bt (rev-idx [:u :d :l :r :x :z :a :s]))
-(local directions
-           {:r (/ 0 6)
-            :z (/ 1 6)
-            :x (/ 2 6)
-            :l (/ 3 6)
-            :a (/ 4 6)
-            :s (/ 5 6)
-            :u (/ 3 4)
-            :d (/ 1 4)})
-
-;; Hexagon grid
-(local size 7)
-(local sq3 (math.sqrt 3))
-(local hex {:w (* size 2) ; width
-            :h (math.floor (* size sq3)) ; height
-            :sp 2 ; spacing
-            :kind :pointy
-            :even false})
-(tset hex :col (+ hex.w hex.sp))
-(tset hex :row (+ hex.h hex.sp))
+;; Hex grid map
 
 (fn hex-offset [v ?sub]
     "Alternate odd rows on grid"
@@ -178,14 +182,14 @@ When b is real then it’s real part is used as modulo for y also."
 (fn alt-row-offset [plr]
     (hex-offset 1 (odd-row? plr)))
 
-
-;; Map and movement ----------------
-
 (fn gen-map [n threshold]
     (var map [])
     (for [i 1 n]
          (table.insert map (if (> threshold (math.random)) sp.bg sp.blue)))
     map)
+
+
+;; Map and movement ----------------
 
 (fn can-move? [pos cells]
     (let [fy (math.floor pos.y)
