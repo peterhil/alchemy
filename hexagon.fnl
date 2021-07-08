@@ -46,7 +46,7 @@
 
 ;; General
 (local air sp.blue)
-(local map {:w 9 :h 6 :dx 3 :thr 0.278 :wrap true})
+(local map {:w 9 :h 6 :dx 3 :dy 0 :thr 0.278 :wrap true})
 (local plr {:y 0 :x 7})
 (var time 0)
 
@@ -117,7 +117,8 @@
          (for [x 0 (- map.w 1)]
               (set i (+ i 1))
               (sp-draw (. cells i)
-                       {: y :x (+ x map.dx)}))))
+                       {:y (+ y map.dy)
+                        :x (+ x map.dx)}))))
 
 (fn draw-player [plr]
     "Draw player"
@@ -127,7 +128,7 @@
       (printc (.. :player " x: " x " y: " y) (half scr.w) (- scr.h 10) 15)
       (spr id
            (* hex.col (+ x map.dx))
-           (* hex.row y)
+           (* hex.row (+ y map.dy))
            transp 1 0 0 2 2)))
 
 (fn move-player! [plr dir cells]
