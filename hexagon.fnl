@@ -78,6 +78,16 @@
 In absolute value, each increment of 0.5 increases the result by 0.5."
     (/ (math.floor (+ (* v 2) 0.5)) 2))
 
+(fn hexstep [v]
+    "Floor rounding in one sixth steps so you get zero on interval [± 1/12).
+In absolute value, each increment of 1/6 increases the result by 1/6th."
+    (/ (math.floor (+ (* v 6) (/ 1 6))) 6))
+
+(fn sextant [v]
+    "Sextant on which the value lands on.
+Sextants are numbered counter-clockwise from (:x 1 :y 0)."
+    (% (* 6 (hexstep v)) 6))
+
 (fn chexp [theta ?mag]
     "Complex number exponential in polar coordinates,
 but rounded to multiples of 0.5 so it works on hexagonal grid"
