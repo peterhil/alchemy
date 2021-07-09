@@ -73,20 +73,22 @@
   "Is value within half open interval"
   (and (>= v low) (< v high)))
 
-(fn halfstep [v]
-    "Floor rounding in half steps so you get zero on interval [-0.25 0.25).
-In absolute value, each increment of 0.5 increases the result by 0.5."
-    (/ (math.floor (+ (* v 2) 0.5)) 2))
+;; Obscure math
 
-(fn hexstep [v]
-    "Floor rounding in one sixth steps so you get zero on interval [± 1/12).
-In absolute value, each increment of 1/6 increases the result by 1/6th."
-    (/ (math.floor (+ (* v 6) (/ 1 6))) 6))
+(fn nstep [n v]
+    "Floor rounding in one nth steps so you get zero on interval [± 1/(n*2)).
+In absolute value, each increment of 1/n increases the result by 1/nth."
+    (/ (math.floor (+ (* v n) (/ 1 n))) n))
 
-(fn sextant [v]
-    "Sextant on which the value lands on.
-Sextants are numbered counter-clockwise from (:x 1 :y 0)."
-    (% (* 6 (hexstep v)) 6))
+(local halfstep (partial nstep 2))
+(local hexstep  (partial nstep 6))
+
+(fn sector [n v]
+    "Divides circle into n sector and tells on which the value v lands on.
+Sectors are numbered counter-clockwise from (:x 1 :y 0)."
+    (% (* n (nstep n v)) n))
+
+(local sextant (partial sector 6))
 
 (fn chexp [theta ?mag]
     "Complex number exponential in polar coordinates,
