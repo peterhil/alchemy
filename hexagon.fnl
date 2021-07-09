@@ -75,10 +75,16 @@
 
 ;; Obscure math
 
+(fn floor-multiply [n v]
+    "It’s like the wheel of fortune: Multiply value with base n, add 1/nth
+and floor the result to get the correct sector on the wheel."
+    ;; TODO For flat oriented hexagons, do not add the 1/nth
+    (math.floor (+ (* v n) (/ 1 n))))
+
 (fn nstep [n v]
     "Floor rounding in one nth steps so you get zero on interval [± 1/(n*2)).
 In absolute value, each increment of 1/n increases the result by 1/nth."
-    (/ (math.floor (+ (* v n) (/ 1 n))) n))
+    (/ (floor-multiply n v) n))
 
 (local halfstep (partial nstep 2))
 (local hexstep  (partial nstep 6))
@@ -86,7 +92,7 @@ In absolute value, each increment of 1/n increases the result by 1/nth."
 (fn sector [n v]
     "Divides circle into n sector and tells on which the value v lands on.
 Sectors are numbered counter-clockwise from (:x 1 :y 0)."
-    (% (* n (nstep n v)) n))
+    (% (floor-multiply n v) n))
 
 (local sextant (partial sector 6))
 
