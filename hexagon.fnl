@@ -104,7 +104,7 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
        [:table cm] num
        [:table  _] (let [{: x : y} num] (cx.new x y))
        [:number _] (cx.new num
-                           ;: TODO Check type, now non-numbers pass through as nils
+                           ;: TODO Check type, non-numbers pass through as nils
                            (tonumber ?imag))
        [_ _] (error (.. "Can’t make a complex number from: " num)))))
 
@@ -162,7 +162,10 @@ When b is real then it’s real part is used as modulo for y also."
 (fn gen-map [n threshold]
     (var map [])
     (for [i 1 n]
-         (table.insert map (if (> threshold (math.random)) sp.bg sp.blue)))
+         (table.insert map
+                       (if (> threshold (math.random))
+                           sp.bg
+                           sp.blue)))
     map)
 
 
@@ -200,7 +203,8 @@ When b is real then it’s real part is used as modulo for y also."
           pos)))
 
 (fn deviation [plr key]
-    "Angle deviation for up and down movement to align with hex grid on alternate rows"
+    "Angle deviation for up and down movement to align with hex grid
+on alternate rows"
     (match key
            :u (if (odd-row? plr) (/ -1 12) (/  1 12))
            :d (if (odd-row? plr) (/  1 12) (/ -1 12))))
@@ -249,7 +253,8 @@ Uses polar coordinates and converts to cartesian."
     (let [{: y : x} plr
           id 2 ;;(+ 2 (* (// (% time 60) 30) 2))
           ]
-      (printc (.. :player " x: " x " y: " y) (half scr.w) (- scr.h 10) 15)
+      (printc (.. :player " x: " x " y: " y)
+              (half scr.w) (- scr.h 10) 15)
       (spr id
            (* hex.col (+ x map.dx))
            (* hex.row (+ y map.dy))
