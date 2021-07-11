@@ -3,6 +3,8 @@
 ;; desc:   Hexagonal map demo
 ;; script: fennel
 
+(local trace (or _G.trace print))
+
 (local pi2 (* 2 math.pi))
 (local sq3 (math.sqrt 3))
 
@@ -232,7 +234,7 @@ on alternate rows"
 Uses polar coordinates and converts to cartesian."
     (local moves [])
     (each [key angle (pairs directions)]
-          (when (btnp (. bt key))
+          (when (_G.btnp (. bt key))
             (do (btd key)
                 (let [phi (match key
                                  :u (+ angle (deviation plr key))
@@ -251,7 +253,7 @@ Uses polar coordinates and converts to cartesian."
 (fn sp-draw [id cell]
     "Draw sprite id on cell with x and y coordinates"
     (let [{: x : y} cell]
-      (spr id
+      (_G.spr id
            (* (+ x (hex-offset y hex.even)) hex.col)
            (* y hex.row)
            transp 1 0 0 2 2)))
@@ -273,7 +275,7 @@ Uses polar coordinates and converts to cartesian."
           ]
       (printc (.. :player " x: " x " y: " y)
               (half scr.w) (- scr.h 10) 15)
-      (spr id
+      (_G.spr id
            (* hex.col (+ x map.dx))
            (* hex.row (+ y map.dy))
            transp 1 0 0 2 2)))
@@ -288,7 +290,7 @@ Uses polar coordinates and converts to cartesian."
 (global
  TIC
  (fn tic []
-     (cls 0)
+     (_G.cls 0)
      (draw-map cells)
 
      (local dir (dir-events plr))
