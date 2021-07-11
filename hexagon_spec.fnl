@@ -6,10 +6,8 @@
 
 (test.describe
  "complex"
- (fn []
-     (test.it
-      "equals"
-      (fn []
-          (assert.are.equal
-           {:x 1 :y 0} (hex.cx 1)
-           "Tables can be used")))))
+ (fn [] (test.it
+         "equals"
+         (fn [] (assert.are.equal
+                 {:x 1 :y 0} (hex.cx 1)
+                 "Tables can be used")))))
