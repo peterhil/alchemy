@@ -98,12 +98,12 @@ Sectors are numbered counter-clockwise from (:x 1 :y 0)."
 
 (local sextant (partial sector 6))
 
-(fn chexp [theta ?mag]
+(fn chexp [theta ?abs]
     "Complex number exponential in polar coordinates,
 but rounded to multiples of 0.5 so it works on hexagonal grid"
     (let [w (* pi2 theta)]
-      (values (halfstep (* (or ?mag 1) (math.cos w)))
-              (halfstep (* (or ?mag 1) (math.sin w))))))
+      (values (halfstep (* (or ?abs 1) (math.cos w)))
+              (halfstep (* (or ?abs 1) (math.sin w))))))
 
 
 ;; Complex numbers ----------------
@@ -128,6 +128,20 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
                            (tonumber ?imag))
        [_ _] (error (.. "Can’t make a complex number from: " num)))))
 
+(fn cx.abs [a]
+    (let [a (cx.from a)]
+      (math.sqrt (^ a.x 2) (^ a.y 2))))
+
+(fn cx.angle [a]
+    (let [a (cx.from a)]
+      (math.atan a.y a.x)))
+
+(fn cx.eq [a b]
+    (let [a (cx.from a)
+          b (cx.from b)]
+      (and (= a.x b.x)
+           (= a.y b.y))))
+
 (fn cx.add [a b]
     (let [a (cx.from a)
           b (cx.from b)
@@ -147,7 +161,10 @@ When b is real then it’s real part is used as modulo for y also."
 (tset cx :add cx.add)
 
 (tset cx-meta :__call (fn __call [_ x ?y] (cx.from x ?y)))
+(tset cx-meta :abs cx.abs)
+(tset cx-meta :angle cx.angle)
 (tset cx-meta :__add cx.add)
+(tset cx-meta :__eq cx.eq)
 (tset cx-meta :__mod cx.mod)
 (setmetatable cx cx-meta)
 
@@ -220,7 +237,10 @@ When b is real then it’s real part is used as modulo for y also."
           (do (printc (.. "Can not move to (:y " pos.y " :x " pos.x ")")
                       (half scr.w) (- scr.h 30) 12)
               plr)
-          pos)))
+          (do (if (not (= (cx 0) dir))
+                  (trace (.. "Moving to direction (:x " dir.x " :y " dir.y ") to sextant: "
+                             (sextant (cx.angle dir)))))
+              pos))))
 
 (fn deviation [plr key]
     "Angle deviation for up and down movement to align with hex grid
@@ -299,6 +319,8 @@ Uses polar coordinates and converts to cartesian."
      (hello)
 
      (set time (+ time 1))))
+
+{:cx cx}
 
 ;; <TILES>
 ;; 002:0000006500006555006555556555555555555555555555555555555555555555
