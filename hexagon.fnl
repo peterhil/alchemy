@@ -110,11 +110,11 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
 (local cx {})
 (local cx-meta {})
 
-(fn cx.new [x ?y]
-    "Complex number vector"
-    (let [v {:x x
-             :y (or ?y 0)}]
-      (setmetatable v cx-meta)))
+(lambda cx.new [x ?y]
+  "Complex number vector"
+  (let [v {:x x
+           :y (or ?y 0)}]
+    (setmetatable v cx-meta)))
 
 (fn cx.from [num ?imag]
     "Return complex number from numeric argument"

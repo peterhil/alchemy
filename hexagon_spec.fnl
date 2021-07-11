@@ -9,14 +9,32 @@
 (test.describe
  "complex"
  (fn []
-     (test.it "new"
-              (fn test-new
-                  [] (assert.are.equal
-                      {:x 1 :y 0} (cx.new 1)
-                      "New works")))
 
-     (test.it "equals"
-              (fn test-equal
-                  [] (assert.are.equal
-                      {:x 1 :y 0} (cx 1)
-                      "Tables can be used")))))
+     (test.describe
+      "new"
+      (fn []
+
+          (test.it "throws error without arguments"
+                   (fn []
+                       (assert.has_error
+                        cx.new)))
+
+          (test.it "with one argument"
+                   (fn []
+                       (assert.are.equal
+                        {:x 1 :y 0}
+                        (cx.new 1))))
+
+          (test.it "with two arguments"
+                   (fn []
+                       (assert.are.equal
+                        {:x 2 :y 3}
+                        (cx.new 2 3))))))
+
+     (test.it
+      "equals"
+      (fn []
+          (assert.are.equal
+           {:x 1 :y 0}
+           (cx 1)
+           "Tables are equal")))))
