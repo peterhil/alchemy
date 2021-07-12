@@ -12,21 +12,22 @@
  {
   :desc
   (lambda [name body ...]
-    `(let [name# ,name]
-       ;; (assert ,body "Expected body for describe")
+    `(let [name# ,name
+           body# ,body]
        (busted.describe
         name#
         (fn []
-            (do ,body
+            (do body#
                 ,...)))))
   :it
   (fn [description body ...]
-      `(let [desc# ,description]
-         (assert ,body "Expected body for test")
+      `(let [desc# ,description
+             body# ,body]
+         (assert body# "Expected body for test")
          (busted.it
           desc#
           (fn []
-              (do ,body
+              (do body#
                   ,...)))))
   })
 
