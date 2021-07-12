@@ -56,49 +56,48 @@
 
 ;; Tests
 
-(desc "complex"
-      (desc "new"
-            (it "throws error without arguments"
-                (assert.has_error
-                 cx.new))
+(desc "cx.new"
+      (it "throws error without arguments"
+          (assert.has_error
+           cx.new))
 
-            (it "with one float argument"
-                (let [x (rnd-float)]
-                  (assert.are.equal
-                   {: x :y 0}
-                   (cx.new x))))
+      (it "with one float argument"
+          (let [x (rnd-float)]
+            (assert.are.equal
+             {: x :y 0}
+             (cx.new x))))
 
-            (it "with one integer argument"
-                (let [x (rnd-uint)]
-                  (assert.are.equal
-                   {: x :y 0}
-                   (cx.new x))))
+      (it "with one integer argument"
+          (let [x (rnd-uint)]
+            (assert.are.equal
+             {: x :y 0}
+             (cx.new x))))
 
-            (it "with two arguments"
-                (let [x (rnd-float)
-                      y (rnd-float)]
-                  (assert.are.equal
-                   {: x : y}
-                   (cx.new x y)))))
+      (it "with two arguments"
+          (let [x (rnd-float)
+                y (rnd-float)]
+            (assert.are.equal
+             {: x : y}
+             (cx.new x y)))))
 
-      (desc "type"
-            (local number (rnd-float))
+(desc "cx.type"
+      (local number (rnd-float))
 
-            (it "returns complex type"
-                (assert.are.equal
-                 (cx.type (cx number))
-                 :complex))
+      (it "returns complex type"
+          (assert.are.equal
+           (cx.type (cx number))
+           :complex))
 
-            (it "delegates to generic type"
-                (assert.are.equal
-                 (cx.type number)
-                 :number)))
+      (it "delegates to generic type"
+          (assert.are.equal
+           (cx.type number)
+           :number)))
 
-      (desc "equals"
-            (it "with a table"
-                (let [x (rnd-float)
-                      y (rnd-float)]
-                  (assert.are.equal
-                   {: x : y}
-                   (cx x y)
-                   "Table with x and y should equal cx")))))
+(desc "cx.equals"
+      (it "with a table"
+          (let [x (rnd-float)
+                y (rnd-float)]
+            (assert.are.equal
+             {: x : y}
+             (cx x y)
+             "Table with x and y should equal cx"))))
