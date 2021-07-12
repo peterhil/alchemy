@@ -1,4 +1,4 @@
-(local test (require :busted))
+(local busted (require :busted))
 (local run (require :busted.runner))
 
 (local r math.random)
@@ -7,6 +7,28 @@
 (local cx hex.cx)
 
 (run)
+
+(macros
+ {
+  :desc
+  (lambda [name body ...]
+    `(let [name# ,name]
+       ;; (assert ,body "Expected body for describe")
+       (busted.describe
+        name#
+        (fn []
+            (do ,body
+                ,...)))))
+  :it
+  (fn [description body ...]
+      `(let [desc# ,description]
+         (assert ,body "Expected body for test")
+         (busted.it
+          desc#
+          (fn []
+              (do ,body
+                  ,...)))))
+  })
 
 ;; Quickcheck helpers
 
@@ -34,61 +56,46 @@
 
 ;; Tests
 
-(test.describe
- "complex"
- (fn []
+(desc "complex"
+      (desc "new"
+            (it "throws error without arguments"
+                (assert.has_error
+                 cx.new))
 
-     (test.describe
-      "new"
-      (fn []
-          (test.it "throws error without arguments"
-                   (fn []
-                       (assert.has_error
-                        cx.new)))
+            (it "with one float argument"
+                (let [x (rnd-float)]
+                  (assert.are.equal
+                   {: x :y 0}
+                   (cx.new x))))
 
-          (test.it "with one float argument"
-                   (fn []
-                       (let [x (rnd-float)]
-                         (assert.are.equal
-                          {: x :y 0}
-                          (cx.new x)))))
+            (it "with one integer argument"
+                (let [x (rnd-uint)]
+                  (assert.are.equal
+                   {: x :y 0}
+                   (cx.new x))))
 
-          (test.it "with one integer argument"
-                   (fn []
-                       (let [x (rnd-uint)]
-                         (assert.are.equal
-                          {: x :y 0}
-                          (cx.new x)))))
+            (it "with two arguments"
+                (let [x (rnd-float)
+                      y (rnd-float)]
+                  (assert.are.equal
+                   {: x : y}
+                   (cx.new x y)))))
 
-          (test.it "with two arguments"
-                   (fn []
-                       (let [x (rnd-float)
-                             y (rnd-float)]
-                         (assert.are.equal
-                          {: x : y}
-                          (cx.new x y)))))))
+      (desc "type"
+            (local number (rnd-float))
 
-     (test.describe
-      "type"
-      (fn []
-          (local number (rnd-float))
+            (it "returns complex type"
+                (assert.are.equal
+                 (cx.type (cx number))
+                 :complex))
 
-          (test.it "returns complex type"
-           (fn []
-               (assert.are.equal
-                (cx.type (cx number))
-                :complex)))
+            (it "delegates to generic type"
+                (assert.are.equal
+                 (cx.type number)
+                 :number)))
 
-          (test.it "delegates to generic type"
-           (fn []
-               (assert.are.equal
-                (cx.type number)
-                :number)))))
-
-     (test.it
-      "equals"
-      (fn []
+      (it "equals with a suitable table"
           (assert.are.equal
            {:x 1 :y 0}
            (cx 1)
-           "Tables are equal")))))
+           "Table with x and y should equal cx")))
