@@ -141,7 +141,7 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
     (let [a (cx.from a)]
       (math.atan a.y a.x)))
 
-(fn cx.eq [a b]
+(fn cx.equals [a b]
     (let [a (cx.from a)
           b (cx.from b)]
       (and (= a.x b.x)
@@ -169,7 +169,7 @@ When b is real then it’s real part is used as modulo for y also."
 (tset cx-meta :abs cx.abs)
 (tset cx-meta :angle cx.angle)
 (tset cx-meta :__add cx.add)
-(tset cx-meta :__eq cx.eq)
+(tset cx-meta :__eq cx.equals)
 (tset cx-meta :__mod cx.mod)
 (setmetatable cx cx-meta)
 

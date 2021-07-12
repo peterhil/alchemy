@@ -94,8 +94,9 @@
                  (cx.type number)
                  :number)))
 
-      (it "equals with a suitable table"
-          (assert.are.equal
-           {:x 1 :y 0}
-           (cx 1)
-           "Table with x and y should equal cx")))
+      (desc "equals"
+            (it "with a table"
+                (assert.are.equal
+                 {:x 1 :y 0}
+                 (cx 1)
+                 "Table with x and y should equal cx"))))
