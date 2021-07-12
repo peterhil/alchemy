@@ -68,6 +68,23 @@
                           {: x : y}
                           (cx.new x y)))))))
 
+     (test.describe
+      "type"
+      (fn []
+          (local number (rnd-float))
+
+          (test.it "returns complex type"
+           (fn []
+               (assert.are.equal
+                (cx.type (cx number))
+                :complex)))
+
+          (test.it "delegates to generic type"
+           (fn []
+               (assert.are.equal
+                (cx.type number)
+                :number)))))
+
      (test.it
       "equals"
       (fn []

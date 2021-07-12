@@ -116,6 +116,11 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
            :y (or ?y 0)}]
     (setmetatable v cx-meta)))
 
+(fn cx.type [a]
+    (match (getmetatable a)
+           cx-meta :complex
+           _ (type a)))
+
 (fn cx.from [num ?imag]
     "Return complex number from numeric argument"
     (let [cm cx-meta]
