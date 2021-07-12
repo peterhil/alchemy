@@ -55,6 +55,11 @@
     (let [sign (if (rnd-bool) 1 -1)]
       (* sign (rnd-positive-float))))
 
+(fn rnd-complex []
+    (let [x (rnd-float)
+          y (rnd-float)]
+      (cx.new x y)))
+
 ;; Tests
 
 (desc "cx.new"
@@ -93,6 +98,31 @@
           (assert.are.equal
            (cx.type number)
            :number)))
+
+(desc "cx.from"
+      (local x (rnd-float))
+      (local y (rnd-float))
+      (local expected (cx.new x y))
+
+      (it "complex"
+          (assert.are.equal
+           expected
+           (cx.from (cx x y))))
+
+      (it "table"
+          (assert.are.equal
+           expected
+           (cx.from {: x : y})))
+
+      (it "number"
+          (assert.are.equal
+           (cx.new x)
+           (cx.from x)))
+
+      (it "throws with unknown types"
+          (assert.has_error
+           (fn [] (cx.from :unknown))
+           "Can’t make a complex number from: unknown")))
 
 (desc "cx.equals"
       (it "with a table"
