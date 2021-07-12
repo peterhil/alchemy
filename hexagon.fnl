@@ -135,7 +135,7 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
 
 (fn cx.abs [a]
     (let [a (cx.from a)]
-      (math.sqrt (^ a.x 2) (^ a.y 2))))
+      (math.sqrt (+ (^ a.x 2) (^ a.y 2)))))
 
 (fn cx.angle [a]
     (let [a (cx.from a)]

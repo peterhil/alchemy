@@ -124,6 +124,12 @@
            (fn [] (cx.from :unknown))
            "Can’t make a complex number from: unknown")))
 
+(desc "cx.abs"
+      (it "works for simple pythagorean triple"
+          (assert.are.equal
+           5.0
+           (cx.abs (cx 3 4)))))
+
 (desc "cx.equals"
       (it "with a table"
           (let [x (rnd-float)
