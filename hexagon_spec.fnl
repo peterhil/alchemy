@@ -96,7 +96,9 @@
 
       (desc "equals"
             (it "with a table"
-                (assert.are.equal
-                 {:x 1 :y 0}
-                 (cx 1)
-                 "Table with x and y should equal cx"))))
+                (let [x (rnd-float)
+                      y (rnd-float)]
+                  (assert.are.equal
+                   {: x : y}
+                   (cx x y)
+                   "Table with x and y should equal cx")))))
