@@ -184,3 +184,15 @@
             (assert.not.equal
              x
              (cx y)))))
+
+(desc "cx.add"
+      (it "adds like vectors"
+          (let [ax (rnd-float) bx (rnd-float)
+                ay (rnd-float) by (rnd-float)
+                x (+ ax bx)
+                y (+ ay by)
+                a (cx ax ay)
+                b (cx bx by)]
+            (assert.are.equal
+             {: x : y }
+             (+ a b)))))
