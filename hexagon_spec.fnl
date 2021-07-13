@@ -16,23 +16,18 @@
  {
   :desc
   (lambda [name body ...]
-    `(let [name# ,name
-           body# ,body]
-       (busted.describe
-        name#
-        (fn []
-            (do body#
-                ,...)))))
+    `(busted.describe
+      ,name
+      (fn []
+          (do ,body
+              ,...))))
   :it
   (lambda [description body ...]
-      `(let [desc# ,description
-             body# ,body]
-         ;; (assert body# "Expected body for test")
-         (busted.it
-          desc#
-          (fn []
-              (do body#
-                  ,...)))))
+      `(busted.it
+        ,description
+        (fn []
+            (do ,body
+                ,...))))
   })
 
 ;; Quickcheck helpers
