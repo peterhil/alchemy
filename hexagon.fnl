@@ -28,7 +28,8 @@
            :blue {:id 4 :tp transp}
            :bg {:id 34 :tp transp}
            :gem {:id 66 :tp 11}})
-(local air (. sp.blue :id))
+
+(local air sp.blue)
 
 ;; Grid settings
 (local size 7)
@@ -231,7 +232,7 @@ When b is real then it’s real part is used as modulo for y also."
 
 (fn can-move? [pos cells]
     (let [cell (get-cell pos cells)]
-      (or (= air (. cell :id))
+      (or (= air cell)
           (= sp.gem cell))))
 
 (fn is-gem? [pos cells]
