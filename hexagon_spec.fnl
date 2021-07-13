@@ -48,9 +48,6 @@
 ;; Floats
 
 (local max-float-exp 1024)
-(local inf math.huge)
-(local neginf (- math.huge))
-(local nan (/ inf inf))
 
 (fn rnd-positive-float []
     (* (r) (^ 2.0 (r 0 max-float-exp))))
