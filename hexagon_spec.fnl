@@ -40,6 +40,10 @@
 (fn rnd-uint []
     (r math.maxinteger))
 
+(fn rnd-int [?scale]
+    (let [abs (or ?scale 1024)]
+      (r (- abs) abs)))
+
 ;; Floats
 
 (local max-float-exp 1024)
@@ -54,6 +58,11 @@
 (fn rnd-complex []
     (let [x (rnd-float)
           y (rnd-float)]
+      (cx.new x y)))
+
+(fn rnd-complex-int [?scale]
+    (let [x (rnd-int ?scale)
+          y (rnd-int ?scale)]
       (cx.new x y)))
 
 ;; Tests
@@ -191,3 +200,12 @@
             (assert.are.equal
              {: x : y }
              (+ a b)))))
+
+(desc "cx.mod"
+      (it "works for two complex numbers"
+          (let [scale 6
+                a (rnd-complex-int scale)
+                b (rnd-complex-int scale)]
+            (assert.are.equal {:x (% a.x b.x)
+                               :y (% a.y b.y)}
+                              (% a b)))))
