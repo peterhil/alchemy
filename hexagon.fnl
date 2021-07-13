@@ -342,6 +342,10 @@ Uses polar coordinates and converts to cartesian."
 ;; 035:f00000000ff00000000ff00000000ff0000000f0000000f0000000f0000000f0
 ;; 050:f0000000f0000000f0000000f0000000ff00000000ff00000000ff00000000ff
 ;; 051:000000f0000000f0000000f0000000f000000ff0000ff0000ff00000f0000000
+;; 066:bbbbbbbbbbbbbbbbbbbbffffbbbfdccdbbfdcbbcbfdcbcfebfcdcfdebbfcdefd
+;; 067:bbbbbbbbbbbbbbbbf0fbbbbbccdfbbbbedbdfbbbdcdebfbbed00dfbbf00dfbbb
+;; 082:bbbfcdfebbbbfcdcbbbbbfcbbbbbbbfcbbbbbbbfbbbbbbbbbbbbbbbbbbbbbbbb
+;; 083:cfefbbbbfefbbbbbdfbbbbbbfbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 ;; </TILES>
 
 ;; <PALETTE>
