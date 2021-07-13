@@ -41,7 +41,7 @@
     (r math.maxinteger))
 
 (fn rnd-int [?scale]
-    (let [abs (or ?scale 1024)]
+    (let [abs (or ?scale (// math.maxinteger 2))]
       (r (- abs) abs)))
 
 ;; Floats
@@ -202,10 +202,26 @@
              (+ a b)))))
 
 (desc "cx.mod"
-      (it "works for two complex numbers"
-          (let [scale 6
+      (it "works for two complex integers"
+          (let [scale 32
                 a (rnd-complex-int scale)
-                b (rnd-complex-int scale)]
+                b (cx (rnd-int scale) (r 1 scale))]
             (assert.are.equal {:x (% a.x b.x)
                                :y (% a.y b.y)}
+                              (% a b))))
+
+      (it "throws when b.x is zero"
+          (let [scale 32
+                a (rnd-complex-int scale)
+                b (cx 0 (r 1 scale))]
+            (assert.has_error
+             (fn [] (% a b))
+             "attempt to perform 'n%0'")))
+
+      (it "works for complex and real"
+          (let [scale 32
+                a (rnd-complex-int scale)
+                b (rnd-int scale)]
+            (assert.are.equal {:x (% a.x b)
+                               :y (% a.y b)}
                               (% a b)))))
