@@ -130,7 +130,8 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
        [:table  _] (let [{: x : y} num] (cx.new x y))
        [:number _] (cx.new num
                            ;: TODO Check type, non-numbers pass through as nils
-                           (tonumber ?imag))
+                           (tonumber (or ?imag 0)))
+       [:nil nil] (error (.. "Nil given to cx.from"))
        [_ _] (error (.. "Can’t make a complex number from: " num)))))
 
 (fn cx.abs [a]
@@ -141,11 +142,11 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
     (let [a (cx.from a)]
       (math.atan a.y a.x)))
 
-(fn cx.equals [a b]
-    (let [a (cx.from a)
-          b (cx.from b)]
-      (and (= a.x b.x)
-           (= a.y b.y))))
+(lambda cx.equals [a b]
+  (let [a (cx.from a)
+        b (cx.from b)]
+    (and (= a.x b.x)
+         (= a.y b.y))))
 
 (fn cx.add [a b]
     (let [a (cx.from a)
@@ -164,6 +165,7 @@ When b is real then it’s real part is used as modulo for y also."
       (setmetatable v cx-meta)))
 
 (tset cx :add cx.add)
+(tset cx :equals cx.equals)
 
 (tset cx-meta :__call (fn __call [_ x ?y] (cx.from x ?y)))
 (tset cx-meta :abs cx.abs)

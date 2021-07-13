@@ -123,6 +123,11 @@
            (cx.new x)
            (cx.from x)))
 
+      (it "throws with nil"
+          (assert.has_error
+           (fn [] (cx.from nil))
+           "Nil given to cx.from"))
+
       (it "throws with unknown types"
           (assert.has_error
            (fn [] (cx.from :unknown))
@@ -150,10 +155,24 @@
              "Table with x and y should equal cx")))
 
       (it "equals with itself"
-          (let [r (rnd-complex)]
+          (let [z (rnd-complex)]
             (assert.are.equal
-             r
-             r)))
+             z
+             z)))
+
+      (it "equals with an integer"
+          (let [x (rnd-uint)]
+            (assert.is.true
+             ;; Lua does not call __eq for table and number
+             (cx.equals x (cx x))
+             "equals with an integer")))
+
+      (it "equals with a float"
+          (let [x (rnd-float)]
+            (assert.is.true
+             ;; Lua does not call __eq for table and number
+             (cx.equals x (cx x))
+             "equals with a float")))
 
       (it "is not equal with a different integer"
           (let [x (rnd-uint)
