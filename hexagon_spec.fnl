@@ -161,6 +161,9 @@
              z
              z)))
 
+      ;; These use cx.equals because Lua doesn’t call __eq for a table
+      ;; and a number
+
       (it "equals with an integer"
           (let [x (rnd-uint)]
             (assert.is.true
@@ -171,23 +174,20 @@
       (it "equals with a float"
           (let [x (rnd-float)]
             (assert.is.true
-             ;; Lua does not call __eq for table and number
              (cx.equals x (cx x))
              "equals with a float")))
 
       (it "is not equal with a different integer"
           (let [x (rnd-uint)
                 y (- 1 x)]
-            (assert.not.equal
-             x
-             (cx y))))
+            (assert.not.true
+             (cx.equals x (cx y)))))
 
       (it "is not equal with a different float"
           (let [x (rnd-float)
                 y (- 1 x)]
-            (assert.not.equal
-             x
-             (cx y)))))
+            (assert.not.true
+             (cx.equals x (cx y))))))
 
 (desc "cx.add"
       (it "adds like vectors"
