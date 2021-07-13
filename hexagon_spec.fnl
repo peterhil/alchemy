@@ -24,10 +24,10 @@
             (do body#
                 ,...)))))
   :it
-  (fn [description body ...]
+  (lambda [description body ...]
       `(let [desc# ,description
              body# ,body]
-         (assert body# "Expected body for test")
+         ;; (assert body# "Expected body for test")
          (busted.it
           desc#
           (fn []
@@ -132,7 +132,13 @@
       (it "works for simple pythagorean triple"
           (assert.are.equal
            5.0
-           (cx.abs (cx 3 4)))))
+           (cx.abs (cx 3 4))))
+
+      (it "works for unsigned integers"
+          (let [number (rnd-uint)]
+            (assert.are.equal
+             (math.abs (* 1.0 number))
+             (cx.abs number)))))
 
 (desc "cx.equals"
       (it "with a table"
@@ -141,4 +147,29 @@
             (assert.are.equal
              {: x : y}
              (cx x y)
-             "Table with x and y should equal cx"))))
+             "Table with x and y should equal cx")))
+
+      (it "equals with itself"
+          (let [r (rnd-complex)]
+            (assert.are.equal
+             r
+             r)))
+
+      (it "is not equal with a different integer"
+          (let [x (rnd-uint)
+                y (- 1 x)]
+            (assert.not.equal
+             x
+             (cx y))))
+
+      (it "is not equal with a different float"
+          (let [x (rnd-float)
+                y (- 1 x)]
+            (assert.not.equal
+             x
+             (cx y))))
+
+      (it "is not equal to nil"
+          (assert.not.equal
+           nil
+           (cx 0))))
