@@ -1,7 +1,11 @@
+-- Busted config
+--
+-- see http://olivinelabs.com/busted/#usage for options
+
 return {
     _all = {
     },
     default = {
-        verbose = true
+        verbose = true,
     }
 }
