@@ -3,6 +3,10 @@
 ;; desc:   Hexagonal map demo
 ;; script: fennel
 
+;; Initialise random number seed – otherwise the seed is constant.
+;; Read more at http://lua-users.org/wiki/MathLibraryTutorial
+(math.randomseed (time))
+
 (local trace (or _G.trace print))
 
 (local pi2 (* 2 math.pi))
@@ -13,16 +17,18 @@
 (local map {:w 9  :h 6
             :dx 3 :dy 0
             :thr 0.278
+            :gems 0.12
             :wrap true})
 
 ;; Palette
 (local transp 0)
 
 ;; Sprites
-(local sp {:green 2
-           :blue 4
-           :bg 34})
-(local air sp.blue)
+(local sp {:green {:id 2 :tp transp}
+           :blue {:id 4 :tp transp}
+           :bg {:id 34 :tp transp}
+           :gem {:id 66 :tp 11}})
+(local air (. sp.blue :id))
 
 ;; Grid settings
 (local size 7)
@@ -203,23 +209,34 @@ When b is real then it’s real part is used as modulo for y also."
 (fn alt-row-offset [plr]
     (hex-offset 1 (odd-row? plr)))
 
-(fn gen-map [n threshold]
-    (var map [])
+(fn gen-map [n]
+    (var board [])
     (for [i 1 n]
-         (table.insert map
-                       (if (> threshold (math.random))
-                           sp.bg
-                           sp.blue)))
-    map)
+         (table.insert
+          board
+          (let [dice (math.random)]
+            (if (< dice map.gems) sp.gem
+                (< dice map.thr) sp.bg
+                sp.blue))))
+    board)
 
 
 ;; Map and movement ----------------
 
-(fn can-move? [pos cells]
+(fn get-cell [pos cells]
     (let [fy (math.floor pos.y)
           fx (math.floor (incr pos.x))
           idx (+ (* fy map.w) fx)]
-      (= air (. cells idx))))
+      (. cells idx)))
+
+(fn can-move? [pos cells]
+    (let [cell (get-cell pos cells)]
+      (or (= air (. cell :id))
+          (= sp.gem cell))))
+
+(fn is-gem? [pos cells]
+    (let [cell (get-cell pos cells)]
+      (= sp.gem cell)))
 
 (fn in-map? [pos]
     (and
@@ -277,13 +294,13 @@ Uses polar coordinates and converts to cartesian."
 (fn hello []
     (printc "HEXAGONAL WORLD!" (half scr.w) (- scr.h 20) 12))
 
-(fn sp-draw [id cell]
+(fn sp-draw [sprite cell]
     "Draw sprite id on cell with x and y coordinates"
     (let [{: x : y} cell]
-      (_G.spr id
+      (_G.spr sprite.id
            (* (+ x (hex-offset y hex.even)) hex.col)
            (* y hex.row)
-           transp 1 0 0 2 2)))
+           sprite.tp 1 0 0 2 2)))
 
 (fn draw-map [cells]
     "Draw hexagonal grid"
@@ -291,9 +308,12 @@ Uses polar coordinates and converts to cartesian."
     (for [y 0 (- map.h 1)]
          (for [x 0 (- map.w 1)]
               (set i (+ i 1))
-              (sp-draw (. cells i)
-                       {:y (+ y map.dy)
-                        :x (+ x map.dx)}))))
+              (let [cell (. cells i)
+                    pos (cx {:y (+ y map.dy)
+                             :x (+ x map.dx)})]
+                (when (is-gem? {: x : y} cells)
+                  (sp-draw sp.blue pos))
+                (sp-draw cell pos)))))
 
 (fn draw-player [plr]
     "Draw player"
@@ -310,7 +330,7 @@ Uses polar coordinates and converts to cartesian."
 
 ;; Main ----------------
 
-(var cells (gen-map (* map.w map.h) map.thr))
+(var cells (gen-map (* map.w map.h)))
 (var plr (cx {:y 0 :x 7}))
 (var time 0)
 
@@ -323,6 +343,12 @@ Uses polar coordinates and converts to cartesian."
      (local dir (dir-events plr))
      (set plr (new-position plr dir cells))
      (draw-player plr)
+     (if (is-gem? plr cells)
+         (_G.spr sp.gem.id
+                 (* hex.col (+ plr.x map.dx))
+                 (* hex.row (+ plr.y map.dy))
+                 sp.gem.tp
+                 1 0 0 2 2))
      (hello)
 
      (set time (+ time 1))))
@@ -342,10 +368,10 @@ Uses polar coordinates and converts to cartesian."
 ;; 035:f00000000ff00000000ff00000000ff0000000f0000000f0000000f0000000f0
 ;; 050:f0000000f0000000f0000000f0000000ff00000000ff00000000ff00000000ff
 ;; 051:000000f0000000f0000000f0000000f000000ff0000ff0000ff00000f0000000
-;; 066:bbbbbbbbbbbbbbbbbbbbffffbbbfdccdbbfdcbbcbfdcbcfebfcdcfdebbfcdefd
-;; 067:bbbbbbbbbbbbbbbbf0fbbbbbccdfbbbbedbdfbbbdcdebfbbed00dfbbf00dfbbb
-;; 082:bbbfcdfebbbbfcdcbbbbbfcbbbbbbbfcbbbbbbbfbbbbbbbbbbbbbbbbbbbbbbbb
-;; 083:cfefbbbbfefbbbbbdfbbbbbbfbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+;; 066:bbbbbbbbbbbbbbbbbbbbbbbbbbbbffffbbbfdccdbbfdcbbcbfdcbcfebfcdcfde
+;; 067:bbbbbbbbbbbbbbbbbbbbbbbbf0fbbbbbccdfbbbbedbdfbbbdcdebfbbed00dfbb
+;; 082:bbfcdefdbbbfcdfebbbbfcdcbbbbbfcbbbbbbbfcbbbbbbbfbbbbbbbbbbbbbbbb
+;; 083:f00dfbbbcfefbbbbfefbbbbbdfbbbbbbfbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 ;; </TILES>
 
 ;; <PALETTE>
