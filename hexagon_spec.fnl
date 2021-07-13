@@ -186,9 +186,4 @@
                 y (- 1 x)]
             (assert.not.equal
              x
-             (cx y))))
-
-      (it "is not equal to nil"
-          (assert.not.equal
-           nil
-           (cx 0))))
+             (cx y)))))
