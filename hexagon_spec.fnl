@@ -6,6 +6,10 @@
 (local hex (require :hexagon))
 (local cx hex.cx)
 
+;; Initialise random number seed – otherwise the seed is constant.
+;; Read more at http://lua-users.org/wiki/MathLibraryTutorial
+(math.randomseed (os.time))
+
 (run)
 
 (macros
