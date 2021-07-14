@@ -30,7 +30,8 @@
                 ,...))))
   })
 
-;; Quickcheck helpers
+
+;; Quickcheck helpers --------------------------------
 
 (fn rnd-bool []
     (= 1 (r 0 1)))
@@ -65,7 +66,27 @@
           y (rnd-int ?scale)]
       (cx.new x y)))
 
-;; Tests
+
+;; Tests --------------------------------
+
+;; Math
+
+(desc "sign"
+      (local num (rnd-positive-float))
+      (local fixtures
+             [{:name "zero" :exp 0 :val 0}
+              {:name "positive floats" :exp 1 :val num}
+              {:name "negative floats" :exp (- 1) :val (* -1 num)}])
+      (each [_ f (ipairs fixtures)]
+            (it (.. "works with " f.name)
+                (assert.are.equal
+                 f.exp
+                 (hex.sign f.val))))
+
+      (it "works with nan"
+          (assert.true (hex.nan? (hex.sign hex.nan)))))
+
+;; Complex numbers
 
 (desc "cx.new"
       (it "throws error without arguments"

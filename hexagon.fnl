@@ -57,6 +57,17 @@
 
 
 ;; Math ----------------
+
+(local inf math.huge)
+(local nan (/ inf inf))
+(fn nan? [v] (~= v v))
+
+(fn sign [v]
+    (if (= v 0) 0
+        (nan? v) nan
+        (> v 0) 1
+        (- 1)))
+
 (fn add [a b ...]
     (let [sum (+ (or a 0) (or b 0))]
       (if (= (select :# ...) 0)
@@ -354,7 +365,10 @@ Uses polar coordinates and converts to cartesian."
 
                 (set time (+ time 1))))
 
-{: cx}
+{: cx
+ : nan
+ : nan?
+ : sign}
 
 ;; <TILES>
 ;; 002:0000006500006555006555556555555555555555555555555555555555555555
