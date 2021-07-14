@@ -71,7 +71,8 @@
 (local sp {:green {:id 2 :tp transp}
            :blue {:id 4 :tp transp}
            :bg {:id 34 :tp transp}
-           :gem {:id 66 :tp 11}})
+           :gem {:id 66 :tp 11}
+           :hl {:id 290 :tp transp}})
 (local air sp.blue)
 
 ;; Grid settings
@@ -337,6 +338,10 @@ When b is real then it’s real part is used as modulo for y also."
                           (sextant (cx.angle dir)))))
            pos))))
 
+(fn neighbours [pos]
+    (icollect [_ phi (irange 0 1 (/ 1 6))]
+              (+ (cx pos) (cx (chexp phi)))))
+
 (fn deviation [plr key]
     "Angle deviation for up and down movement to align with hex grid
 on alternate rows"
@@ -419,6 +424,14 @@ Uses polar coordinates and converts to cartesian."
                             (* hex.row (+ plr.y map.dy))
                             sp.gem.tp
                             1 0 0 2 2))
+
+                ;; Highlight neighbours
+                (each [i cell (ipairs (neighbours plr))]
+                      (sp-draw sp.hl (+ (cx cell)
+                                        (cx (hex-offset cell.y (not hex.even)))
+                                        {:x map.dx :y map.dy} ;; TODO Change to x and y
+                                        )))
+
                 (hello)
 
                 (set time (+ time 1))))
@@ -449,6 +462,13 @@ Uses polar coordinates and converts to cartesian."
 ;; 082:bbfcdefdbbbfcdfebbbbfcdcbbbbbfcbbbbbbbfcbbbbbbbfbbbbbbbbbbbbbbbb
 ;; 083:f00dfbbbcfefbbbbfefbbbbbdfbbbbbbfbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 ;; </TILES>
+
+;; <SPRITES>
+;; 034:000000dd0000dd0000dd0000dd000000d0000000d0000000d0000000d0000000
+;; 035:d00000000dd00000000dd00000000dd0000000d0000000d0000000d0000000d0
+;; 050:d0000000d0000000d0000000d0000000dd00000000dd00000000dd00000000dd
+;; 051:000000d0000000d0000000d0000000d000000dd0000dd0000dd00000d0000000
+;; </SPRITES>
 
 ;; <PALETTE>
 ;; 000:1a1c2c5d275db13e53ef7d57ffcd75a7f07038b76425717929366f3b5dc941a6f673eff7f4f4f494b0c2566c86333c57
