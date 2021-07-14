@@ -195,6 +195,23 @@ When b is real then it’s real part is used as modulo for y also."
 ;; Lib ----------------
 (fn is [typ v] (= (type v) typ))
 
+;; Iterators
+
+(local co coroutine)
+
+(fn count [from to ?step]
+    (var i from)
+    (let [inc (or ?step (sign (- to from)))]
+      (assert (= (sign inc) (sign (- to from)))
+              "Can‘t make a range")
+      (while (< i to)
+             (co.yield i i)
+             (set i (incr i inc)))))
+
+(fn irange [from to ?step]
+    (local counter (co.wrap count))
+    (fn [] (counter from to ?step)))
+
 ;; Printing
 
 (fn printc [msg x y ?color]
@@ -366,6 +383,7 @@ Uses polar coordinates and converts to cartesian."
                 (set time (+ time 1))))
 
 {: cx
+ : irange
  : nan
  : nan?
  : sign}

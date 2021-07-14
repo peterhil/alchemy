@@ -246,3 +246,40 @@
             (assert.are.equal {:x (% a.x b)
                                :y (% a.y b)}
                               (% a b)))))
+
+
+;; Lib --------------------------------
+
+(desc "irange"
+      (desc "using positive range"
+            (it "works without step"
+                (assert.same
+                 [0 1 2 3]
+                 (icollect [_ v (hex.irange 0 4)] v)))
+
+            (it "works with step"
+                (assert.same
+                 [0 3 6 9]
+                 (icollect [_ v (hex.irange 0 12 3)] v))))
+
+      (desc "using negative range"
+            (it "works without step"
+                (assert.same
+                 [(- 2) (- 1) (- 0) 1]
+                 (icollect [_ v (hex.irange (- 2) 2)] v)))
+
+            (it "works with step"
+                (assert.same
+                 [(- 16) (- 8) 0 8]
+                 (icollect [_ v (hex.irange (- 16) 16 8)] v))))
+
+      (desc "with invalid range"
+            (local invalid-ranges [{:from 0 :to 3 :step (- 1)}
+                                   {:from (- 2) :to 1 :step (- 1)}
+                                   {:from 3 :to 0 :step 1}
+                                   {:from 2 :to (- 2) :step 1}])
+            (each [_ fx (ipairs invalid-ranges)]
+                  (it "throws error"
+                      (assert.has_error
+                       (fn []
+                           (icollect [_ v (hex.irange fx.from fx.to fx.step)] v)))))))
