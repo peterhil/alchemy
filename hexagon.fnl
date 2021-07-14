@@ -5,7 +5,7 @@
 
 ;; Initialise random number seed – otherwise the seed is constant.
 ;; Read more at http://lua-users.org/wiki/MathLibraryTutorial
-(math.randomseed (time))
+(math.randomseed ((or _G.time os.time)))
 
 (local trace (or _G.trace print))
 
