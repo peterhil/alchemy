@@ -67,6 +67,13 @@
         (nan? v) nan
         (> v 0) 1
         (- 1)))
+(fn even? [v] (= 0 (% v 2)))
+(fn odd? [v] (= 1 (% v 2)))
+(fn incr [v a] (+ v (or a 1)))
+(fn decr [v a] (- v (or a 1)))
+(fn half [v] (/ v 2))
+(fn << [b disp] (math.floor (% (* b (^ 2 (math.floor disp))) (^ 2 32))))
+(fn >> [b disp] (math.floor (/ (% b (^ 2 32)) (^ 2 disp))))
 
 (fn add [a b ...]
     (let [sum (+ (or a 0) (or b 0))]
@@ -79,14 +86,6 @@
       (if (= (select :# ...) 0)
           sum
           (sub sum ...))))
-
-(fn half [v] (/ v 2))
-(fn even? [v] (= 0 (% v 2)))
-(fn odd? [v] (= 1 (% v 2)))
-(fn incr [v a] (+ v (or a 1)))
-(fn decr [v a] (- v (or a 1)))
-(fn << [b disp] (math.floor (% (* b (^ 2 (math.floor disp))) (^ 2 32))))
-(fn >> [b disp] (math.floor (/ (% b (^ 2 32)) (^ 2 disp))))
 
 (lambda iv? [v low high]
   "Is value within half open interval"
