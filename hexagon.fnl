@@ -85,7 +85,7 @@
 (fn odd? [v] (= 1 (% v 2)))
 (fn incr [v a] (+ v (or a 1)))
 (fn decr [v a] (- v (or a 1)))
-(fn << [b disp] (% (* b (^ 2 disp)) (^ 2 32)))
+(fn << [b disp] (math.floor (% (* b (^ 2 (math.floor disp))) (^ 2 32))))
 (fn >> [b disp] (math.floor (/ (% b (^ 2 32)) (^ 2 disp))))
 
 (lambda iv? [v low high]
@@ -382,7 +382,9 @@ Uses polar coordinates and converts to cartesian."
 
                 (set time (+ time 1))))
 
-{: cx
+{: <<
+ : >>
+ : cx
  : irange
  : nan
  : nan?

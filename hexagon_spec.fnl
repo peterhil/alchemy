@@ -86,6 +86,17 @@
       (it "works with nan"
           (assert.true (hex.nan? (hex.sign hex.nan)))))
 
+(desc "bitshift"
+      (it "left"
+          (assert.is.equal
+           32
+           (hex.<< 1 5)))
+
+      (it "right"
+          (assert.is.equal
+           7
+           (hex.>> 0xf0 5))))
+
 ;; Complex numbers
 
 (desc "cx.new"
