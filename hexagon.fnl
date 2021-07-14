@@ -208,13 +208,16 @@ When b is real then it’s real part is used as modulo for y also."
 (fn alt-row-offset [plr]
     (hex-offset 1 (odd-row? plr)))
 
+(fn random-piece []
+    (let [dice (math.random)]
+      (if (< dice map.gems) sp.gem
+          (< dice map.thr) sp.bg
+          sp.blue)))
+
 (fn gen-map [n]
     (var board [])
     (for [i 1 n]
-         (table.insert board (let [dice (math.random)]
-                               (if (< dice map.gems) sp.gem
-                                   (< dice map.thr) sp.bg
-                                   sp.blue))))
+         (table.insert board (random-piece)))
     board)
 
 
