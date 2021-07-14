@@ -3,6 +3,50 @@
 ;; desc:   Hexagonal map demo
 ;; script: fennel
 
+;; Fennel 0.9.0 collect and icollect
+;; MIT Licensed: Copyright © 2016-2021 Calvin Rose and contributors
+;; https://fennel-lang.org/reference#collect-icollect-table-comprehension-macros
+
+(macros
+ {
+  :collect
+  (fn collect* [iter-tbl key-value-expr ...]
+      "Returns a table made by running an iterator and evaluating an expression
+    that returns key-value pairs to be inserted sequentially into the table.
+    This can be thought of as a \"table comprehension\". The provided key-value
+    expression must return either 2 values, or nil."
+      (assert (and (sequence? iter-tbl) (>= (length iter-tbl) 2))
+              "expected iterator binding table")
+      (assert (not= nil key-value-expr) "expected key-value expression")
+      (assert (= nil ...)
+              "expected exactly one body expression. Wrap multiple expressions with do")
+      `(let [tbl# {}]
+         (each ,iter-tbl
+               (match ,key-value-expr
+                      (k# v#) (tset tbl# k# v#)))
+         tbl#))
+
+  :icollect
+  (fn icollect* [iter-tbl value-expr ...]
+      "Returns a sequential table made by running an iterator and evaluating an
+    expression that returns values to be inserted sequentially into the table.
+    This can be thought of as a \"list comprehension\".
+
+    For example,
+      (icollect [_ v (ipairs [1 2 3 4 5])] (when (> v 2) (* v v)))
+    returns
+      [9 16 25]"
+      (assert (and (sequence? iter-tbl) (>= (length iter-tbl) 2))
+              "expected iterator binding table")
+      (assert (not= nil value-expr) "expected table value expression")
+      (assert (= nil ...)
+              "expected exactly one body expression. Wrap multiple expressions with do")
+      `(let [tbl# []]
+         (each ,iter-tbl
+               (tset tbl# (+ (length tbl#) 1) ,value-expr))
+         tbl#))
+  })
+
 ;; Initialise random number seed – otherwise the seed is constant.
 ;; Read more at http://lua-users.org/wiki/MathLibraryTutorial
 (math.randomseed ((or _G.time os.time)))
@@ -242,10 +286,8 @@ When b is real then it’s real part is used as modulo for y also."
           sp.blue)))
 
 (fn gen-map [n]
-    (var board [])
-    (for [i 1 n]
-         (table.insert board (random-piece)))
-    board)
+    (icollect [_ _ (irange 0 n)]
+              (random-piece)))
 
 
 ;; Map and movement ----------------
