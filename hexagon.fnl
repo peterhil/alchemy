@@ -28,7 +28,6 @@
            :blue {:id 4 :tp transp}
            :bg {:id 34 :tp transp}
            :gem {:id 66 :tp 11}})
-
 (local air sp.blue)
 
 ;; Grid settings
@@ -131,15 +130,14 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
 (fn cx.from [num ?imag]
     "Return complex number from numeric argument"
     (let [cm cx-meta]
-      (match
-       [(type num) (getmetatable num)]
-       [:table cm] num
-       [:table  _] (let [{: x : y} num] (cx.new x y))
-       [:number _] (cx.new num
-                           ;: TODO Check type, non-numbers pass through as nils
-                           (tonumber (or ?imag 0)))
-       [:nil nil] (error (.. "Nil given to cx.from"))
-       [_ _] (error (.. "Can’t make a complex number from: " num)))))
+      (match [(type num) (getmetatable num)]
+             [:table cm] num
+             [:table  _] (let [{: x : y} num] (cx.new x y))
+             [:number _] (cx.new num
+                                 ;; TODO Check type, non-numbers pass through as nils
+                                 (tonumber (or ?imag 0)))
+             [:nil nil] (error (.. "Nil given to cx.from"))
+             [_ _] (error (.. "Can’t make a complex number from: " num)))))
 
 (fn cx.abs [a]
     (let [a (cx.from a)]
@@ -213,12 +211,10 @@ When b is real then it’s real part is used as modulo for y also."
 (fn gen-map [n]
     (var board [])
     (for [i 1 n]
-         (table.insert
-          board
-          (let [dice (math.random)]
-            (if (< dice map.gems) sp.gem
-                (< dice map.thr) sp.bg
-                sp.blue))))
+         (table.insert board (let [dice (math.random)]
+                               (if (< dice map.gems) sp.gem
+                                   (< dice map.thr) sp.bg
+                                   sp.blue))))
     board)
 
 
@@ -259,13 +255,15 @@ When b is real then it’s real part is used as modulo for y also."
     "Move player to some direction"
     (let [pos (move plr dir)]
       (if (collision? pos cells)
-          (do (printc (.. "Can not move to (:y " pos.y " :x " pos.x ")")
-                      (half scr.w) (- scr.h 30) 12)
-              plr)
-          (do (if (not (= (cx 0) dir))
-                  (trace (.. "Moving to direction (:x " dir.x " :y " dir.y ") to sextant: "
-                             (sextant (cx.angle dir)))))
-              pos))))
+          (do
+           (printc (.. "Can not move to (:y " pos.y " :x " pos.x ")")
+                   (half scr.w) (- scr.h 30) 12)
+           plr)
+          (do
+           (if (not (= (cx 0) dir))
+               (trace (.. "Moving to direction (:x " dir.x " :y " dir.y ") to sextant: "
+                          (sextant (cx.angle dir)))))
+           pos))))
 
 (fn deviation [plr key]
     "Angle deviation for up and down movement to align with hex grid
@@ -280,13 +278,14 @@ Uses polar coordinates and converts to cartesian."
     (local moves [])
     (each [key angle (pairs directions)]
           (when (_G.btnp (. bt key))
-            (do (btd key)
-                (let [phi (match key
-                                 :u (+ angle (deviation plr key))
-                                 :d (+ angle (deviation plr key))
-                                 angle)
-                      move (cx (chexp phi))]
-                  (table.insert moves move)))))
+            (do
+             (btd key)
+             (let [phi (match key
+                              :u (+ angle (deviation plr key))
+                              :d (+ angle (deviation plr key))
+                              angle)
+                   move (cx (chexp phi))]
+               (table.insert moves move)))))
     (cx (add (table.unpack moves))))
 
 
@@ -335,26 +334,24 @@ Uses polar coordinates and converts to cartesian."
 (var plr (cx {:y 0 :x 7}))
 (var time 0)
 
-(global
- TIC
- (fn tic []
-     (_G.cls 0)
-     (draw-map cells)
+(global TIC (fn tic []
+                (_G.cls 0)
+                (draw-map cells)
 
-     (local dir (dir-events plr))
-     (set plr (new-position plr dir cells))
-     (draw-player plr)
-     (if (is-gem? plr cells)
-         (_G.spr sp.gem.id
-                 (* hex.col (+ plr.x map.dx))
-                 (* hex.row (+ plr.y map.dy))
-                 sp.gem.tp
-                 1 0 0 2 2))
-     (hello)
+                (local dir (dir-events plr))
+                (set plr (new-position plr dir cells))
+                (draw-player plr)
+                (if (is-gem? plr cells)
+                    (_G.spr sp.gem.id
+                            (* hex.col (+ plr.x map.dx))
+                            (* hex.row (+ plr.y map.dy))
+                            sp.gem.tp
+                            1 0 0 2 2))
+                (hello)
 
-     (set time (+ time 1))))
+                (set time (+ time 1))))
 
-{:cx cx}
+{: cx}
 
 ;; <TILES>
 ;; 002:0000006500006555006555556555555555555555555555555555555555555555
