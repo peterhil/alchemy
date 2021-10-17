@@ -58,7 +58,7 @@
 
 ;; Config ----------------
 (local scr {:w 240 :h 136})
-(local map {:w 9  :h 6
+(local map {:w 9  :h 7
             :dx 3 :dy 0
             :thr 0.278
             :gems 0.12
@@ -346,8 +346,12 @@ When b is real then it’s real part is used as modulo for y also."
     "Angle deviation for up and down movement to align with hex grid
 on alternate rows"
     (match key
-           :u (if (odd-row? plr) (/ -1 12) (/  1 12))
-           :d (if (odd-row? plr) (/  1 12) (/ -1 12))))
+           :u (if (and (odd? map.h) (= plr.y 0))
+                  0
+                  (if (odd-row? plr) (/ -1 12) (/  1 12)))
+           :d (if (and (odd? map.h) (= plr.y (decr map.h)))
+                  0
+                  (if (odd-row? plr) (/  1 12) (/ -1 12)))))
 
 (fn dir-events [plr]
     "Get directions from button events.
