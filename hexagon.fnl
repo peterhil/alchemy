@@ -277,9 +277,6 @@ When b is real then it’s real part is used as modulo for y also."
 (fn odd-row? [plr]
     (~= hex.even (odd? plr.y)))
 
-(fn alt-row-offset [plr]
-    (hex-offset 1 (odd-row? plr)))
-
 (fn random-piece []
     (let [dice (math.random)]
       (if (< dice map.gems) sp.gem
