@@ -430,11 +430,11 @@ Uses polar coordinates and converts to cartesian."
                             1 0 0 2 2))
 
                 ;; Highlight neighbours
-                (each [i cell (ipairs (neighbours plr))]
-                      (sp-draw sp.hl (+ (cx cell)
-                                        (cx (hex-offset cell.y (not hex.even)))
-                                        {:x map.dx :y map.dy} ;; TODO Change to x and y
-                                        )))
+                ;; (each [i cell (ipairs (neighbours plr))]
+                ;;       (sp-draw sp.hl (+ (cx cell)
+                ;;                         (cx (hex-offset cell.y (not hex.even)))
+                ;;                         {:x map.dx :y map.dy} ;; TODO Change to x and y
+                ;;                         )))
 
                 (hello)
 
