@@ -215,6 +215,15 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
              :y (+ a.y b.y)}]
       (setmetatable v cx-meta)))
 
+(fn cx.mul [a b]
+    (let [a (cx.from a)
+          b (cx.from b)
+          v {:x (- (* a.x b.x)
+                   (* a.y b.y))
+             :y (+ (* a.x b.y)
+                   (* a.y b.x))}]
+      (setmetatable v cx-meta)))
+
 (fn cx.mod [a b]
     "Complex modulo for wrapping around the map.
 When b is real then it’s real part is used as modulo for y also."
@@ -225,6 +234,7 @@ When b is real then it’s real part is used as modulo for y also."
       (setmetatable v cx-meta)))
 
 (tset cx :add cx.add)
+(tset cx :mul cx.mul)
 (tset cx :equals cx.equals)
 
 (tset cx-meta :__call (fn __call [_ x ?y] (cx.from x ?y)))
@@ -233,6 +243,7 @@ When b is real then it’s real part is used as modulo for y also."
 (tset cx-meta :__add cx.add)
 (tset cx-meta :__eq cx.equals)
 (tset cx-meta :__mod cx.mod)
+(tset cx-meta :__mul cx.mul)
 (setmetatable cx cx-meta)
 
 
