@@ -236,6 +236,7 @@ When b is real then it’s real part is used as modulo for y also."
 (tset cx :add cx.add)
 (tset cx :mul cx.mul)
 (tset cx :equals cx.equals)
+(tset cx :i (cx.new 0 1))
 
 (tset cx-meta :__call (fn __call [_ x ?y] (cx.from x ?y)))
 (tset cx-meta :abs cx.abs)
