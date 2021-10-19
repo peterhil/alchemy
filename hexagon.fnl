@@ -58,16 +58,30 @@
 
 ;; Config ----------------
 (local scr {:w 240 :h 136})
-(local map {:w 9  :h 7
-            :dx 3 :dy 0
-            :thr 0.278
-            :gems 0.12
-            :wrap true})
+(local orientation ; of hexagons
+       :flat
+       ;; :pointy
+       )
+(local map
+       {:w 9  :h 6
+        :dx 3 :dy 0
+        :thr 0.278
+        :gems 0.12
+        :wrap true
+        :style :normal
+        ;; :style :starry
+        })
 
 ;; Palette
 (local transp 0)
 
 ;; Sprites
+(local sp-offset
+       (match [orientation map.style]
+              [:flat :normal] 96
+              [:pointy :starry] 96
+              0))
+
 (local sp {:green {:id 2 :tp transp}
            :blue {:id 4 :tp transp}
            :bg {:id 34 :tp transp}
@@ -77,10 +91,15 @@
 
 ;; Grid settings
 (local size 7)
-(local hex {:w (* size 2) ; width
-            :h (math.floor (* size sq3)) ; height
+(local hex {:w ; width
+               (match orientation
+                      :pointy (* size 2)
+                      :flat (math.floor (* size sq3)))
+            :h ; height
+               (match orientation
+                      :pointy (math.floor (* size sq3))
+                      :flat (* size 2))
             :sp 2 ; spacing
-            :kind :pointy
             :even false})
 (tset hex :col (+ hex.w hex.sp))
 (tset hex :row (+ hex.h hex.sp))
@@ -91,14 +110,10 @@
            :x 4 :z 5
            :a 6 :s 7})
 (local directions
-           {:r (/ 0 6)
-            :z (/ 1 6)
-            :x (/ 2 6)
-            :l (/ 3 6)
-            :a (/ 4 6)
-            :s (/ 5 6)
-            :u (/ 3 4)
-            :d (/ 1 4)})
+       {:r (/  0 24) :z (/ (match orientation :pointy 4 :flat 2) 24)
+        :d (/  6 24) :x (/ (match orientation :pointy 8 :flat 10) 24)
+        :l (/ 12 24) :a (/ (match orientation :pointy 16 :flat 14) 24)
+        :u (/ 18 24) :s (/ (match orientation :pointy 20 :flat 22) 24)})
 
 
 ;; Math ----------------
@@ -280,11 +295,20 @@ When b is real then it’s real part is used as modulo for y also."
 
 ;; Hex grid map
 
-(fn hex-offset [v ?sub]
+(fn odd-offset [v ?sub]
     "Alternate odd rows on grid"
     (let [f (if ?sub sub add)
           o (/ (math.abs (% v 2)) 2)]
       (f 0 o)))
+
+(fn hex-offset [cell]
+    "Adjust odd rows/cols on hexagonal map"
+    (match orientation
+           :pointy (cx.add cell (odd-offset cell.y hex.even))
+           :flat   (cx.add cell (cx.new 0 (odd-offset cell.x hex.even)))))
+
+(fn odd-col? [plr]
+    (~= hex.even (odd? plr.x)))
 
 (fn odd-row? [plr]
     (~= hex.even (odd? plr.y)))
@@ -301,6 +325,8 @@ When b is real then it’s real part is used as modulo for y also."
 
 
 ;; Map and movement ----------------
+
+(local origin (cx.new map.dx map.dy))
 
 (fn get-cell [pos cells]
     (let [fy (math.floor pos.y)
@@ -348,19 +374,32 @@ When b is real then it’s real part is used as modulo for y also."
            pos))))
 
 (fn neighbours [pos]
-    (icollect [_ phi (irange 0 1 (/ 1 6))]
-              (+ (cx pos) (cx (chexp phi)))))
+    (let [phase (if (= orientation :flat) (/ 1 12) 0)]
+      (icollect [_ phi (irange 0 1 (/ 1 6))]
+                (+ (cx pos)
+                   (cx (chexp (+ phi phase)))))))
 
 (fn deviation [plr key]
-    "Angle deviation for up and down movement to align with hex grid
-on alternate rows"
-    (match key
-           :u (if (and (odd? map.h) (= plr.y 0))
-                  0
-                  (if (odd-row? plr) (/ -1 12) (/  1 12)))
-           :d (if (and (odd? map.h) (= plr.y (decr map.h)))
-                  0
-                  (if (odd-row? plr) (/  1 12) (/ -1 12)))))
+    "Angle deviation for up/down (or left/right) movement to align with hex grid
+on alternate rows (cols)"
+    (match [orientation key]
+           [:flat :l]
+           (if (and (odd? map.w) (= plr.x 0))
+               0
+               (if (odd-col? plr) (/ 1 12) (/ -1 12)))
+           [:flat :r]
+           (if (and (odd? map.w) (= plr.x (decr map.w)))
+               0
+               (if (odd-col? plr) (/ -1 12) (/ 1 12)))
+           [:pointy :u]
+           (if (and (odd? map.h) (= plr.y 0))
+               0
+               (if (odd-row? plr) (/ -1 12) (/ 1 12)))
+           [:pointy :d]
+           (if (and (odd? map.h) (= plr.y (decr map.h)))
+               0
+               (if (odd-row? plr) (/ 1 12) (/ -1 12)))
+           0))
 
 (fn dir-events [plr]
     "Get directions from button events.
@@ -370,10 +409,7 @@ Uses polar coordinates and converts to cartesian."
           (when (_G.btnp (. bt key))
             (do
              (btd key)
-             (let [phi (match key
-                              :u (+ angle (deviation plr key))
-                              :d (+ angle (deviation plr key))
-                              angle)
+             (let [phi (+ angle (deviation plr key))
                    move (cx (chexp phi))]
                (table.insert moves move)))))
     (cx (add (table.unpack moves))))
@@ -387,14 +423,15 @@ Uses polar coordinates and converts to cartesian."
 (fn sp-draw [sprite cell]
     "Draw sprite id on cell with x and y coordinates"
     (let [{: x : y} cell]
-      (_G.spr sprite.id
-           (* (+ x (hex-offset y hex.even)) hex.col)
+      (_G.spr (+ sprite.id sp-offset)
+           (* x hex.col)
            (* y hex.row)
            sprite.tp 1 0 0 2 2)))
 
 (fn draw-map [cells]
     "Draw hexagonal grid"
     (var i 0)
+    ; TODO Calculate indices only once
     (for [y 0 (- map.h 1)]
          (for [x 0 (- map.w 1)]
               (set i (+ i 1))
@@ -402,8 +439,8 @@ Uses polar coordinates and converts to cartesian."
                     pos (cx {:y (+ y map.dy)
                              :x (+ x map.dx)})]
                 (when (is-gem? {: x : y} cells)
-                  (sp-draw sp.blue pos))
-                (sp-draw cell pos)))))
+                  (sp-draw sp.blue (hex-offset pos)))
+                (sp-draw cell (hex-offset pos))))))
 
 (fn draw-player [plr]
     "Draw player"
@@ -412,10 +449,15 @@ Uses polar coordinates and converts to cartesian."
           ]
       (printc (.. :player " x: " x " y: " y)
               (half scr.w) (- scr.h 10) 15)
-      (_G.spr id
-           (* hex.col (+ x map.dx))
-           (* hex.row (+ y map.dy))
+      (_G.spr (+ id sp-offset)
+           (* x hex.col)
+           (* y hex.row)
            transp 1 0 0 2 2)))
+
+(fn draw-neighbours [pos]
+    "Highlight neighbours"
+    (each [i cell (ipairs (neighbours pos))]
+          (sp-draw sp.hl cell)))
 
 
 ;; Main ----------------
@@ -430,20 +472,13 @@ Uses polar coordinates and converts to cartesian."
 
                 (local dir (dir-events plr))
                 (set plr (new-position plr dir cells))
-                (draw-player plr)
-                (if (is-gem? plr cells)
-                    (_G.spr sp.gem.id
-                            (* hex.col (+ plr.x map.dx))
-                            (* hex.row (+ plr.y map.dy))
-                            sp.gem.tp
-                            1 0 0 2 2))
 
-                ;; Highlight neighbours
-                ;; (each [i cell (ipairs (neighbours plr))]
-                ;;       (sp-draw sp.hl (+ (cx cell)
-                ;;                         (cx (hex-offset cell.y (not hex.even)))
-                ;;                         {:x map.dx :y map.dy} ;; TODO Change to x and y
-                ;;                         )))
+                (draw-player (+ origin plr))
+
+                (if (is-gem? plr cells)
+                    (sp-draw sp.gem (+ origin plr)))
+
+                ;; (draw-neighbours (+ origin plr))
 
                 (hello)
 
