@@ -432,7 +432,11 @@ Uses polar coordinates and converts to cartesian."
 
 ;; Game logic -------
 
-(local level 10)
+(local cheat true)
+(local keys {:comma 45 :period 46})
+(local hold 60)
+(local period 60)
+
 (local sephiroth
        [(cx  0 0.5) ; keter
         (cx  1 1)   ; chochmah
@@ -445,6 +449,8 @@ Uses polar coordinates and converts to cartesian."
         (cx  0 3.5) ; jesod
         (cx  0 4.5) ; malkuth
         ])
+
+(var level 10)
 
 
 ;; Side effects --------
@@ -506,6 +512,14 @@ Uses polar coordinates and converts to cartesian."
 
 (global TIC (fn tic []
                 (_G.cls 0)
+
+                (when cheat
+                  (do
+                   (when (_G.keyp keys.comma hold period)
+                     (set level (math.min 10 (incr level))))
+                   (when (_G.keyp keys.period hold period)
+                     (set level (math.max 1 (decr level))))))
+
                 (draw-map cells)
                 (draw-sephiroth)
 
