@@ -64,7 +64,7 @@
        )
 (local map
        {:w 9  :h 6
-        :dx 3 :dy 0
+        :dx 4 :dy 0
         :thr 0.278
         :gems 0.12
         :wrap true
@@ -109,6 +109,7 @@
            :l 2 :r 3
            :x 4 :z 5
            :a 6 :s 7})
+
 (local directions
        {:r (/  0 24) :z (/ (match orientation :pointy 4 :flat 2) 24)
         :d (/  6 24) :x (/ (match orientation :pointy 8 :flat 10) 24)
@@ -307,6 +308,12 @@ When b is real then it’s real part is used as modulo for y also."
            :pointy (cx.add cell (odd-offset cell.y hex.even))
            :flat   (cx.add cell (cx.new 0 (odd-offset cell.x hex.even)))))
 
+(local odd-edge-directions
+       {:r (cx  1 0) :z (match orientation :pointy (cx  1  1) :flat (cx  1  1))
+        :d (cx  0 1) :x (match orientation :pointy (cx -1  1) :flat (cx -1  1))
+        :l (cx -1 0) :a (match orientation :pointy (cx -1 -1) :flat (cx -1 -1))
+        :u (cx 0 -1) :s (match orientation :pointy (cx  1 -1) :flat (cx  1 -1)) })
+
 (fn odd-col? [plr]
     (~= hex.even (odd? plr.x)))
 
@@ -348,6 +355,23 @@ When b is real then it’s real part is used as modulo for y also."
      (iv? pos.x 0 map.w)
      (iv? pos.y 0 map.h)))
 
+(fn odd-map? []
+    (match orientation
+           :flat (odd? map.w)
+           :pointy (odd? map.h)
+           false))
+
+(fn on-smooth-edge? [plr]
+    "Is the player on the smooth edge of the map?"
+    (match orientation
+           :flat
+           (or (= plr.x 0)
+               (= plr.x (decr map.w)))
+           :pointy
+           (or (= plr.y 0)
+               (= plr.y (decr map.h)))
+           false))
+
 (fn collision? [pos cells]
     (or (not (in-map? pos))
         (not (can-move? pos cells))))
@@ -367,11 +391,7 @@ When b is real then it’s real part is used as modulo for y also."
            (printc (.. "Can not move to (:y " pos.y " :x " pos.x ")")
                    (half scr.w) (- scr.h 30) 12)
            plr)
-          (do
-           (if (not (= (cx 0) dir))
-               (trace (.. "Moving to direction (:x " dir.x " :y " dir.y ") to sextant: "
-                          (sextant (cx.angle dir)))))
-           pos))))
+          pos)))
 
 (fn neighbours [pos]
     (let [phase (if (= orientation :flat) (/ 1 12) 0)]
@@ -384,22 +404,24 @@ When b is real then it’s real part is used as modulo for y also."
 on alternate rows (cols)"
     (match [orientation key]
            [:flat :l]
-           (if (and (odd? map.w) (= plr.x 0))
-               0
-               (if (odd-col? plr) (/ 1 12) (/ -1 12)))
+           (if (odd-col? plr) (/ 1 12) (/ -1 12))
            [:flat :r]
-           (if (and (odd? map.w) (= plr.x (decr map.w)))
-               0
-               (if (odd-col? plr) (/ -1 12) (/ 1 12)))
+           (if (odd-col? plr) (/ -1 12) (/ 1 12))
            [:pointy :u]
-           (if (and (odd? map.h) (= plr.y 0))
-               0
-               (if (odd-row? plr) (/ -1 12) (/ 1 12)))
+           (if (odd-row? plr) (/ -1 12) (/ 1 12))
            [:pointy :d]
-           (if (and (odd? map.h) (= plr.y (decr map.h)))
-               0
-               (if (odd-row? plr) (/ 1 12) (/ -1 12)))
+           (if (odd-row? plr) (/ 1 12) (/ -1 12))
            0))
+
+(fn hex-move [plr angle key]
+    "Get next position for the player based on angle of movement"
+    (let [phi (+ angle (deviation plr key))
+          next-pos (cx (chexp phi))]
+      (if (and (odd-map?) (on-smooth-edge? plr))
+          (if (in-map? (+ plr next-pos))
+              next-pos
+              (. odd-edge-directions key))
+          next-pos)))
 
 (fn dir-events [plr]
     "Get directions from button events.
@@ -409,9 +431,7 @@ Uses polar coordinates and converts to cartesian."
           (when (_G.btnp (. bt key))
             (do
              (btd key)
-             (let [phi (+ angle (deviation plr key))
-                   move (cx (chexp phi))]
-               (table.insert moves move)))))
+             (table.insert moves (hex-move plr angle key)))))
     (cx (add (table.unpack moves))))
 
 
@@ -463,7 +483,7 @@ Uses polar coordinates and converts to cartesian."
 ;; Main ----------------
 
 (var cells (gen-map (* map.w map.h)))
-(var plr (cx {:y 0 :x 7}))
+(var plr (cx {:y 0 :x 0}))
 (var time 0)
 
 (global TIC (fn tic []
