@@ -1,7 +1,9 @@
-;; title:  Hexagonal map
+;; title:  Alchemy
 ;; author: peterhil
-;; desc:   Hexagonal map demo
+;; desc:   Alchemy of the soul and the holy sephiroth
 ;; script: fennel
+;;
+;; MIT Licensed: Copyright © 2021 Peter H.
 
 ;; Fennel 0.9.0 collect and icollect
 ;; MIT Licensed: Copyright © 2016-2021 Calvin Rose and contributors
@@ -430,7 +432,7 @@ Uses polar coordinates and converts to cartesian."
 ;; Side effects --------
 
 (fn hello []
-    (printc "HEXAGONAL WORLD!" (half scr.w) (- scr.h 20) 12))
+    (printc "ALCHEMY of the SOUL!" (half scr.w) (- scr.h 20) 12))
 
 (fn sp-draw [sprite cell]
     "Draw sprite id on cell with x and y coordinates"

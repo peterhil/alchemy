@@ -1,9 +1,14 @@
-# Hexagonal maps for Tic-80
+# Alchemy
 
-Write games in Fennel Lisp with hexagonal maps!
+A game of alchemy where you advance on the Tree of Life.
 
-Includes some obscure comples mathematics, but don‘t worry the code
-should be documented and names quite self explanatory.
+You need to collect things from a hexagonal map that are related to
+the ten sephiroth, and keep the tree in balance while doing so –
+otherwise you might slip back levels.
+
+The game is written in Fennel Lisp.
+
+Includes some obscure complex mathematics and weird emanations of forms.
 
 ## Testing
 
