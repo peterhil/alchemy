@@ -438,17 +438,16 @@ Uses polar coordinates and converts to cartesian."
 (local period 60)
 
 (local sephiroth
-       [(cx  0 0.5) ; keter
-        (cx  1 1)   ; chochmah
-        (cx -1 1)   ; binah
-        (cx  1 2)   ; chesed
-        (cx -1 2)   ; gewurah
-        (cx  0 2.5) ; tiphereth
-        (cx  1 3)   ; nezach
-        (cx -1 3)   ; hod
-        (cx  0 3.5) ; jesod
-        (cx  0 4.5) ; malkuth
-        ])
+       [{:name :keter     :pos (cx  0 0.5)}
+        {:name :chochmah  :pos (cx  1 1)}
+        {:name :binah     :pos (cx -1 1)}
+        {:name :chesed    :pos (cx  1 2)}
+        {:name :gewurah   :pos (cx -1 2)}
+        {:name :tiphereth :pos (cx  0 2.5)}
+        {:name :nezach    :pos (cx  1 3)}
+        {:name :hod       :pos (cx -1 3)}
+        {:name :jesod     :pos (cx  0 3.5)}
+        {:name :malkuth   :pos (cx  0 4.5)}])
 
 (var level 10)
 
@@ -501,7 +500,7 @@ Uses polar coordinates and converts to cartesian."
     (each [idx sephirah (ipairs sephiroth)]
           (let [origin (cx 1 0)
                 colour (if (<= level idx) sp.green sp.purple)]
-            (sp-draw colour (+ origin sephirah)))))
+            (sp-draw colour (+ origin sephirah.pos)))))
 
 
 ;; Main ----------------
@@ -522,6 +521,7 @@ Uses polar coordinates and converts to cartesian."
 
                 (draw-map cells)
                 (draw-sephiroth)
+                (printc (. (. sephiroth level) :name) 24 100 5)
 
                 (local dir (dir-events plr))
                 (set plr (new-position plr dir cells))
