@@ -364,12 +364,10 @@ When b is real then it’s real part is used as modulo for y also."
 (fn on-smooth-edge? [plr]
     "Is the player on the smooth edge of the map?"
     (match orientation
-           :flat
-           (or (= plr.x 0)
-               (= plr.x (decr map.w)))
-           :pointy
-           (or (= plr.y 0)
-               (= plr.y (decr map.h)))
+           :flat (or (= plr.x 0)
+                     (= plr.x (decr map.w)))
+           :pointy (or (= plr.y 0)
+                       (= plr.y (decr map.h)))
            false))
 
 (fn collision? [pos cells]
@@ -387,10 +385,9 @@ When b is real then it’s real part is used as modulo for y also."
     "Move player to some direction"
     (let [pos (move plr dir)]
       (if (collision? pos cells)
-          (do
-           (printc (.. "Can not move to (:y " pos.y " :x " pos.x ")")
-                   (half scr.w) (- scr.h 30) 12)
-           plr)
+          (do (printc (.. "Can not move to (:y " pos.y " :x " pos.x ")")
+                      (half scr.w) (- scr.h 30) 12)
+              plr)
           pos)))
 
 (fn neighbours [pos]
@@ -403,14 +400,10 @@ When b is real then it’s real part is used as modulo for y also."
     "Angle deviation for up/down (or left/right) movement to align with hex grid
 on alternate rows (cols)"
     (match [orientation key]
-           [:flat :l]
-           (if (odd-col? plr) (/ 1 12) (/ -1 12))
-           [:flat :r]
-           (if (odd-col? plr) (/ -1 12) (/ 1 12))
-           [:pointy :u]
-           (if (odd-row? plr) (/ -1 12) (/ 1 12))
-           [:pointy :d]
-           (if (odd-row? plr) (/ 1 12) (/ -1 12))
+           [:flat :l]   (if (odd-col? plr) (/ 1 12) (/ -1 12))
+           [:flat :r]   (if (odd-col? plr) (/ -1 12) (/ 1 12))
+           [:pointy :u] (if (odd-row? plr) (/ -1 12) (/ 1 12))
+           [:pointy :d] (if (odd-row? plr) (/ 1 12) (/ -1 12))
            0))
 
 (fn hex-move [plr angle key]
@@ -429,9 +422,8 @@ Uses polar coordinates and converts to cartesian."
     (local moves [])
     (each [key angle (pairs directions)]
           (when (_G.btnp (. bt key))
-            (do
-             (btd key)
-             (table.insert moves (hex-move plr angle key)))))
+            (do (btd key)
+                (table.insert moves (hex-move plr angle key)))))
     (cx (add (table.unpack moves))))
 
 
