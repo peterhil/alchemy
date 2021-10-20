@@ -432,19 +432,19 @@ Uses polar coordinates and converts to cartesian."
 
 ;; Game logic -------
 
+(local level 10)
 (local sephiroth
-       {
-        :keter     (cx  0 0.5)
-        :chochmah  (cx  1 1)
-        :binah     (cx -1 1)
-        :chesed    (cx  1 2)
-        :gewurah   (cx -1 2)
-        :tiphereth (cx  0 2.5)
-        :nezach    (cx  1 3)
-        :hod       (cx -1 3)
-        :jesod     (cx  0 3.5)
-        :malkuth   (cx  0 4.5)
-        })
+       [(cx  0 0.5) ; keter
+        (cx  1 1)   ; chochmah
+        (cx -1 1)   ; binah
+        (cx  1 2)   ; chesed
+        (cx -1 2)   ; gewurah
+        (cx  0 2.5) ; tiphereth
+        (cx  1 3)   ; nezach
+        (cx -1 3)   ; hod
+        (cx  0 3.5) ; jesod
+        (cx  0 4.5) ; malkuth
+        ])
 
 
 ;; Side effects --------
@@ -492,8 +492,10 @@ Uses polar coordinates and converts to cartesian."
           (sp-draw sp.hl cell)))
 
 (fn draw-sephiroth []
-    (each [_ sephirah (pairs sephiroth)]
-          (sp-draw sp.purple (+ (cx 1 0) sephirah))))
+    (each [idx sephirah (ipairs sephiroth)]
+          (let [origin (cx 1 0)
+                colour (if (<= level idx) sp.green sp.purple)]
+            (sp-draw colour (+ origin sephirah)))))
 
 
 ;; Main ----------------
