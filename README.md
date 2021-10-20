@@ -14,4 +14,4 @@ Includes some obscure complex mathematics and weird emanations of forms.
 
 Run tests with the `fennel` command:
 
-    fennel hexagon_spec.fnl
+    fennel alchemy_spec.fnl

@@ -3,7 +3,7 @@
 
 (local r math.random)
 
-(local hex (require :hexagon))
+(local hex (require :alchemy))
 (local cx hex.cx)
 
 ;; Initialise random number seed – otherwise the seed is constant.
