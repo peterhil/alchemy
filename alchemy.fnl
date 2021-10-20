@@ -87,7 +87,7 @@
 (local sp {:green {:id 2 :tp transp}
            :blue {:id 4 :tp transp}
            :bg {:id 34 :tp transp}
-           :gem {:id 66 :tp 11}
+           :gem {:id 322 :tp 11}
            :hl {:id 290 :tp transp}})
 (local air sp.blue)
 
@@ -519,10 +519,6 @@ Uses polar coordinates and converts to cartesian."
 ;; 035:f00000000ff00000000ff00000000ff0000000f0000000f0000000f0000000f0
 ;; 050:f0000000f0000000f0000000f0000000ff00000000ff00000000ff00000000ff
 ;; 051:000000f0000000f0000000f0000000f000000ff0000ff0000ff00000f0000000
-;; 066:bbbbbbbbbbbbbbbbbbbbbbbbbbbbffffbbbfdccdbbfdcbbcbfdcbcfebfcdcfde
-;; 067:bbbbbbbbbbbbbbbbbbbbbbbbf0fbbbbbccdfbbbbedbdfbbbdcdebfbbed00dfbb
-;; 082:bbfcdefdbbbfcdfebbbbfcdcbbbbbfcbbbbbbbfcbbbbbbbfbbbbbbbbbbbbbbbb
-;; 083:f00dfbbbcfefbbbbfefbbbbbdfbbbbbbfbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 ;; 098:0006555500055555006555550055555506555555055555556555555555555555
 ;; 099:5555600055555000555556005555550055555560555555505555555655555555
 ;; 100:000abbbb000bbbbb00abbbbb00bbbbbb0abbbbbb0bbbbbbbabbbbbbbbbbbbbbb
@@ -535,10 +531,6 @@ Uses polar coordinates and converts to cartesian."
 ;; 131:fffff0000000f00000000f0000000f00000000f0000000f00000000f0000000f
 ;; 146:f00000000f0000000f00000000f0000000f00000000f0000000fffff00000000
 ;; 147:0000000f000000f0000000f000000f0000000f000000f000fffff00000000000
-;; 162:bbbbbbbbbbbbbbbbbbbbbbbbbbbbffffbbbfdccdbbfdcbbcbfdcbcfebfcdcfde
-;; 163:bbbbbbbbbbbbbbbbbbbbbbbbf0fbbbbbccdfbbbbedbdfbbbdcdebfbbed00dfbb
-;; 178:bbfcdefdbbbfcdfebbbbfcdcbbbbbfcbbbbbbbfcbbbbbbbfbbbbbbbbbbbbbbbb
-;; 179:f00dfbbbcfefbbbbfefbbbbbdfbbbbbbfbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 ;; </TILES>
 
 ;; <SPRITES>
@@ -546,6 +538,14 @@ Uses polar coordinates and converts to cartesian."
 ;; 035:d00000000dd00000000dd00000000dd0000000d0000000d0000000d0000000d0
 ;; 050:d0000000d0000000d0000000d0000000dd00000000dd00000000dd00000000dd
 ;; 051:000000d0000000d0000000d0000000d000000dd0000dd0000dd00000d0000000
+;; 066:bbbbbbbbbbbbbbbbbbbbbbbbbbbbffffbbbfdccdbbfdcbbcbfdcbcfebfcdcfde
+;; 067:bbbbbbbbbbbbbbbbbbbbbbbbf0fbbbbbccdfbbbbedbdfbbbdcdebfbbed00dfbb
+;; 082:bbfcdefdbbbfcdfebbbbfcdcbbbbbfcbbbbbbbfcbbbbbbbfbbbbbbbbbbbbbbbb
+;; 083:f00dfbbbcfefbbbbfefbbbbbdfbbbbbbfbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+;; 162:bbbbbbbbbbbbbbbbbbbbbbbbbbbbffffbbbfdccdbbfdcbbcbfdcbcfebfcdcfde
+;; 163:bbbbbbbbbbbbbbbbbbbbbbbbf0fbbbbbccdfbbbbedbdfbbbdcdebfbbed00dfbb
+;; 178:bbfcdefdbbbfcdfebbbbfcdcbbbbbfcbbbbbbbfcbbbbbbbfbbbbbbbbbbbbbbbb
+;; 179:f00dfbbbcfefbbbbfefbbbbbdfbbbbbbfbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 ;; </SPRITES>
 
 ;; <PALETTE>
