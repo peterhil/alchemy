@@ -65,13 +65,13 @@
        ;; :pointy
        )
 (local map
-       {:w 9  :h 6
+       {:w 7 :h 5
         :dx 4 :dy 0
         :thr 0.278
         :gems 0.12
         :wrap true
-        :style :normal
-        ;; :style :starry
+        ;; :style :normal
+        :style :starry
         })
 
 ;; Palette
@@ -102,7 +102,7 @@
                (match orientation
                       :pointy (math.floor (* size sq3))
                       :flat (* size 2))
-            :sp 2 ; spacing
+            :sp 3 ; spacing
             :even false})
 (tset hex :col (+ hex.w hex.sp))
 (tset hex :row (+ hex.h hex.sp))
