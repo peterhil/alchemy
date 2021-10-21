@@ -59,6 +59,9 @@
 (local sq3 (math.sqrt 3))
 
 ;; Config ----------------
+
+(var level 10)
+
 (local scr {:w 240 :h 136})
 (local orientation ; of hexagons
        :flat
@@ -69,7 +72,6 @@
         :dx 4 :dy 0
         :thr 0.278
         :gems 0.12
-        :wrap true
         ;; :style :normal
         :style :starry
         })
@@ -377,10 +379,13 @@ When b is real then it’s real part is used as modulo for y also."
     (or (not (in-map? pos))
         (not (can-move? pos cells))))
 
+(fn wrap-map? [level]
+    (< level 9))
+
 (fn move [val dir]
     "Move complex value to some direction on map"
     (let [cxmap (cx.new map.w map.h)]
-      (if map.wrap
+      (if (wrap-map? level)
           (% (+ val dir) cxmap)
           (+ val dir))))
 
@@ -448,8 +453,6 @@ Uses polar coordinates and converts to cartesian."
         {:name :hod       :pos (cx -1 3)}
         {:name :jesod     :pos (cx  0 3.5)}
         {:name :malkuth   :pos (cx  0 4.5)}])
-
-(var level 10)
 
 
 ;; Side effects --------
