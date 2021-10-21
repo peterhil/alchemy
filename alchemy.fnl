@@ -379,8 +379,16 @@ When b is real then it’s real part is used as modulo for y also."
     (or (not (in-map? pos))
         (not (can-move? pos cells))))
 
+(fn allowed-directions [level]
+    (if (<= level 9) ; Yesod
+        directions
+        (collect [key dir (pairs directions)]
+                 (when (and (~= key :l)
+                            (~= key :r))
+                   (values key dir)))))
+
 (fn wrap-map? [level]
-    (< level 9))
+    (<= level 6)) ; Tiphereth
 
 (fn move [val dir]
     "Move complex value to some direction on map"
@@ -428,7 +436,7 @@ on alternate rows (cols)"
     "Get directions from button events.
 Uses polar coordinates and converts to cartesian."
     (local moves [])
-    (each [key angle (pairs directions)]
+    (each [key angle (pairs (allowed-directions level))]
           (when (_G.btnp (. bt key))
             (do (btd key)
                 (table.insert moves (hex-move plr angle key)))))
