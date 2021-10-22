@@ -333,7 +333,12 @@ When b is real then it’s real part is used as modulo for y also."
     (let [dice (math.random)]
       (if (< dice map.gems) sp.gem
           (< dice map.thr) sp.bg
-          sp.blue)))
+          air)))
+
+(fn random-sample [seq]
+    (let [len (length seq)
+          idx (math.random len)]
+      (. idx seq)))
 
 (fn gen-map [n]
     (icollect [_ _ (irange 0 n)]
@@ -357,6 +362,10 @@ When b is real then it’s real part is used as modulo for y also."
     (let [cell (get-cell pos cells)]
       (or (= air cell)
           (= sp.gem cell))))
+
+(fn free-cell? [pos cells]
+    (let [cell (get-cell pos cells)]
+      (= air cell)))
 
 (fn is-gem? [pos cells]
     (let [cell (get-cell pos cells)]
@@ -494,7 +503,7 @@ Uses polar coordinates and converts to cartesian."
                     pos (cx {:y (+ y map.dy)
                              :x (+ x map.dx)})]
                 (when (is-gem? {: x : y} cells)
-                  (sp-draw sp.blue (hex-offset pos)))
+                  (sp-draw air (hex-offset pos)))
                 (sp-draw cell (hex-offset pos))))))
 
 (fn draw-player [plr]
