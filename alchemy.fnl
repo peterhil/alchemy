@@ -272,6 +272,10 @@ When b is real then it’s real part is used as modulo for y also."
 ;; Lib ----------------
 (fn is [typ v] (= (type v) typ))
 
+(fn filter [fun seq]
+    (icollect [k v (ipairs seq)]
+              (when (fun v k) v)))
+
 ;; Iterators
 
 (local co coroutine)
@@ -559,9 +563,11 @@ Uses polar coordinates and converts to cartesian."
 {: <<
  : >>
  : cx
+ : filter
  : irange
  : nan
  : nan?
+ : odd?
  : sign}
 
 ;; <TILES>
