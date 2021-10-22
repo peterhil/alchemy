@@ -340,11 +340,14 @@ When b is real then it’s real part is used as modulo for y also."
 
 (local origin (cx.new map.dx map.dy))
 
-(fn get-cell [pos cells]
+(fn cell-index [pos cells]
     (let [fy (math.floor pos.y)
           fx (math.floor (incr pos.x))
           idx (+ (* fy map.w) fx)]
-      (. cells idx)))
+      idx))
+
+(fn get-cell [pos cells]
+    (. cells (cell-index pos cells)))
 
 (fn can-move? [pos cells]
     (let [cell (get-cell pos cells)]
@@ -540,7 +543,12 @@ Uses polar coordinates and converts to cartesian."
                 (draw-player (+ origin plr))
 
                 (if (is-gem? plr cells)
-                    (sp-draw sp.gem (+ origin plr)))
+                    (let [idx (cell-index plr cells)]
+                      (tset cells idx air)
+                      ;; Play sound FX
+                      ;; Animate collecting for some frames
+                      ;; (sp-draw sp.hl (+ origin plr))
+                      ))
 
                 ;; (draw-neighbours (+ origin plr))
 
