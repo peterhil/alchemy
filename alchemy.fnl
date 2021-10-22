@@ -135,8 +135,8 @@
         (- 1)))
 (fn even? [v] (= 0 (% v 2)))
 (fn odd? [v] (= 1 (% v 2)))
-(fn incr [v a] (+ v (or a 1)))
-(fn decr [v a] (- v (or a 1)))
+(fn incr [v ?a] (+ v (or ?a 1)))
+(fn decr [v ?a] (- v (or ?a 1)))
 (fn half [v] (/ v 2))
 (fn << [b disp] (math.floor (% (* b (^ 2 (math.floor disp))) (^ 2 32))))
 (fn >> [b disp] (math.floor (/ (% b (^ 2 32)) (^ 2 disp))))
@@ -272,9 +272,14 @@ When b is real then it’s real part is used as modulo for y also."
 ;; Lib ----------------
 (fn is [typ v] (= (type v) typ))
 
-(fn filter [fun seq]
-    (icollect [k v (ipairs seq)]
-              (when (fun v k) v)))
+(fn ifilter [pred seq]
+    (icollect [_ v (ipairs seq)]
+              (when (pred v) v)))
+
+(fn filter [pred seq]
+    (collect [k v (pairs seq)]
+             (when (pred v)
+               (values k v))))
 
 ;; Iterators
 
@@ -573,6 +578,7 @@ Uses polar coordinates and converts to cartesian."
  : >>
  : cx
  : filter
+ : ifilter
  : irange
  : nan
  : nan?

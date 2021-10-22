@@ -296,9 +296,18 @@
                            (icollect [_ v (hex.irange fx.from fx.to fx.step)] v)))))))
 
 (desc "filter"
-      (desc "using list"
-            (it "works"
-                (assert.same
-                 [1 3 5 7]
-                 (hex.filter hex.odd?
-                             (icollect [_ v (hex.irange 0 8)] v))))))
+      (it "works with tables"
+          (let [gt? (fn [v] (> v 6))]
+            (assert.same
+             {:c 7 :d 8}
+             (hex.filter gt?
+                         (collect [k v (pairs {:a 5 :b 6 :c 7 :d 8})]
+                                  (values k v)))))))
+
+(desc "ifilter"
+      (it "works with lists"
+          (assert.same
+           [1 3 5 7]
+           (hex.ifilter hex.odd?
+                        (icollect [_ v (hex.irange 0 8)]
+                                  v)))))
