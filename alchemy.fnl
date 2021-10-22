@@ -564,6 +564,7 @@ Uses polar coordinates and converts to cartesian."
                     (let [idx (cell-index plr cells)]
                       (tset cells idx air)
                       ;; Play sound FX
+                      (_G.sfx 1 "a#6" 15)
                       ;; Animate collecting for some frames
                       ;; (sp-draw sp.hl (+ origin plr))
                       ))
