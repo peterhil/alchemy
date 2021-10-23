@@ -278,7 +278,7 @@ When b is real then it’s real part is used as modulo for y also."
 
 (fn filter [pred seq]
     (collect [k v (pairs seq)]
-             (when (pred v)
+             (when (pred v k)
                (values k v))))
 
 ;; Iterators
@@ -340,10 +340,11 @@ When b is real then it’s real part is used as modulo for y also."
           (< dice map.thr) sp.bg
           air)))
 
+(fn random-index [seq]
+    (math.random (length seq)))
+
 (fn random-sample [seq]
-    (let [len (length seq)
-          idx (math.random len)]
-      (. idx seq)))
+    (. (random-index seq) seq))
 
 (fn gen-map [n]
     (icollect [_ _ (irange 0 n)]
@@ -567,7 +568,12 @@ Uses polar coordinates and converts to cartesian."
                       (_G.sfx 1 "a#6" 15)
                       ;; Animate collecting for some frames
                       ;; (sp-draw sp.hl (+ origin plr))
-                      ))
+
+                      ;; Add new gem to table
+                      ;; TODO Use some distribution to select the level
+                      (let [space (filter (fn [cell] (= air cell)) cells)
+                            idx (random-index space)]
+                        (tset cells idx sp.gem))))
 
                 ;; (draw-neighbours (+ origin plr))
 
