@@ -89,7 +89,7 @@
 (local sp {:green {:id 2 :tp transp}
            :blue {:id 4 :tp transp}
            :purple {:id 6 :tp transp}
-           :dim {:id 34 :tp transp}
+           :ain {:id 34 :tp transp}
            :gem {:id 322 :tp 11}
            :moon {:id 324 :tp 11}
            :mercurius {:id 326 :tp 11}
@@ -350,7 +350,7 @@ When b is real then it’s real part is used as modulo for y also."
 (fn random-piece []
     (let [dice (math.random)]
       (if (< dice map.gems) sp.gem
-          (< dice map.thr) sp.dim
+          (< dice map.thr) sp.ain
           air)))
 
 (fn random-index [seq]
@@ -497,11 +497,11 @@ Uses polar coordinates and converts to cartesian."
 (local period 60)
 
 (local sephiroth
-       [{:name :keter     :pos (cx  0 0.5) :sp sp.dim}
-        {:name :chochmah  :pos (cx  1 1) :sp sp.dim}
-        {:name :binah     :pos (cx -1 1) :sp sp.dim}
-        {:name :chesed    :pos (cx  1 2) :sp sp.dim}
-        {:name :gewurah   :pos (cx -1 2) :sp sp.dim}
+       [{:name :keter     :pos (cx  0 0.5) :sp sp.ain}
+        {:name :chochmah  :pos (cx  1 1) :sp sp.ain}
+        {:name :binah     :pos (cx -1 1) :sp sp.ain}
+        {:name :chesed    :pos (cx  1 2) :sp sp.ain}
+        {:name :gewurah   :pos (cx -1 2) :sp sp.ain}
         {:name :tiphereth :pos (cx  0 2.5) :sp sp.sun}
         {:name :nezach    :pos (cx  1 3) :sp sp.venus}
         {:name :hod       :pos (cx -1 3) :sp sp.mercurius}
@@ -518,7 +518,8 @@ Uses polar coordinates and converts to cartesian."
         :chesed 0
         :binah 0
         :chochmah 0
-        :keter 0})
+        :keter 0
+        :ain 0})
 
 
 ;; Side effects --------
