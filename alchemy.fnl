@@ -96,6 +96,7 @@
            :venus {:id 328 :tp 11}
            :sun {:id 330 :tp 11}
            :mars {:id 386 :tp 11}
+           :jupiter {:id 388 :tp 4}
            :hl {:id 290 :tp transp}})
 (local air sp.blue)
 
@@ -104,7 +105,8 @@
                sp.mercurius
                sp.venus
                sp.sun
-               sp.mars])
+               sp.mars
+               sp.jupiter])
 
 ;; Grid settings
 (local size 7)
@@ -498,7 +500,7 @@ Uses polar coordinates and converts to cartesian."
        [{:name :keter     :pos (cx  0 0.5) :sp sp.ain}
         {:name :chochmah  :pos (cx  1 1) :sp sp.ain}
         {:name :binah     :pos (cx -1 1) :sp sp.ain}
-        {:name :chesed    :pos (cx  1 2) :sp sp.ain}
+        {:name :chesed    :pos (cx  1 2) :sp sp.jupiter}
         {:name :gewurah   :pos (cx -1 2) :sp sp.mars}
         {:name :tiphereth :pos (cx  0 2.5) :sp sp.sun}
         {:name :nezach    :pos (cx  1 3) :sp sp.venus}
@@ -735,8 +737,12 @@ Uses polar coordinates and converts to cartesian."
 ;; 123:4c4993bbc4c495bb444934bbc49325bb993216bb3545656b29bbb6bb9bbbbbbb
 ;; 130:bbbbbbbbbbbbbbbbbbbb8881bbb81232bb822393bb239498b1334c49b2399888
 ;; 131:bbbbbbbbbbbbbbbb118bbbbb2218bbbb23218bbb88321bbb882227bb282231bb
-;; 146:b2398c98b1398938bb239883bb823999bbb82333bbbb8121bbbbbbbbbbbbbbbb
-;; 147:323321bb293217bb93216bbb32157bbb2167bbbb177bbbbbbbbbbbbbbbbbbbbb
+;; 132:4444444444444444444488814448123d448123d344139c9d4739ccc941239c9a
+;; 133:444444444444444411844444ee184444d3e78444221b74442ab11744ab187844
+;; 146:b2398c98b1398938bb239883bb823999bbb82333bbbb8111bbbbbbbbbbbbbbbb
+;; 147:323321bb293217bb93216bbb32157bbb2167bbbb178bbbbbbbbbbbbbbbbbbbbb
+;; 148:417229ab41b788ba4aa8118a44a788bb444e23334444e8884444444444444444
+;; 149:baa72844aa328744932814443281a4442812444481a444444444444444444444
 ;; 162:bbbbbbbbbbbbbbbbbbbbbbbbbbbbffffbbbfdccdbbfdcbbcbfdcbcfebfcdcfde
 ;; 163:bbbbbbbbbbbbbbbbbbbbbbbbf0fbbbbbccdfbbbbedbdfbbbdcdebfbbed00dfbb
 ;; 164:bbbbbbbbbbbbbbbbbbbb0003bbb08883bb081111bb811811b0818111b0811811
@@ -766,6 +772,6 @@ Uses polar coordinates and converts to cartesian."
 ;; </SFX>
 
 ;; <PALETTE>
-;; 000:1a1c2c592465ce2059f2753cffea28a7f07038b764257179402048fab2103065de73f6f7f4f4e694b0c2566c86333c57
+;; 000:1a1c2c592465de3065f2753cffea28a7f07038b764257179402048fab21018a1ea71e2eaf4f4e694b0c2566c86333c57
 ;; </PALETTE>
 
