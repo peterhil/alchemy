@@ -578,16 +578,15 @@ Uses polar coordinates and converts to cartesian."
                 pos (+ origin
                        (cx (* 2 (odd-offset idx hex.even))
                            (* 0.5 (decr idx))))
+                x (+ offset.x (* hex.col (incr origin.x)) hex.sp)
+                y (+ offset.y (* hex.row pos.y) (- hex.sp))
                 name (. sephirah :name)
                 count (or (. balance name) "?")
                 abbrev (.. (: name :sub 1 1) (: name :sub 3 3))
                 sprite sephirah.sp]
             (do
              (sp-draw sprite pos)
-             (print (.. abbrev ": " count)
-              (+ offset.x (* hex.col (incr origin.x)) hex.sp)
-              (+ offset.y (* hex.row pos.y) (- hex.sp))
-              12)))))
+             (print (.. abbrev ": " count) x y 12)))))
 
 
 ;; Main ----------------
