@@ -344,7 +344,7 @@ When b is real then it’s real part is used as modulo for y also."
     (math.random (length seq)))
 
 (fn random-sample [seq]
-    (. (random-index seq) seq))
+    (. seq (random-index seq)))
 
 (fn gen-map [n]
     (icollect [_ _ (irange 0 n)]
@@ -590,6 +590,8 @@ Uses polar coordinates and converts to cartesian."
  : nan
  : nan?
  : odd?
+ : random-index
+ : random-sample
  : sign}
 
 ;; <TILES>

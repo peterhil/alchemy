@@ -311,3 +311,15 @@
            (hex.ifilter hex.odd?
                         (icollect [_ v (hex.irange 0 8)]
                                   v)))))
+
+(desc "random-index"
+      (it "works"
+          (let [index (hex.random-index [3 7])]
+            (assert
+             (or (= index 1) (= index 2))))))
+
+(desc "random-sample"
+      (it "works"
+          (let [v (hex.random-sample [3 7])]
+            (assert
+             (or (= v 3) (= v 7))))))
