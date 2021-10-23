@@ -571,7 +571,7 @@ Uses polar coordinates and converts to cartesian."
           (let [origin (cx 1 0)
                 colour (if (<= level idx) sp.green sp.purple)]
             (sp-draw colour (+ origin sephirah.pos))
-            (when (= idx level)
+            (when (>= idx level)
               (sp-draw sephirah.sp (+ origin sephirah.pos))))))
 
 (fn draw-balance []
