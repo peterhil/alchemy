@@ -628,8 +628,9 @@ Uses polar coordinates and converts to cartesian."
 
                       ;; Add new gem to table
                       ;; TODO Use some distribution to select the level
-                      (let [space (filter (fn [cell] (= air cell)) cells)
-                            idx (random-index space)
+                      (let [ether (filter (is air) cells)
+                            space (icollect [k v (pairs ether)] k)
+                            idx (random-sample space)
                             gem (random-sample things)]
                         (tset cells idx gem))))
 
