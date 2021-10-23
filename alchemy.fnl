@@ -97,6 +97,8 @@
            :sun {:id 330 :tp 11}
            :mars {:id 386 :tp 11}
            :jupiter {:id 388 :tp 4}
+           :saturn {:id 390 :tp 11}
+           :neptune {:id 392 :tp 13}
            :hl {:id 290 :tp transp}})
 (local air sp.blue)
 
@@ -106,7 +108,9 @@
                sp.venus
                sp.sun
                sp.mars
-               sp.jupiter])
+               sp.jupiter
+               sp.saturn
+               sp.neptune])
 
 ;; Grid settings
 (local size 7)
@@ -498,8 +502,8 @@ Uses polar coordinates and converts to cartesian."
 
 (local sephiroth
        [{:name :keter     :pos (cx  0 0.5) :sp sp.ain}
-        {:name :chochmah  :pos (cx  1 1) :sp sp.ain}
-        {:name :binah     :pos (cx -1 1) :sp sp.ain}
+        {:name :chochmah  :pos (cx  1 1) :sp sp.neptune}
+        {:name :binah     :pos (cx -1 1) :sp sp.saturn}
         {:name :chesed    :pos (cx  1 2) :sp sp.jupiter}
         {:name :gewurah   :pos (cx -1 2) :sp sp.mars}
         {:name :tiphereth :pos (cx  0 2.5) :sp sp.sun}
@@ -741,10 +745,18 @@ Uses polar coordinates and converts to cartesian."
 ;; 131:bbbbbbbbbbbbbbbb118bbbbb2218bbbb23218bbb88321bbb882227bb282231bb
 ;; 132:4444444444444444444481bb4448abaa44812abb44139c9d4739ccc941239c9a
 ;; 133:4444444444444444a1844444ba184444d3e78444221b74442ab11744ab187844
+;; 134:bbbbbbbbbbbbbbbbbbbb0000bbb08888bb081111bb811811b0818111b0811811
+;; 135:bbbbbbbbbbbbbbbb009bbbbb8889bbbb1189cbbb1818cbbb11189cbb11819cbb
+;; 136:dddddddddddddddddddd8111ddd815aadd81245bdd139c49d839ccc4d1239c49
+;; 137:dddddddddddddddd118dddddba18dddd5be78ddd44561ddd956711dd45baf8dd
 ;; 146:b2398c98b1398938bb239883bb823999bbb82333bbbb8111bbbbbbbbbbbbbbbb
 ;; 147:323321bb293217bb93216bbb32157bbb2167bbbb178bbbbbbbbbbbbbbbbbbbbb
 ;; 148:417229ab41b788ba4aa8118a44a788bb444b23334444bdaa4444444444444444
 ;; 149:baa72844aa328744932814443281a44428124444ee2444444444444444444444
+;; 150:b0818181b0811818bb011188bb081888bbb08881bbbb0009bbbbbbbbbbbbbbbb
+;; 151:11189cbb11819cbb1819cbbb119ccbbb89ccbbbbcccbbbbbbbbbbbbbbbbbbbbb
+;; 152:d1222994d1329445d819cc45dd8744bbddd82333dddd8111dddddddddddddddd
+;; 153:455618dd556781dd66781ddd57810ddd2810dddd110ddddddddddddddddddddd
 ;; 162:bbbbbbbbbbbbbbbbbbbbbbbbbbbbffffbbbfdccdbbfdcbbcbfdcbcfebfcdcfde
 ;; 163:bbbbbbbbbbbbbbbbbbbbbbbbf0fbbbbbccdfbbbbedbdfbbbdcdebfbbed00dfbb
 ;; 164:bbbbbbbbbbbbbbbbbbbb0003bbb08883bb081111bb811811b0818111b0811811
