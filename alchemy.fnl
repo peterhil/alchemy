@@ -497,16 +497,28 @@ Uses polar coordinates and converts to cartesian."
 (local period 60)
 
 (local sephiroth
-       [{:name :keter     :pos (cx  0 0.5)}
-        {:name :chochmah  :pos (cx  1 1)}
-        {:name :binah     :pos (cx -1 1)}
-        {:name :chesed    :pos (cx  1 2)}
-        {:name :gewurah   :pos (cx -1 2)}
-        {:name :tiphereth :pos (cx  0 2.5)}
-        {:name :nezach    :pos (cx  1 3)}
-        {:name :hod       :pos (cx -1 3)}
-        {:name :jesod     :pos (cx  0 3.5)}
-        {:name :malkuth   :pos (cx  0 4.5)}])
+       [{:name :keter     :pos (cx  0 0.5) :sp sp.hl}
+        {:name :chochmah  :pos (cx  1 1) :sp sp.hl}
+        {:name :binah     :pos (cx -1 1) :sp sp.hl}
+        {:name :chesed    :pos (cx  1 2) :sp sp.hl}
+        {:name :gewurah   :pos (cx -1 2) :sp sp.hl}
+        {:name :tiphereth :pos (cx  0 2.5) :sp sp.sun}
+        {:name :nezach    :pos (cx  1 3) :sp sp.venus}
+        {:name :hod       :pos (cx -1 3) :sp sp.mercurius}
+        {:name :jesod     :pos (cx  0 3.5) :sp sp.moon}
+        {:name :malkuth   :pos (cx  0 4.5)  :sp sp.gem}])
+
+(local balance
+       {:malkuth 0
+        :jesod 0
+        :hod 0
+        :nezach 0
+        :tiphereth 0
+        :gewurah 0
+        :chesed 0
+        :binah 0
+        :chichmah 0
+        :keter 0})
 
 
 ;; Side effects --------
@@ -559,6 +571,21 @@ Uses polar coordinates and converts to cartesian."
                 colour (if (<= level idx) sp.green sp.purple)]
             (sp-draw colour (+ origin sephirah.pos)))))
 
+(fn draw-balance []
+    (each [idx sephirah (ipairs sephiroth)]
+          (let [origin (cx 12 0)
+                offset (cx hex.col (/ hex.row 2))
+                pos (+ origin
+                       (cx (* 2 (odd-offset idx hex.even))
+                           (* 0.5 (decr idx))))
+                sprite sephirah.sp]
+            (do
+             (sp-draw sprite pos)
+             (print (. sephirah :name)
+              (+ offset.x (* hex.col (incr origin.x)) hex.sp)
+              (+ offset.y (* hex.row pos.y) (- hex.sp))
+              12)))))
+
 
 ;; Main ----------------
 
@@ -602,6 +629,9 @@ Uses polar coordinates and converts to cartesian."
                             idx (random-index space)
                             gem (random-sample things)]
                         (tset cells idx gem))))
+
+                ;; Draw balance
+                (draw-balance)
 
                 ;; (draw-neighbours (+ origin plr))
 
