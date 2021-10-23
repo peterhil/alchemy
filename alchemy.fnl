@@ -587,7 +587,7 @@ Uses polar coordinates and converts to cartesian."
                 sprite sephirah.sp]
             (do
              (sp-draw sprite pos)
-             (print (.. abbrev ": " count) x y 12)))))
+             (print (.. abbrev " " count) x y 12)))))
 
 
 ;; Main ----------------
@@ -617,7 +617,12 @@ Uses polar coordinates and converts to cartesian."
 
                 (if (is-gem? plr cells)
                     (let [thing (get-cell plr cells)
-                          idx (cell-index plr cells)]
+                          idx (cell-index plr cells)
+                          sidx (find (fn [s] (= s.sp.id thing.id)) sephiroth)
+                          sephirah (. sephiroth sidx)
+                          count (incr (. balance sephirah.name))]
+                      ;; (trace (.. sephirah.name ": " count))
+                      (tset balance sephirah.name count)
                       (tset cells idx air)
 
                       ;; Play sound FX
