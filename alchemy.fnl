@@ -700,8 +700,8 @@ Uses polar coordinates and converts to cartesian."
 ;; 067:bbbbbbbbbbbbbbbbbbbbbbbbf0fbbbbbccdfbbbbedbdfbbbdcdebfbbed00dfbb
 ;; 068:bbbbbbbbbbbbbbbbbbbb8884bbb81881bb818881bb188818b1811111b1888188
 ;; 069:bbbbbbbbbbbbbbbb449bbbbbcc49bbbbccc43bbb1cc49bbb84c493bb844c49bb
-;; 070:bbbbbbbbbbbbbbbbbbbb8883bbb89993bb898484bb844888b8948494b8948944
-;; 071:bbbbbbbbbbbbbbbb333bbbbb9993bbbb84993bbb44493bbb8c4993bb84c493bb
+;; 070:bbbbbbbbbbbbbbbbbbbb8113bbb84999bb8c1444bb14c111b1941c44b1941444
+;; 071:bbbbbbbbbbbbbbbb333bbbbb4493bbbb14993bbb44493bbb1c4993bb14c493bb
 ;; 072:bbbbbbbbbbbbbbbbbbbb000fbbb07666bb076555bb065666b0f65666b0766565
 ;; 073:bbbbbbbbbbbbbbbb7f0bbbbb6570bbbb66570bbb5665fbbb56657fbb66c677bb
 ;; 074:bbbbbb94b2bbb34c21282333b2129999b8294444b2944c49b394c444b3944c44
@@ -710,8 +710,8 @@ Uses polar coordinates and converts to cartesian."
 ;; 083:f00dfbbbcfefbbbbfefbbbbbdfbbbbbbfbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 ;; 084:b1888888b1188888bb111811bb181118bbb18884bbbb1199bbbbbbbbbbbbbbbb
 ;; 085:844449bb4c4c43bbc4c49bbbcc493bbb4493bbbb933bbbbbbbbbbbbbbbbbbbbb
-;; 086:b8944888b8944489bb844888bb894484bbb89999bbbb8833bbbbbbbbbbbbbbbb
-;; 087:9c4993bb44c493bbc4493bbb44933bbb9933bbbb333bbbbbbbbbbbbbbbbbbbbb
+;; 086:b1944111b1944414bb144111bb894414bbb89999bbbb8133bbbbbbbbbbbbbbbb
+;; 087:4c4993bbccc493bb4c493bbb44932bbb9932bbbb332bbbbbbbbbbbbbbbbbbbbb
 ;; 088:b0766656b0f66555bb066656bb876666bbb86676bbbb8717bbbbbbbbbbbbbbbb
 ;; 089:66456fbb64c470bb66461bbbc4610bbb6610bbbb110bbbbbbbbbbbbbbbbbbbbb
 ;; 090:b394c4c4b3944c4cb23444ccb2934c44b43939394c422333b4bbb921bbbbbb92
