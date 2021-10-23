@@ -91,6 +91,7 @@
            :purple {:id 6 :tp transp}
            :bg {:id 34 :tp transp}
            :gem {:id 322 :tp 11}
+           :moon {:id 324 :tp 11}
            :hl {:id 290 :tp transp}})
 (local air sp.blue)
 
@@ -367,7 +368,8 @@ When b is real then it’s real part is used as modulo for y also."
 (fn can-move? [pos cells]
     (let [cell (get-cell pos cells)]
       (or (= air cell)
-          (= sp.gem cell))))
+          (= sp.gem cell)
+          (= sp.moon cell))))
 
 (fn free-cell? [pos cells]
     (let [cell (get-cell pos cells)]
@@ -375,7 +377,8 @@ When b is real then it’s real part is used as modulo for y also."
 
 (fn is-gem? [pos cells]
     (let [cell (get-cell pos cells)]
-      (= sp.gem cell)))
+      (or (= sp.gem cell)
+          (= sp.moon cell))))
 
 (fn in-map? [pos]
     (and
@@ -572,8 +575,9 @@ Uses polar coordinates and converts to cartesian."
                       ;; Add new gem to table
                       ;; TODO Use some distribution to select the level
                       (let [space (filter (fn [cell] (= air cell)) cells)
-                            idx (random-index space)]
-                        (tset cells idx sp.gem))))
+                            idx (random-index space)
+                            gem (random-sample [sp.gem sp.moon])]
+                        (tset cells idx gem))))
 
                 ;; (draw-neighbours (+ origin plr))
 
@@ -636,12 +640,24 @@ Uses polar coordinates and converts to cartesian."
 ;; 051:000000d0000000d0000000d0000000d000000dd0000dd0000dd00000d0000000
 ;; 066:bbbbbbbbbbbbbbbbbbbbbbbbbbbbffffbbbfdccdbbfdcbbcbfdcbcfebfcdcfde
 ;; 067:bbbbbbbbbbbbbbbbbbbbbbbbf0fbbbbbccdfbbbbedbdfbbbdcdebfbbed00dfbb
+;; 068:bbbbbbbbbbbbbbbbbbbb000fbbb08883bb081111bb811811b0818111b0811811
+;; 069:bbbbbbbbbbbbbbbbfffbbbbb999fbbbb4499fbbb1449fbbb1c499fbb14c49fbb
 ;; 082:bbfcdefdbbbfcdfebbbbfcdcbbbbbfcbbbbbbbfcbbbbbbbfbbbbbbbbbbbbbbbb
 ;; 083:f00dfbbbcfefbbbbfefbbbbbdfbbbbbbfbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+;; 084:b0818181b0811818bb011188bb081884bbb08839bbbb00ffbbbbbbbbbbbbbbbb
+;; 085:1c499fbbc4c49fbb4449fbbbc49ffbbb99ffbbbbfffbbbbbbbbbbbbbbbbbbbbb
+;; 100:bbbbbbbbbbbbbbbbbbbbffffbbbf3331bbf39499bb394c49bf34c444bf344c44
+;; 101:bbbbbbbbbbbbbbbbfffbbbbb888fbbbb1188fbbb9818fbbb91188fbb91818fbb
+;; 116:bf34c4c9bf394c49bbf94499bbf39991bbbf3318bbbbffffbbbbbbbbbbbbbbbb
+;; 117:91188fbb11818fbb1818fbbb118ffbbb88ffbbbbfffbbbbbbbbbbbbbbbbbbbbb
 ;; 162:bbbbbbbbbbbbbbbbbbbbbbbbbbbbffffbbbfdccdbbfdcbbcbfdcbcfebfcdcfde
 ;; 163:bbbbbbbbbbbbbbbbbbbbbbbbf0fbbbbbccdfbbbbedbdfbbbdcdebfbbed00dfbb
+;; 164:bbbbbbbbbbbbbbbbbbbb000fbbb08883bb081111bb811811b0818111b0811811
+;; 165:bbbbbbbbbbbbbbbbfffbbbbb999fbbbb4499fbbb1449fbbb1c499fbb14c49fbb
 ;; 178:bbfcdefdbbbfcdfebbbbfcdcbbbbbfcbbbbbbbfcbbbbbbbfbbbbbbbbbbbbbbbb
 ;; 179:f00dfbbbcfefbbbbfefbbbbbdfbbbbbbfbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+;; 180:b0818181b0811818bb011188bb081884bbb08839bbbb00ffbbbbbbbbbbbbbbbb
+;; 181:1c499fbbc4c49fbb4449fbbbc49ffbbb99ffbbbbfffbbbbbbbbbbbbbbbbbbbbb
 ;; </SPRITES>
 
 ;; <WAVES>
@@ -659,6 +675,6 @@ Uses polar coordinates and converts to cartesian."
 ;; </SFX>
 
 ;; <PALETTE>
-;; 000:1a1c2c592465b13e53ef7d57ffcd75a7f07038b7642571794020483b5dc941aee273eff7f4f4f494b0c2566c86333c57
+;; 000:1a1c2c592465b13053ef9948ffe628a7f07038b764257179402048eeba004065de73eff7f4f4f494b0c2566c86333c57
 ;; </PALETTE>
 
