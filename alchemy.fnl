@@ -517,7 +517,7 @@ Uses polar coordinates and converts to cartesian."
         :gewurah 0
         :chesed 0
         :binah 0
-        :chichmah 0
+        :chochmah 0
         :keter 0})
 
 
@@ -578,10 +578,13 @@ Uses polar coordinates and converts to cartesian."
                 pos (+ origin
                        (cx (* 2 (odd-offset idx hex.even))
                            (* 0.5 (decr idx))))
+                name (. sephirah :name)
+                count (or (. balance name) "?")
+                abbrev (.. (: name :sub 1 1) (: name :sub 3 3))
                 sprite sephirah.sp]
             (do
              (sp-draw sprite pos)
-             (print (. sephirah :name)
+             (print (.. abbrev ": " count)
               (+ offset.x (* hex.col (incr origin.x)) hex.sp)
               (+ offset.y (* hex.row pos.y) (- hex.sp))
               12)))))
