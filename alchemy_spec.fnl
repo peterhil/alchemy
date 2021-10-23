@@ -312,6 +312,13 @@
                         (icollect [_ v (hex.irange 0 8)]
                                   v)))))
 
+(desc "find"
+      (it "works with tables"
+          (assert.same
+           :g
+           (hex.find (fn [v] (= v 7))
+                     {:e 5 :f 6 :g 7}))))
+
 (desc "random-index"
       (it "works"
           (let [index (hex.random-index [3 7])]

@@ -98,6 +98,8 @@
            :hl {:id 290 :tp transp}})
 (local air sp.blue)
 
+(local things [sp.gem sp.moon sp.mercurius sp.venus sp.sun])
+
 ;; Grid settings
 (local size 7)
 (local hex {:w ; width
@@ -274,7 +276,9 @@ When b is real then it’s real part is used as modulo for y also."
 
 
 ;; Lib ----------------
-(fn is [typ v] (= (type v) typ))
+
+(fn is [val]
+    (fn [thing] (= val thing)))
 
 (fn ifilter [pred seq]
     (icollect [_ v (ipairs seq)]
@@ -284,6 +288,11 @@ When b is real then it’s real part is used as modulo for y also."
     (collect [k v (pairs seq)]
              (when (pred v k)
                (values k v))))
+
+(fn find [pred tbl]
+  (each [key val (pairs tbl)]
+    (when (pred val)
+      (lua "return key"))))
 
 ;; Iterators
 
@@ -476,6 +485,9 @@ Uses polar coordinates and converts to cartesian."
                 (table.insert moves (hex-move plr angle key)))))
     (cx (add (table.unpack moves))))
 
+(fn note-for [thing]
+    (+ 56 (* 4 (find (is thing) things))))
+
 
 ;; Game logic -------
 
@@ -574,10 +586,13 @@ Uses polar coordinates and converts to cartesian."
                 (draw-player (+ origin plr))
 
                 (if (is-gem? plr cells)
-                    (let [idx (cell-index plr cells)]
+                    (let [thing (get-cell plr cells)
+                          idx (cell-index plr cells)]
                       (tset cells idx air)
+
                       ;; Play sound FX
-                      (_G.sfx 1 "a#6" 15)
+                      (_G.sfx 1 (note-for thing) 15)
+
                       ;; Animate collecting for some frames
                       ;; (sp-draw sp.hl (+ origin plr))
 
@@ -585,7 +600,7 @@ Uses polar coordinates and converts to cartesian."
                       ;; TODO Use some distribution to select the level
                       (let [space (filter (fn [cell] (= air cell)) cells)
                             idx (random-index space)
-                            gem (random-sample [sp.gem sp.moon sp.mercurius sp.venus sp.sun])]
+                            gem (random-sample things)]
                         (tset cells idx gem))))
 
                 ;; (draw-neighbours (+ origin plr))
@@ -598,6 +613,7 @@ Uses polar coordinates and converts to cartesian."
  : >>
  : cx
  : filter
+ : find
  : ifilter
  : irange
  : nan
