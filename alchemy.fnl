@@ -553,8 +553,8 @@ Uses polar coordinates and converts to cartesian."
     (let [{: y : x} plr
           id 2 ;;(+ 2 (* (// (% time 60) 30) 2))
           ]
-      (printc (.. :player " x: " x " y: " y)
-              (half scr.w) (- scr.h 10) 15)
+      ;; (printc (.. :player " x: " x " y: " y)
+      ;;         (half scr.w) (- scr.h 10) 15)
       (_G.spr (+ id sp-offset)
            (* x hex.col)
            (* y hex.row)
