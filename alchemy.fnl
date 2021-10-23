@@ -60,7 +60,7 @@
 
 ;; Config ----------------
 
-(var level 6)
+(var level 10)
 
 (local scr {:w 240 :h 136})
 (local orientation ; of hexagons
@@ -574,20 +574,21 @@ Uses polar coordinates and converts to cartesian."
 
 (fn draw-balance []
     (each [idx sephirah (ipairs sephiroth)]
-          (let [origin (cx 12 0)
-                offset (cx hex.col (/ hex.row 2))
-                pos (+ origin
-                       (cx (* 2 (odd-offset idx hex.even))
-                           (* 0.5 (decr idx))))
-                x (+ offset.x (* hex.col (incr origin.x)) hex.sp)
-                y (+ offset.y (* hex.row pos.y) (- hex.sp))
-                name (. sephirah :name)
-                count (or (. balance name) "?")
-                abbrev (.. (: name :sub 1 1) (: name :sub 3 3))
-                sprite sephirah.sp]
-            (do
-             (sp-draw sprite pos)
-             (print (.. abbrev " " count) x y 12)))))
+          (when (>= idx level)
+            (let [origin (cx 12 0)
+                  offset (cx hex.col (/ hex.row 2))
+                  pos (+ origin
+                         (cx (* 2 (odd-offset idx hex.even))
+                             (* 0.5 (decr idx))))
+                  x (+ offset.x (* hex.col (incr origin.x)) hex.sp)
+                  y (+ offset.y (* hex.row pos.y) (- hex.sp))
+                  name (. sephirah :name)
+                  count (or (. balance name) "?")
+                  abbrev (.. (: name :sub 1 1) (: name :sub 3 3))
+                  sprite sephirah.sp]
+              (do
+               (sp-draw sprite pos)
+               (print (.. abbrev " " count) x y 12))))))
 
 
 ;; Main ----------------
@@ -624,6 +625,10 @@ Uses polar coordinates and converts to cartesian."
                       ;; (trace (.. sephirah.name ": " count))
                       (tset balance sephirah.name count)
                       (tset cells idx air)
+
+                      ;; Check level
+                      (when (= 2 (. balance sephirah.name))
+                        (set level (decr level)))
 
                       ;; Play sound FX
                       (_G.sfx 1 (note-for thing) 15)
