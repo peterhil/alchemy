@@ -60,7 +60,7 @@
 
 ;; Config ----------------
 
-(var level 10)
+(var level 5)
 
 (local scr {:w 240 :h 136})
 (local orientation ; of hexagons
@@ -95,10 +95,16 @@
            :mercurius {:id 326 :tp 11}
            :venus {:id 328 :tp 11}
            :sun {:id 330 :tp 11}
+           :mars {:id 386 :tp 11}
            :hl {:id 290 :tp transp}})
 (local air sp.blue)
 
-(local things [sp.gem sp.moon sp.mercurius sp.venus sp.sun])
+(local things [sp.gem
+               sp.moon
+               sp.mercurius
+               sp.venus
+               sp.sun
+               sp.mars])
 
 ;; Grid settings
 (local size 7)
@@ -380,11 +386,7 @@ When b is real then it’s real part is used as modulo for y also."
 (fn can-move? [pos cells]
     (let [cell (get-cell pos cells)]
       (or (= air cell)
-          (= sp.gem cell)
-          (= sp.moon cell)
-          (= sp.mercurius cell)
-          (= sp.venus cell)
-          (= sp.sun cell))))
+          (find (is cell) things))))
 
 (fn free-cell? [pos cells]
     (let [cell (get-cell pos cells)]
@@ -392,11 +394,7 @@ When b is real then it’s real part is used as modulo for y also."
 
 (fn is-gem? [pos cells]
     (let [cell (get-cell pos cells)]
-      (or (= sp.gem cell)
-          (= sp.moon cell)
-          (= sp.mercurius cell)
-          (= sp.venus cell)
-          (= sp.sun cell))))
+      (find (is cell) things)))
 
 (fn in-map? [pos]
     (and
@@ -501,7 +499,7 @@ Uses polar coordinates and converts to cartesian."
         {:name :chochmah  :pos (cx  1 1) :sp sp.ain}
         {:name :binah     :pos (cx -1 1) :sp sp.ain}
         {:name :chesed    :pos (cx  1 2) :sp sp.ain}
-        {:name :gewurah   :pos (cx -1 2) :sp sp.ain}
+        {:name :gewurah   :pos (cx -1 2) :sp sp.mars}
         {:name :tiphereth :pos (cx  0 2.5) :sp sp.sun}
         {:name :nezach    :pos (cx  1 3) :sp sp.venus}
         {:name :hod       :pos (cx -1 3) :sp sp.mercurius}
@@ -628,7 +626,7 @@ Uses polar coordinates and converts to cartesian."
 
                       ;; Check level
                       (when (= 2 (. balance sephirah.name))
-                        (set level (decr level)))
+                        (set level (math.max 1 (decr level))))
 
                       ;; Play sound FX
                       (_G.sfx 1 (note-for thing) 15)
@@ -735,6 +733,10 @@ Uses polar coordinates and converts to cartesian."
 ;; 117:91188fbb11818fbb1818fbbb118ffbbb88ffbbbbfffbbbbbbbbbbbbbbbbbbbbb
 ;; 122:b394c4c4b3944c4cb43444ccb9234c44b43239394c494333b4bbb921bbbbbb92
 ;; 123:4c4993bbc4c495bb444934bbc49325bb993216bb3545656b29bbb6bb9bbbbbbb
+;; 130:bbbbbbbbbbbbbbbbbbbb8881bbb81232bb899993bb299448b1394444b2394888
+;; 131:bbbbbbbbbbbbbbbb118bbbbb2231bbbb23231bbb88321bbb882227bb983231bb
+;; 146:b2398998b1398998bb299889bb839999bbb82323bbbb8121bbbbbbbbbbbbbbbb
+;; 147:999321bb993217bb93216bbb32151bbb2161bbbb211bbbbbbbbbbbbbbbbbbbbb
 ;; 162:bbbbbbbbbbbbbbbbbbbbbbbbbbbbffffbbbfdccdbbfdcbbcbfdcbcfebfcdcfde
 ;; 163:bbbbbbbbbbbbbbbbbbbbbbbbf0fbbbbbccdfbbbbedbdfbbbdcdebfbbed00dfbb
 ;; 164:bbbbbbbbbbbbbbbbbbbb0003bbb08883bb081111bb811811b0818111b0811811
@@ -764,6 +766,6 @@ Uses polar coordinates and converts to cartesian."
 ;; </SFX>
 
 ;; <PALETTE>
-;; 000:1a1c2c592465b13053ef9948ffea28a7f07038b764257179402048faba003065de73f6f7f4f4e694b0c2566c86333c57
+;; 000:1a1c2c592465ce2059f2753cffea28a7f07038b764257179402048fab2103065de73f6f7f4f4e694b0c2566c86333c57
 ;; </PALETTE>
 
