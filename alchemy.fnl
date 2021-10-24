@@ -723,8 +723,8 @@ Uses polar coordinates and converts to cartesian."
 ;; 071:bbbbbbbbbbbbbbbb996bbbbb4496bbbb14996bbb44496bbb1c4996bb14c496bb
 ;; 072:bbbbbbbbbbbbbbbbbbbb000fbbb07666bb076555bb065666b0f65666b0766565
 ;; 073:bbbbbbbbbbbbbbbb7f0bbbbb6570bbbb66570bbb5665fbbb56657fbb66c677bb
-;; 074:bbbbbb94b2bbb34c21282333b2129999b8294444b2944c49b394c444b3944c44
-;; 075:9bbbbbbb43bbbabb3a29abab99921abb949929bb444932bb4c499abb44c493bb
+;; 074:bbbbbb94b2bbb34c21282333b2129999b829444cb2944cc4b394cc4cb3944c4c
+;; 075:9bbbbbbb43bbbabb3a29abab99921abbc49929bb4c4932bbc4c99abbc4c493bb
 ;; 082:bb0cdefdbbb0cdfebbbb0cdcbbbbb0cbbbbbbb0dbbbbbbb0bbbbbbbbbbbbbbbb
 ;; 083:f00f0bbbcef0bbbbef0bbbbbf0bbbbbb0bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 ;; 084:b1888888b1188888bb111811bb181118bbb18884bbbb1199bbbbbbbbbbbbbbbb
