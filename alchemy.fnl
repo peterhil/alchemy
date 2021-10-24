@@ -99,6 +99,7 @@
            :jupiter {:id 388 :tp 4}
            :saturn {:id 390 :tp 11}
            :neptune {:id 392 :tp 13}
+           :pluto {:id 394 :tp 13}
            :hl {:id 290 :tp transp}})
 (local air sp.blue)
 
@@ -110,7 +111,8 @@
                sp.mars
                sp.jupiter
                sp.saturn
-               sp.neptune])
+               sp.neptune
+               sp.pluto])
 
 ;; Grid settings
 (local size 7)
@@ -501,7 +503,7 @@ Uses polar coordinates and converts to cartesian."
 (local period 60)
 
 (local sephiroth
-       [{:name :keter     :pos (cx  0 0.5) :sp sp.ain}
+       [{:name :keter     :pos (cx  0 0.5) :sp sp.pluto}
         {:name :chochmah  :pos (cx  1 1) :sp sp.neptune}
         {:name :binah     :pos (cx -1 1) :sp sp.saturn}
         {:name :chesed    :pos (cx  1 2) :sp sp.jupiter}
@@ -749,6 +751,8 @@ Uses polar coordinates and converts to cartesian."
 ;; 135:bbbbbbbbbbbbbbbb009bb9db8889ed9d1189cb9e1818cefd1118efdb118efcbb
 ;; 136:dddddddddddddddddddd8111ddd815aadd81245bdd139c49d839ccc4d1239c49
 ;; 137:dddddddddddddddd118dddddba18dddd5be78ddd44561ddd956711dd45baf8dd
+;; 138:dddddddddddddddddddd8111ddd815bbdd814cccdd19ccccd89cccccd13ccccc
+;; 139:dddddddddddddddd118dddddba78ddddb6a78dddcb6a1dddccb671ddc5c678dd
 ;; 146:b2398c98b1398938bb239883bb823999bbb82333bbbb8111bbbbbbbbbbbbbbbb
 ;; 147:323321bb293217bb93216bbb32157bbb2167bbbb178bbbbbbbbbbbbbbbbbbbbb
 ;; 148:417229ab41b788ba4aa8118a44a788bb444b23334444bdaa4444444444444444
@@ -757,6 +761,8 @@ Uses polar coordinates and converts to cartesian."
 ;; 151:11d89cbb1d819cbbd819cbbb119ccbbb89ccbbbbcccbbbbbbbbbbbbbbbbbbbbb
 ;; 152:d1222994d1329445d819cc45dd8744bbddd82333dddd8111dddddddddddddddd
 ;; 153:455618dd556781dd66781ddd57810ddd2810dddd110ddddddddddddddddddddd
+;; 154:d13c4cccd123c4c5d8239c4cdd8239c5ddd82333dddd8111dddddddddddddddd
+;; 155:5c5678ddc5c781dd5c781ddd67810ddd2810dddd110ddddddddddddddddddddd
 ;; 162:bbbbbbbbbbbbbbbbbbbbbbbbbbbbffffbbbfdccdbbfdcbbcbfdcbcfebfcdcfde
 ;; 163:bbbbbbbbbbbbbbbbbbbbbbbbf0fbbbbbccdfbbbbedbdfbbbdcdebfbbed00dfbb
 ;; 164:bbbbbbbbbbbbbbbbbbbb0003bbb08883bb081111bb811811b0818111b0811811
