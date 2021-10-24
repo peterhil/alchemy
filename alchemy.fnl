@@ -532,8 +532,7 @@ Uses polar coordinates and converts to cartesian."
         :chesed 0
         :binah 0
         :chochmah 0
-        :keter 0
-        :ain 0})
+        :keter 0})
 
 
 ;; Side effects --------
