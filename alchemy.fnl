@@ -530,9 +530,6 @@ Uses polar coordinates and converts to cartesian."
 
 ;; Side effects --------
 
-(fn hello []
-    (printc "ALCHEMY" (half scr.w) (- scr.h 20) 12))
-
 (fn sp-draw [sprite cell]
     "Draw sprite id on cell with x and y coordinates"
     (let [{: x : y} cell]
@@ -540,6 +537,11 @@ Uses polar coordinates and converts to cartesian."
            (* x hex.col)
            (* y hex.row)
            sprite.tp 1 0 0 2 2)))
+
+(fn hello []
+    (do
+     (printc "ALCHEMY" (half scr.w) (- scr.h 20) 12)
+     (sp-draw sp.gem (cx 7.5 7))))
 
 (fn draw-map [cells]
     "Draw hexagonal grid"
