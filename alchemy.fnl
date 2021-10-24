@@ -751,7 +751,7 @@ Uses polar coordinates and converts to cartesian."
 ;; 135:66666666666666660006666688806dc68181d66c111896ecb818efc6888efc66
 ;; 136:dddddddddddddddddddd8111ddd8177bdd81245bdd139c4ad839cccad1239c4b
 ;; 137:dddddddddddddddd118ddddda100dddd5ae10ddd48a81dddb8b8f0ddaf8a18dd
-;; 138:dddddddddddddddddddd8111ddd815bbdd814cccdd19ccccd89cccccd13ccccc
+;; 138:dddddddddddddddddddd8111ddd815bbdd814cccdd19cc4cd89cc9c5d13cccbc
 ;; 139:dddddddddddddddd118dddddba78ddddb6a78dddcb6a1dddccb671ddc5c678dd
 ;; 146:b2398c98b1398938bb239883bb823999bbb82333bbbb8111bbbbbbbbbbbbbbbb
 ;; 147:323321bb293217bb93216bbb32157bbb2167bbbb178bbbbbbbbbbbbbbbbbbbbb
@@ -761,7 +761,7 @@ Uses polar coordinates and converts to cartesian."
 ;; 151:88b89c6680819c660819c666819cc66689cc6666ccc666666666666666666666
 ;; 152:d1222994d8129445d8f9cc45dd87b4cbddd877aadddd8111dddddddddddddddd
 ;; 153:48b6f8ddaf8781ddb8681dddb7810ddd7810dddd110ddddddddddddddddddddd
-;; 154:d13c4cccd123c4c5d8239c4cdd8239c5ddd82333dddd8111dddddddddddddddd
+;; 154:d13c9cccd123c9c5d8239c4cdd8239c5ddd82333dddd8111dddddddddddddddd
 ;; 155:5c5678ddc5c781dd5c781ddd67810ddd2810dddd110ddddddddddddddddddddd
 ;; 162:bbbbbbbbbbbbbbbbbbbbbbbbbbbbffffbbbfdccdbbfdcbbcbfdcbcfebfcdcfde
 ;; 163:bbbbbbbbbbbbbbbbbbbbbbbbf0fbbbbbccdfbbbbedbdfbbbdcdebfbbed00dfbb
