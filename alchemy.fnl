@@ -432,7 +432,7 @@ When b is real then it’s real part is used as modulo for y also."
         (not (can-move? pos cells))))
 
 (fn allowed-directions [level]
-    (if (<= level 9) ; Yesod
+    (if (<= level 6) ; Tiphereth
         directions
         (collect [key dir (pairs directions)]
                  (when (and (~= key :l)
@@ -440,7 +440,7 @@ When b is real then it’s real part is used as modulo for y also."
                    (values key dir)))))
 
 (fn wrap-map? [level]
-    (<= level 6)) ; Tiphereth
+    (<= level 9)) ; Yesod
 
 (fn move [val dir]
     "Move complex value to some direction on map"
