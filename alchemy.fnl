@@ -183,7 +183,6 @@
 (fn floor-multiply [n v]
     "It’s like the wheel of fortune: Multiply value with base n, add 1/nth
 and floor the result to get the correct sector on the wheel."
-    ;; TODO For flat oriented hexagons, do not add the 1/nth
     (math.floor (+ (* v n) (/ 1 n))))
 
 (fn nstep [n v]
