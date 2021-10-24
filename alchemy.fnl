@@ -60,7 +60,7 @@
 
 ;; Config ----------------
 
-(var level 5)
+(var level 10)
 
 (local scr {:w 240 :h 136})
 (local orientation ; of hexagons
