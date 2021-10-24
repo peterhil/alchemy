@@ -557,7 +557,7 @@ Uses polar coordinates and converts to cartesian."
                     pos (cx {:y (+ y map.dy)
                              :x (+ x map.dx)})]
                 (when (is-gem? {: x : y} cells)
-                  (sp-draw air (hex-offset pos)))
+                  (sp-draw sp.green (hex-offset pos)))
                 (sp-draw cell (hex-offset pos))))))
 
 (fn draw-player [plr]
