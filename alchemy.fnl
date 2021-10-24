@@ -373,6 +373,9 @@ When b is real then it’s real part is used as modulo for y also."
 (fn random-sample [seq]
     (. seq (random-index seq)))
 
+(fn random-thing []
+    (. things (math.random 1 (- 11 level))))
+
 (fn gen-map [n]
     (icollect [_ _ (irange 0 n)]
               (random-piece)))
@@ -651,7 +654,7 @@ Uses polar coordinates and converts to cartesian."
                       (let [ether (filter (is air) cells)
                             space (icollect [k v (pairs ether)] k)
                             idx (random-sample space)
-                            gem (random-sample things)]
+                            gem (random-thing)]
                         (tset cells idx gem))))
 
                 ;; Draw balance
