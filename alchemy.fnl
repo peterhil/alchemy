@@ -98,7 +98,7 @@
            :mars {:id 386 :tp 11}
            :jupiter {:id 388 :tp 6}
            :saturn {:id 390 :tp 6}
-           :neptune {:id 392 :tp 13}
+           :neptune {:id 392 :tp 15}
            :pluto {:id 394 :tp 13}
            :hl {:id 290 :tp transp}})
 (local air sp.blue)
@@ -754,8 +754,8 @@ Uses polar coordinates and converts to cartesian."
 ;; 133:6666666666666666a1866666ba18666633e78666321b766692b1176691187866
 ;; 134:6666666666666666666600006660881866088111668188e160111ede608181eb
 ;; 135:66666666666666660006666688806dc68181d66c111896ecb818efc6888efc66
-;; 136:dddddddddddddddddddd8111ddd8177bdd81245bdd139c4ad839cccad1239c4b
-;; 137:dddddddddddddddd118ddddda100dddd5ae10ddd48a81dddb8b8f0ddaf8a18dd
+;; 136:ffffffffffffffffffff8111fff8177bff81245bff139c4af839cccaf1239c4b
+;; 137:ffffffffffffffff118fffffa100ffff5ae10fff48ae1fffb8b8e0ffa18518ff
 ;; 138:dddddddddddddddddddd8111ddd815bbdd814cccdd19cc4cd89cc9c5d13cccbc
 ;; 139:dddddddddddddddd118dddddba78ddddb6a78dddcb6a1dddccb671ddc5c678dd
 ;; 146:b2398c98b1398938bb239883bb823999bbb82333bbbb8111bbbbbbbbbbbbbbbb
@@ -764,8 +764,8 @@ Uses polar coordinates and converts to cartesian."
 ;; 149:4aa7286644928766422816669381a66628126666ee2666666666666666666666
 ;; 150:6081181860818818660181886618881069608fe8cd66fe09d9c9bd666d9b6666
 ;; 151:88b89c6680819c660819c666819cc66689cc6666ccc666666666666666666666
-;; 152:d1222994d8129445d8f9cc45dd87b4cbddd877aadddd8111dddddddddddddddd
-;; 153:48b6f8ddaf8781ddb8681dddb7810ddd7810dddd110ddddddddddddddddddddd
+;; 152:f1222994f8129445f819cc45ff87b4cbfff877adffff8111ffffffffffffffff
+;; 153:48d678ffa18b81ffb8d818ffdd710fffe710ffff110fffffffffffffffffffff
 ;; 154:d13c9cccd123c9c5d8239c4cdd8239c5ddd82333dddd8111dddddddddddddddd
 ;; 155:5c5678ddc5c781dd5c781ddd67810ddd2810dddd110ddddddddddddddddddddd
 ;; 162:bbbbbbbbbbbbbbbbbbbbbbbbbbbbffffbbbfdccdbbfdcbbcbfdcbcfebfcdcfde
