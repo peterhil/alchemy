@@ -104,6 +104,7 @@
            :swan {:id 260 :tp 5}
            :peacock {:id 262 :tp 2}
            :pelican {:id 264 :tp 5}
+           :phoenix {:id 266 :tp 5}
            :hl {:id 34 :tp transp}})
 
 (local air sp.blue)
@@ -568,13 +569,15 @@ Uses polar coordinates and converts to cartesian."
     (let [crow? (fn [level] (iv? level 9 11))
           swan? (fn [level] (iv? level 7 9))
           peacock? (fn [level] (iv? level 4 7))
-          pelican? (fn [level] (iv? level 2 4))]
+          pelican? (fn [level] (iv? level 2 4))
+          phoenix? (fn [level] (iv? level 1 2))]
       ;; Match with where clauses gives warning about overshadowed symbols in macro, and will not work
       (if (crow? level) sp.crow
           (if (swan? level) sp.swan
               (if (peacock? level) sp.peacock
                   (if (pelican? level) sp.pelican
-                      sp.hl))))))
+                      (if (phoenix? level) sp.phoenix
+                          sp.hl)))))))
 
 (fn draw-player [plr]
     "Draw player"
@@ -736,8 +739,8 @@ Uses polar coordinates and converts to cartesian."
 ;; 007:a22222220a22222222226222af273222caf676220af59122eaf67672baf75762
 ;; 008:5555555555555555555555555555555c55555993523339335399939355333993
 ;; 009:5555555555555555ccc55555ccec55553ccc555525cc555555cc55555ccc5555
-;; 010:0000005500005555005555555555555555555555555555555555555555555555
-;; 011:5000000055500000555550005555555055555550555555505555555055555550
+;; 010:5555115555155812155812231551233321522344122334551223452322345239
+;; 011:5555555523555555413555552c43555555555555222222959393949944499949
 ;; 018:5555000055555000555555005555500555550e5e555550505555555555555555
 ;; 019:0eff005500000555000fef550555555505555555505555555555555555555555
 ;; 020:5555c55c555cc5cb555cccbc555ccccc55555ccc555bbbbb55555bbb55555555
@@ -746,8 +749,8 @@ Uses polar coordinates and converts to cartesian."
 ;; 023:bf5ba922af9a0362aafb8672af867f22f021f2220e222222edef222220de2222
 ;; 024:555999935555993c555555cc5555cccc5555cccc5555dccc55555ddd5555555b
 ;; 025:cccccb55ccccbc55c9cccd55229cb555c2ccbb55c9cb5555bbb5555555555555
-;; 026:5555555555555555555555555555555555555555005555550000555500000055
-;; 027:5555555055555550555555505555555055555550555550005550000050000000
+;; 026:2222239432353d455323eed35e123221ef51255555f553215555555255555555
+;; 027:555544543222155c215322155553532555555525555551251551123525123555
 ;; 066:bbbbbbbbbbbbbbbbbbbbbbbbbbbb4cccbbb39944bb39c4c4b3949cccb08223c9
 ;; 067:bbbbbbbbbbbbbbbbbbbbbbbbcc5bbbbb6556bbbb67656bbb567656bbef0c70bb
 ;; 068:bbbbbbbbbbbbbbbbbbbb8884bbb81881bb818881bb188818b1811111b1888188
