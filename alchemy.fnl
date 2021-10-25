@@ -109,17 +109,17 @@
 
 (local air sp.blue)
 
-(local balance
-       {:malkuth 0
-        :jesod 0
-        :hod 0
-        :nezach 0
-        :tiphereth 0
-        :gewurah 0
-        :chesed 0
-        :binah 0
-        :chochmah 0
-        :keter 0})
+(var balance
+     {:malkuth 0
+      :jesod 0
+      :hod 0
+      :nezach 0
+      :tiphereth 0
+      :gewurah 0
+      :chesed 0
+      :binah 0
+      :chochmah 0
+      :keter 0})
 
 (local things [sp.gem
                sp.moon
@@ -537,6 +537,27 @@ Uses polar coordinates and converts to cartesian."
 
 ;; Side effects --------
 
+(fn inbalance? []
+    (var below :malkuth)
+    (var chaos nil)
+    (local residue {})
+    (for [number 9 1 -1]
+         (let [sephirah (. sephiroth number)
+               above sephirah.name
+               air (or (. balance above) 0)
+               water (or (. balance below) 0)]
+           (when (~= :malkuth above)
+             (do
+              (when (or (~= above 0) (~= below 0))
+                (trace (..  " above: " above " " air
+                            " below: " below " " water)))
+              (if (< (- water air) 0)
+                (do (set chaos (math.min 10 number))
+                    (lua "break"))
+                (tset residue below water))))
+           (set below above)))
+    (values chaos residue))
+
 (fn sp-draw [sprite cell]
     "Draw sprite id on cell with x and y coordinates"
     (let [{: x : y} cell]
@@ -610,7 +631,7 @@ Uses polar coordinates and converts to cartesian."
                   x (+ offset.x (* hex.col (incr origin.x)) hex.sp)
                   y (+ offset.y (* hex.row pos.y) (- hex.sp))
                   name (. sephirah :name)
-                  count (or (. balance name) "?")
+                  count (or (. balance name) 0)
                   abbrev (.. (: name :sub 1 1) (: name :sub 3 3))
                   sprite sephirah.sp]
               (do
@@ -648,14 +669,21 @@ Uses polar coordinates and converts to cartesian."
                           idx (cell-index plr cells)
                           sidx (find (fn [s] (= s.sp.id thing.id)) sephiroth)
                           sephirah (. sephiroth sidx)
-                          count (incr (. balance sephirah.name))]
-                      ;; (trace (.. sephirah.name ": " count))
+                          count (incr (or (. balance sephirah.name) 0))]
                       (tset balance sephirah.name count)
                       (tset cells idx air)
 
-                      ;; Check level
-                      (when (= 2 (. balance sephirah.name))
-                        (set level (math.max 1 (decr level))))
+                      ;; Check balance
+                      (let [(chaos residue) (pick-values 2 (inbalance?))]
+                        (if chaos
+                            ;; Descend levels
+                            (do
+                             (set level (math.min 10 (incr chaos)))
+                             (set balance residue))
+                            ;; Ascend levels
+                            (when (= (. balance sephirah.name) 2)
+                              (set level (math.max 1 (decr level))))
+                            ))
 
                       ;; Play sound FX
                       (_G.sfx 1 (note-for thing) 15)
