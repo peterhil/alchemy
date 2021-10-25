@@ -109,6 +109,18 @@
 
 (local air sp.blue)
 
+(local balance
+       {:malkuth 0
+        :jesod 0
+        :hod 0
+        :nezach 0
+        :tiphereth 0
+        :gewurah 0
+        :chesed 0
+        :binah 0
+        :chochmah 0
+        :keter 0})
+
 (local things [sp.gem
                sp.moon
                sp.mercurius
@@ -521,18 +533,6 @@ Uses polar coordinates and converts to cartesian."
         {:name :hod       :pos (cx -1 3) :sp sp.mercurius}
         {:name :jesod     :pos (cx  0 3.5) :sp sp.moon}
         {:name :malkuth   :pos (cx  0 4.5)  :sp sp.gem}])
-
-(local balance
-       {:malkuth 0
-        :jesod 0
-        :hod 0
-        :nezach 0
-        :tiphereth 0
-        :gewurah 0
-        :chesed 0
-        :binah 0
-        :chochmah 0
-        :keter 0})
 
 
 ;; Side effects --------
