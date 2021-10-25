@@ -656,6 +656,7 @@ Uses polar coordinates and converts to cartesian."
 (var cells (gen-map (* map.w map.h)))
 (var plr (cx {:y 0 :x 0}))
 (var time 0)
+(var turns 0)
 
 (global TIC (fn tic []
                 (_G.cls 0)
@@ -672,8 +673,12 @@ Uses polar coordinates and converts to cartesian."
                 (printc (. (. sephiroth level) :name) 24 100 5)
 
                 (local dir (dir-events plr))
-                (set plr (new-position plr dir cells))
+                (let [target (new-position plr dir cells)]
+                  (when (~= plr target)
+                    (set turns (incr turns)))
+                  (set plr target))
 
+                (printc turns 196 100 1)
                 (draw-player (+ origin plr))
 
                 (if (is-gem? plr cells)
