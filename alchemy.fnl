@@ -558,6 +558,18 @@ Uses polar coordinates and converts to cartesian."
            (set below above)))
     (values chaos residue))
 
+(fn check-balance [sephirah]
+    (let [(chaos residue) (pick-values 2 (inbalance?))]
+      (if chaos
+          ;; Descend levels
+          (do
+           (set level (math.min 10 (incr chaos)))
+           (set balance residue))
+          ;; Ascend levels
+          (when (= (. balance sephirah.name) 2)
+            (set level (math.max 1 (decr level))))
+          )))
+
 (fn sp-draw [sprite cell]
     "Draw sprite id on cell with x and y coordinates"
     (let [{: x : y} cell]
@@ -674,16 +686,7 @@ Uses polar coordinates and converts to cartesian."
                       (tset cells idx air)
 
                       ;; Check balance
-                      (let [(chaos residue) (pick-values 2 (inbalance?))]
-                        (if chaos
-                            ;; Descend levels
-                            (do
-                             (set level (math.min 10 (incr chaos)))
-                             (set balance residue))
-                            ;; Ascend levels
-                            (when (= (. balance sephirah.name) 2)
-                              (set level (math.max 1 (decr level))))
-                            ))
+                      (check-balance sephirah)
 
                       ;; Play sound FX
                       (_G.sfx 1 (note-for thing) 15)
