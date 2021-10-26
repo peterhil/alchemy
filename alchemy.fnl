@@ -349,6 +349,9 @@ When b is real then it’s real part is used as modulo for y also."
     (local width (print msg 0 scr.h))
     (print msg (- x (half width)) y (or ?color 14)))
 
+(fn status [msg]
+    (printc msg (half scr.w) (- scr.h 30) 12))
+
 (fn btd [b]
     (print (.. :btn ": " b) 0 (- scr.h 10) 14))
 
@@ -475,8 +478,7 @@ When b is real then it’s real part is used as modulo for y also."
     "Move player to some direction"
     (let [pos (move plr dir)]
       (if (collision? pos cells)
-          (do (printc (.. "Can not move to (:y " pos.y " :x " pos.x ")")
-                      (half scr.w) (- scr.h 30) 12)
+          (do (status "Can’t move there!")
               plr)
           pos)))
 
