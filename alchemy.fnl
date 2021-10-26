@@ -217,13 +217,6 @@ Sectors are numbered counter-clockwise from (:x 1 :y 0)."
 
 (local sextant (partial sector 6))
 
-(fn chexp [theta ?abs]
-    "Complex number exponential in polar coordinates,
-but rounded to multiples of 0.5 so it works on hexagonal grid"
-    (let [w (* pi2 theta)]
-      (values (halfstep (* (or ?abs 1) (math.cos w)))
-              (halfstep (* (or ?abs 1) (math.sin w))))))
-
 
 ;; Complex numbers ----------------
 (local cx {})
@@ -325,6 +318,13 @@ When b is real then it’s real part is used as modulo for y also."
 (tset cx-meta :__unm cx.unm)
 (tset cx-meta :__bnot cx.conjugate)
 (setmetatable cx cx-meta)
+
+(fn chexp [theta ?abs]
+    "Complex number exponential in polar coordinates,
+but rounded to multiples of 0.5 so it works on hexagonal grid"
+    (let [w (* pi2 theta)]
+      (cx (values (halfstep (* (or ?abs 1) (math.cos w)))
+                  (halfstep (* (or ?abs 1) (math.sin w)))))))
 
 
 ;; Lib ----------------
@@ -513,7 +513,7 @@ When b is real then it’s real part is used as modulo for y also."
     (let [phase (if (= orientation :flat) (/ 1 12) 0)]
       (icollect [_ phi (irange 0 1 (/ 1 6))]
                 (+ (cx pos)
-                   (cx (chexp (+ phi phase)))))))
+                   (chexp (+ phi phase))))))
 
 (fn deviation [plr key]
     "Angle deviation for up/down (or left/right) movement to align with hex grid
@@ -533,7 +533,7 @@ on alternate rows (cols)"
             (do (btd key)
                 ;; TODO Check if deviation works based on just player
                 ;; position, or if it should be cumulative?
-                (table.insert moves (cx (chexp (+ angle (deviation plr key))))))))
+                (table.insert moves (chexp (+ angle (deviation plr key)))))))
     (cx (add (table.unpack moves))))
 
 (fn move-player [plr]
