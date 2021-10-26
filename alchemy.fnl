@@ -467,20 +467,22 @@ When b is real then it’s real part is used as modulo for y also."
 (fn wrap-map? [level]
     (<= level 9)) ; Yesod
 
+(fn wrap-map [pos]
+    (let [cxmap (cx map.w map.h)]
+      (if (odd-map?)
+          (% (hex-offset pos :sub) cxmap)
+          (% pos cxmap))))
+
 (fn move [val dir]
     "Move complex value to some direction on map"
-    (let [cxmap (cx.new map.w map.h)]
-      (if (wrap-map? level)
-          (% (+ val dir) cxmap)
-          (+ val dir))))
+    (+ val dir))
 
-(fn new-position [plr dir cells]
-    "Move player to some direction"
-    (let [pos (move plr dir)]
-      (if (collision? pos cells)
-          (do (status "Obstacle!")
-              plr)
-          pos)))
+(fn maybe-move [plr target cells]
+    "Move player to some target position unless there is collision"
+    (if (collision? target cells)
+        (do (status "Obstacle!")
+            plr)
+        target))
 
 (fn neighbours [pos]
     (let [phase (if (= orientation :flat) (/ 1 12) 0)]
@@ -498,25 +500,26 @@ on alternate rows (cols)"
            [:pointy :d] (if (odd-row? plr) (/ 1 12) (/ -1 12))
            0))
 
-(fn hex-move [plr angle key]
-    "Get next position for the player based on angle of movement"
-    (let [phi (+ angle (deviation plr key))
-          next-pos (cx (chexp phi))]
-      (if (and (odd-map?) (on-smooth-edge? plr))
-          (if (in-map? (+ plr next-pos))
-              next-pos
-              (. odd-edge-directions key))
-          next-pos)))
-
 (fn movements [plr]
-    "Get directions from button events.
-Uses polar coordinates and converts to cartesian."
+    "Get movements from button events"
     (local moves [])
     (each [key angle (pairs (allowed-directions level))]
           (when (_G.btnp (. bt key))
             (do (btd key)
-                (table.insert moves (hex-move plr angle key)))))
+                ;; TODO Check if deviation works based on just player
+                ;; position, or if it should be cumulative?
+                (table.insert moves (cx (chexp (+ angle (deviation plr key))))))))
     (cx (add (table.unpack moves))))
+
+(fn move-player [plr]
+    (let [movement (movements plr)
+          target (+ plr movement)
+          new-pos (if (and (wrap-map? level)
+                           (not (in-map? target))
+                           )
+                      (wrap-map target)
+                      target)]
+      (maybe-move plr new-pos cells)))
 
 (fn note-for [level]
     (+ 56 (* 4 level)))
@@ -685,8 +688,7 @@ Uses polar coordinates and converts to cartesian."
                 (draw-sephiroth)
                 (printc (. (. sephiroth level) :name) 24 100 5)
 
-                (local dir (movements plr))
-                (let [target (new-position plr dir cells)]
+                (let [target (move-player plr)]
                   (when (~= plr target)
                     (set turns (incr turns)))
                   (set plr target))
