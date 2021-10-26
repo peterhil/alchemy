@@ -273,6 +273,13 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
              :y (+ a.y b.y)}]
       (setmetatable v cx-meta)))
 
+(fn cx.sub [a b]
+    (let [a (cx.from a)
+          b (cx.from b)
+          v {:x (- a.x b.x)
+             :y (- a.y b.y)}]
+      (setmetatable v cx-meta)))
+
 (fn cx.mul [a b]
     (let [a (cx.from a)
           b (cx.from b)
@@ -291,10 +298,21 @@ When b is real then it’s real part is used as modulo for y also."
              :y (% a.y (if (= 0 b.y) b.x b.y))}]
       (setmetatable v cx-meta)))
 
+(fn cx.unm [a]
+    (let [a (cx.from a)]
+      (cx -a.x a.y)))
+
+(fn cx.conjugate [a]
+    (let [a (cx.from a)]
+      (cx a.x -a.y)))
+
 (tset cx :add cx.add)
+(tset cx :conjugate cx.conjugate)
 (tset cx :mul cx.mul)
 (tset cx :equals cx.equals)
 (tset cx :i (cx.new 0 1))
+(tset cx :sub cx.sub)
+(tset cx :unm cx.unm)
 
 (tset cx-meta :__call (fn __call [_ x ?y] (cx.from x ?y)))
 (tset cx-meta :abs cx.abs)
@@ -303,6 +321,9 @@ When b is real then it’s real part is used as modulo for y also."
 (tset cx-meta :__eq cx.equals)
 (tset cx-meta :__mod cx.mod)
 (tset cx-meta :__mul cx.mul)
+(tset cx-meta :__sub cx.sub)
+(tset cx-meta :__unm cx.unm)
+(tset cx-meta :__bnot cx.conjugate)
 (setmetatable cx cx-meta)
 
 
@@ -363,11 +384,12 @@ When b is real then it’s real part is used as modulo for y also."
           o (/ (math.abs (% v 2)) 2)]
       (f 0 o)))
 
-(fn hex-offset [cell]
+(fn hex-offset [cell ?sub]
     "Adjust odd rows/cols on hexagonal map"
-    (match orientation
-           :pointy (cx.add cell (odd-offset cell.y hex.even))
-           :flat   (cx.add cell (cx.new 0 (odd-offset cell.x hex.even)))))
+    (let [sub (if ?sub (not hex.even) hex.even)]
+      (match orientation
+             :pointy (cx.add cell (odd-offset cell.y sub))
+             :flat   (cx.add cell (cx.new 0 (odd-offset cell.x sub))))))
 
 (local odd-edge-directions
        {:r (cx  1 0) :z (match orientation :pointy (cx  1  1) :flat (cx  1  1))
@@ -480,8 +502,12 @@ When b is real then it’s real part is used as modulo for y also."
 (fn maybe-move [plr target cells]
     "Move player to some target position unless there is collision"
     (if (collision? target cells)
-        (do (status "Obstacle!")
-            plr)
+        (if (or (> level 3) ;; Below Binah
+                (collision? alt cells) ; TODO Check available hex in direction of movement
+                )
+            (do (status "Obstacle!")
+                plr)
+            alt)
         target))
 
 (fn neighbours [pos]
