@@ -397,6 +397,11 @@ When b is real then it’s real part is used as modulo for y also."
     (icollect [_ _ (irange 0 n)]
               (random-piece)))
 
+(var cells (gen-map (* map.w map.h)))
+
+(fn regenerate-map []
+    (set cells (gen-map (* map.w map.h))))
+
 
 ;; Map and movement ----------------
 
@@ -564,10 +569,13 @@ Uses polar coordinates and converts to cartesian."
           ;; Descend levels
           (do
            (set level (math.min 10 (incr chaos)))
-           (set balance residue))
+           (set balance residue)
+           (regenerate-map))
           ;; Ascend levels
           (when (= (. balance sephirah.name) 2)
-            (set level (math.max 1 (decr level))))
+            (do
+             (set level (math.max 1 (decr level)))
+             (regenerate-map)))
           )))
 
 (fn sp-draw [sprite cell]
@@ -653,7 +661,6 @@ Uses polar coordinates and converts to cartesian."
 
 ;; Main ----------------
 
-(var cells (gen-map (* map.w map.h)))
 (var plr (cx {:y 0 :x 0}))
 (var time 0)
 (var turns 0)
