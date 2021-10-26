@@ -540,8 +540,7 @@ on alternate rows (cols)"
     (let [movement (movements plr)
           target (+ plr movement)
           new-pos (if (and (wrap-map? level)
-                           (not (in-map? target))
-                           )
+                           (not (in-map? target)))
                       (wrap-map target)
                       target)]
       (maybe-move plr new-pos cells)))
