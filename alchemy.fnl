@@ -516,8 +516,8 @@ Uses polar coordinates and converts to cartesian."
                 (table.insert moves (hex-move plr angle key)))))
     (cx (add (table.unpack moves))))
 
-(fn note-for [thing]
-    (+ 56 (* 4 (find (is thing) things))))
+(fn note-for [level]
+    (+ 56 (* 4 level)))
 
 
 ;; Game logic -------
@@ -575,7 +575,8 @@ Uses polar coordinates and converts to cartesian."
           (do
            (set level (math.min 10 (incr chaos)))
            (set balance residue)
-           (regenerate-map))
+            (regenerate-map)
+            (_G.sfx 1 (note-for level) 30 1 12 -3))
           ;; Ascend levels
           (when (= (. balance sephirah.name) 2)
             (do
@@ -708,7 +709,7 @@ Uses polar coordinates and converts to cartesian."
                       (check-balance sephirah)
 
                       ;; Play sound FX
-                      (_G.sfx 1 (note-for thing) 15)
+                      (_G.sfx 1 (note-for (find (is thing) things)) 15)
 
                       ;; Animate collecting for some frames
                       ;; (sp-draw sp.hl (+ origin plr))
