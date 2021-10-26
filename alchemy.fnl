@@ -508,7 +508,7 @@ on alternate rows (cols)"
               (. odd-edge-directions key))
           next-pos)))
 
-(fn dir-events [plr]
+(fn movements [plr]
     "Get directions from button events.
 Uses polar coordinates and converts to cartesian."
     (local moves [])
@@ -685,7 +685,7 @@ Uses polar coordinates and converts to cartesian."
                 (draw-sephiroth)
                 (printc (. (. sephiroth level) :name) 24 100 5)
 
-                (local dir (dir-events plr))
+                (local dir (movements plr))
                 (let [target (new-position plr dir cells)]
                   (when (~= plr target)
                     (set turns (incr turns)))
