@@ -559,14 +559,10 @@ Uses polar coordinates and converts to cartesian."
                air (or (. balance above) 0)
                water (or (. balance below) 0)]
            (when (~= :malkuth above)
-             (do
-              (when (or (~= above 0) (~= below 0))
-                (trace (..  " above: " above " " air
-                            " below: " below " " water)))
-              (if (< (- water air) 0)
-                (do (set chaos (math.min 10 number))
-                    (lua "break"))
-                (tset residue below water))))
+             (if (< (- water air) 0)
+                 (do (set chaos (math.min 10 number))
+                     (lua "break"))
+                 (tset residue below water)))
            (set below above)))
     (values chaos residue))
 
