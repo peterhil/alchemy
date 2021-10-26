@@ -211,7 +211,7 @@ In absolute value, each increment of 1/n increases the result by 1/nth."
 (local hexstep  (partial nstep 6))
 
 (fn sector [n v]
-    "Divides circle into n sector and tells on which the value v lands on.
+    "Divides circle into n sectors and tells the sector on which the value v lands on.
 Sectors are numbered counter-clockwise from (:x 1 :y 0)."
     (% (floor-multiply n v) n))
 
