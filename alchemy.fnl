@@ -478,7 +478,7 @@ When b is real then it’s real part is used as modulo for y also."
     "Move player to some direction"
     (let [pos (move plr dir)]
       (if (collision? pos cells)
-          (do (status "Can’t move there!")
+          (do (status "Obstacle!")
               plr)
           pos)))
 
