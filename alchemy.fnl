@@ -509,15 +509,19 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
                 (+ (cx pos)
                    (chexp (+ phi phase))))))
 
-(fn deviation [plr key]
-    "Angle deviation for up/down (or left/right) movement to align with hex grid
-on alternate rows (cols)"
-    (match [orientation key]
-           [:flat :l]   (if (odd-col? plr) (/ 1 12) (/ -1 12))
-           [:flat :r]   (if (odd-col? plr) (/ -1 12) (/ 1 12))
-           [:pointy :u] (if (odd-row? plr) (/ -1 12) (/ 1 12))
-           [:pointy :d] (if (odd-row? plr) (/ 1 12) (/ -1 12))
-           0))
+(fn key-movement [plr key angle]
+    "Deviate horizontal (or vertical) key movements on alternate
+cols (rows) to align with the hex grid"
+    (let [op (match
+               [orientation key]
+               [:flat :l] (if (odd-col? plr) add sub)
+               [:flat :r] (if (odd-col? plr) sub add)
+               [:pointy :u] (if (odd-row? plr) sub add)
+               [:pointy :d] (if (odd-row? plr) add sub)
+               nil)]
+      (if op
+          (chexp (op angle (/ 1 12)))
+          (chexp angle))))
 
 (fn movements [plr]
     "Get movements from button events"
@@ -527,7 +531,8 @@ on alternate rows (cols)"
             (do (btd key)
                 ;; TODO Check if deviation works based on just player
                 ;; position, or if it should be cumulative?
-                (table.insert moves (chexp (+ angle (deviation plr key)))))))
+                (let [mv (key-movement plr key angle)]
+                  (table.insert moves mv)))))
     (cx (add (table.unpack moves))))
 
 (fn move-player [plr]
