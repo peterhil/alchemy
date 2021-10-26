@@ -502,12 +502,11 @@ When b is real then it’s real part is used as modulo for y also."
 (fn maybe-move [plr target cells]
     "Move player to some target position unless there is collision"
     (if (collision? target cells)
-        (if (or (> level 3) ;; Below Binah
-                (collision? alt cells) ; TODO Check available hex in direction of movement
-                )
+        (if (<= level 3) ; Binah
+            ;; TODO Check available hex in direction of movement
+            target
             (do (status "Obstacle!")
-                plr)
-            alt)
+                plr))
         target))
 
 (fn neighbours [pos]
