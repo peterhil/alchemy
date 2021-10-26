@@ -523,7 +523,9 @@ Uses polar coordinates and converts to cartesian."
 ;; Game logic -------
 
 (local cheat true)
-(local keys {:comma 45 :period 46})
+(local keys {:minus 37
+             :comma 45
+             :period 46})
 (local hold 60)
 (local period 60)
 
@@ -541,6 +543,9 @@ Uses polar coordinates and converts to cartesian."
 
 
 ;; Side effects --------
+
+(fn keyp [key ?hold ?period]
+    (_G.keyp key (or ?hold hold) (or ?period period)))
 
 (fn inbalance? []
     (var below :malkuth)
@@ -670,9 +675,11 @@ Uses polar coordinates and converts to cartesian."
 
                 (when cheat
                   (do
-                   (when (_G.keyp keys.comma hold period)
+                   (when (keyp keys.minus)
+                     (regenerate-map))
+                   (when (keyp keys.comma)
                      (set level (math.min 10 (incr level))))
-                   (when (_G.keyp keys.period hold period)
+                   (when (keyp keys.period)
                      (set level (math.max 1 (decr level))))))
 
                 (draw-map cells)
