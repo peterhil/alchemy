@@ -515,15 +515,15 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
                 (+ (cx pos)
                    (chexp (+ phi phase))))))
 
-(fn key-movement [plr key angle]
+(fn key-movement [pos key angle]
     "Deviate horizontal (or vertical) key movements on alternate
 cols (rows) to align with the hex grid"
     (let [op (match
                [orientation key]
-               [:flat :l] (if (odd-col? plr) add sub)
-               [:flat :r] (if (odd-col? plr) sub add)
-               [:pointy :u] (if (odd-row? plr) sub add)
-               [:pointy :d] (if (odd-row? plr) add sub)
+               [:flat :l] (if (odd-col? pos) add sub)
+               [:flat :r] (if (odd-col? pos) sub add)
+               [:pointy :u] (if (odd-row? pos) sub add)
+               [:pointy :d] (if (odd-row? pos) add sub)
                nil)]
       (if op
           (chexp (op angle (/ 1 12)))
