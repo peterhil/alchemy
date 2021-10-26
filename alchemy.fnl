@@ -391,12 +391,6 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
              :pointy (cx.add cell (odd-offset cell.y sub))
              :flat   (cx.add cell (cx.new 0 (odd-offset cell.x sub))))))
 
-(local odd-edge-directions
-       {:r (cx  1 0) :z (match orientation :pointy (cx  1  1) :flat (cx  1  1))
-        :d (cx  0 1) :x (match orientation :pointy (cx -1  1) :flat (cx -1  1))
-        :l (cx -1 0) :a (match orientation :pointy (cx -1 -1) :flat (cx -1 -1))
-        :u (cx 0 -1) :s (match orientation :pointy (cx  1 -1) :flat (cx  1 -1)) })
-
 (fn odd-col? [plr]
     (~= hex.even (odd? plr.x)))
 
