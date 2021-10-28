@@ -294,11 +294,11 @@ When b is real then it’s real part is used as modulo for y also."
 
 (fn cx.unm [a]
     (let [a (cx.from a)]
-      (cx -a.x a.y)))
+      (cx (- a.x) a.y)))
 
 (fn cx.conjugate [a]
     (let [a (cx.from a)]
-      (cx a.x -a.y)))
+      (cx a.x (- a.y))))
 
 (tset cx :add cx.add)
 (tset cx :conjugate cx.conjugate)
