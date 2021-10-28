@@ -155,10 +155,10 @@
            :a 6 :s 7})
 
 (local directions
-       {:r (/  0 24) :z (/ (match orientation :pointy 4 :flat 2) 24)
-        :d (/  6 24) :x (/ (match orientation :pointy 8 :flat 10) 24)
-        :l (/ 12 24) :a (/ (match orientation :pointy 16 :flat 14) 24)
-        :u (/ 18 24) :s (/ (match orientation :pointy 20 :flat 22) 24)})
+       {:r (/ 0 12) :z (/ (match orientation :pointy  2 :flat  1) 12)
+        :d (/ 3 12) :x (/ (match orientation :pointy  4 :flat  5) 12)
+        :l (/ 6 12) :a (/ (match orientation :pointy  8 :flat  7) 12)
+        :u (/ 9 12) :s (/ (match orientation :pointy 10 :flat 11) 12)})
 
 
 ;; Math ----------------
