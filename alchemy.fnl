@@ -158,10 +158,10 @@
            :a 6 :s 7})
 
 (local directions
-       {:r (/ 0 12) :z (/ (match orientation :pointy  2 :flat  1) 12)
-        :d (/ 3 12) :x (/ (match orientation :pointy  4 :flat  5) 12)
-        :l (/ 6 12) :a (/ (match orientation :pointy  8 :flat  7) 12)
-        :u (/ 9 12) :s (/ (match orientation :pointy 10 :flat 11) 12)})
+       {:r 0 :z (match orientation :pointy  2 :flat  1)
+        :d 3 :x (match orientation :pointy  4 :flat  5)
+        :l 6 :a (match orientation :pointy  8 :flat  7)
+        :u 9 :s (match orientation :pointy 10 :flat 11)})
 
 
 ;; Math ----------------
@@ -547,10 +547,11 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
                 plr))
         target))
 
-(fn key-movement [pos key angle]
+(fn key-movement [pos key sect]
     "Deviate horizontal (or vertical) key movements on alternate
 cols (rows) to align with the hex grid"
-    (let [op (match
+    (let [angle (/ sect 12)
+          op (match
                [orientation key]
                [:flat :l] (if (odd-col? pos) add sub)
                [:flat :r] (if (odd-col? pos) sub add)
@@ -564,12 +565,10 @@ cols (rows) to align with the hex grid"
 (fn movements [plr]
     "Get movements from button events"
     (var path (cx 0))
-    (each [key angle (pairs (allowed-directions level))]
+    (each [key sect (pairs (allowed-directions level))]
           (when (_G.btnp (. bt key))
             (do (btd key)
-                ;; TODO Check if deviation works based on just player
-                ;; position, or if it should be cumulative?
-                (let [mv (key-movement (+ plr path) key angle)]
+                (let [mv (key-movement (+ plr path) key sect)]
                   (set path (+ path mv))))))
     path)
 
