@@ -493,14 +493,20 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
     "Move complex value to some direction on map"
     (+ val dir))
 
+(fn debug-pos [pos ?msg]
+    (trace (.. (or ?msg "Position") " at: (:y " pos.y " :x " pos.x ")")
+           (half scr.w) (- scr.h 30) 12))
+
 (fn maybe-move [plr target cells]
     "Move player to some target position unless there is collision"
     (if (collision? target cells)
         (if (<= level 3) ; Binah
             ;; TODO Check available hex in direction of movement
             target
-            (do (status "Obstacle!")
-                plr))
+            (do
+             (debug-pos target "Obstacle")
+             (status "Obstacle!")
+             plr))
         target))
 
 (fn neighbours [pos]
@@ -713,7 +719,8 @@ cols (rows) to align with the hex grid"
 
                 (let [target (move-player plr)]
                   (when (~= plr target)
-                    (set turns (incr turns)))
+                    (do (set turns (incr turns))
+                        (debug-pos target "Player")))
                   (set plr target))
 
                 (printc turns 196 100 1)
