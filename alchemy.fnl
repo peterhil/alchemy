@@ -502,23 +502,50 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
     (trace (.. (or ?msg "Position") " at: (:y " pos.y " :x " pos.x ")")
            (half scr.w) (- scr.h 30) 12))
 
+(fn neighbour [pos n]
+    (let [phase (if (= orientation :flat) (/ 1 12) 0)]
+      (+ (cx pos)
+         (chexp (+ (/ (% n 6) 6) phase)))))
+
+(fn neighbours [pos]
+    (let [phase (if (= orientation :flat) (/ 1 12) 0)]
+      (collect [_ n (irange 0 6)]
+                (values n
+                        (+ (cx pos)
+                           (chexp (+ (/ n 6) phase)))))))
+
 (fn maybe-move [plr target cells]
     "Move player to some target position unless there is collision"
     (if (collision? target cells)
         (if (<= level 3) ; Binah
-            ;; TODO Check available hex in direction of movement
-            target
-            (do
-             (debug-pos target "Obstacle")
-             (status "Obstacle!")
-             plr))
+            ;; Check available hex in direction of movement
+            (let [vector (cx.from (- target plr))
+                  phase (if (= orientation :flat) (/ 1 12) 0)
+                  sect (sextant (tau (cx.angle vector)))
+                  vacant (collect [n pos (pairs (neighbours plr))]
+                                  (let [thing (get-cell pos cells)
+                                        space (can-move? pos cells)]
+                                    (do
+                                     ;; (trace (.. "Neighbour " n ": " (if space "T" "F")))
+                                     (debug-pos pos (.. n ", sect = " sect ": " (if space "T" "F")))
+                                     (values pos thing))))
+                  wise (neighbour plr (% (incr sect) 6))
+                  counter (neighbour plr (% (decr sect) 6))
+                  ws (can-move? wise cells)
+                  cs (can-move? counter cells)
+                  alt (if (or ws cs)
+                          (if ws wise counter)
+                          target)
+                  ]
+              (if (collision? alt cells)
+                  (do (debug-pos alt "Obstacle")
+                      (status "Obstacle!")
+                      plr)
+                  alt))
+            (do (debug-pos target "Obstacle")
+                (status "Obstacle!")
+                plr))
         target))
-
-(fn neighbours [pos]
-    (let [phase (if (= orientation :flat) (/ 1 12) 0)]
-      (icollect [_ phi (irange 0 1 (/ 1 6))]
-                (+ (cx pos)
-                   (chexp (+ phi phase))))))
 
 (fn key-movement [pos key angle]
     "Deviate horizontal (or vertical) key movements on alternate
