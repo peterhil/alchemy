@@ -71,6 +71,19 @@
 
 ;; Math
 
+(desc "tau"
+      (it "works"
+          (let [pi2 hex.pi2
+                tau hex.tau]
+            (assert.same 0.00 (tau (* 0.00 pi2)))
+            (assert.same 0.25 (tau (* 0.25 pi2)))
+            (assert.same 0.50 (tau (* 0.50 pi2)))
+            (assert.same 0.75 (tau (* 0.75 pi2)))
+            (assert.same 0.00 (tau pi2))
+            (assert.same 0.75 (tau (* -0.25 pi2)))
+            (assert.same 0.50 (tau (* -0.50 pi2)))
+            (assert.same 0.25 (tau (* -0.75 pi2))))))
+
 (desc "sign"
       (local num (rnd-positive-float))
       (local fixtures

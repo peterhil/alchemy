@@ -58,6 +58,9 @@
 (local pi2 (* 2 math.pi))
 (local sq3 (math.sqrt 3))
 
+(fn tau [radian]
+    (% (/ radian pi2) 1))
+
 ;; Config ----------------
 
 (var level 10)
@@ -773,9 +776,11 @@ cols (rows) to align with the hex grid"
  : nan
  : nan?
  : odd?
+ : pi2
  : random-index
  : random-sample
- : sign}
+ : sign
+ : tau}
 
 ;; <TILES>
 ;; 002:0000006500006555006555556555555555555555555555555555555555555555
