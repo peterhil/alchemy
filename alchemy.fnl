@@ -72,6 +72,7 @@
         :dx 4 :dy 0
         :thr 0.278
         :gems 0.12
+        :wrap true
         ;; :style :normal
         :style :starry
         })
@@ -481,7 +482,8 @@ but rounded to multiples of 0.5 so it works on hexagonal grid"
                    (values key dir)))))
 
 (fn wrap-map? [level]
-    (<= level 9)) ; Yesod
+    (and map.wrap
+         (<= level 9))) ; Yesod
 
 (fn wrap-map [pos]
     (let [cxmap (cx map.w map.h)]
