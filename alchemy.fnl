@@ -533,15 +533,15 @@ cols (rows) to align with the hex grid"
 
 (fn movements [plr]
     "Get movements from button events"
-    (local moves [])
+    (var path (cx 0))
     (each [key angle (pairs (allowed-directions level))]
           (when (_G.btnp (. bt key))
             (do (btd key)
                 ;; TODO Check if deviation works based on just player
                 ;; position, or if it should be cumulative?
-                (let [mv (key-movement plr key angle)]
-                  (table.insert moves mv)))))
-    (cx (add (table.unpack moves))))
+                (let [mv (key-movement (+ plr path) key angle)]
+                  (set path (+ path mv))))))
+    path)
 
 (fn move-player [plr]
     (let [movement (movements plr)
