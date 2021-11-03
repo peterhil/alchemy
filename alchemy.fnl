@@ -84,7 +84,7 @@
        (match [orientation map.style]
               [:flat :normal] 96
               [:pointy :starry] 96
-              0))
+              _ 0))
 
 (local sp {:green {:id 2 :tp transp}
            :blue {:id 4 :tp transp}
@@ -496,7 +496,7 @@ on alternate rows (cols)"
            [:flat :r]   (if (odd-col? plr) (/ -1 12) (/ 1 12))
            [:pointy :u] (if (odd-row? plr) (/ -1 12) (/ 1 12))
            [:pointy :d] (if (odd-row? plr) (/ 1 12) (/ -1 12))
-           0))
+           _ 0))
 
 (fn hex-move [plr angle key]
     "Get next position for the player based on angle of movement"
